@@ -1,8 +1,20 @@
+//
+//  Project.swift
+//  26th-App-Team-2-iOSManifests
+//
+//  Created by Greem on 6/18/25.
+//
+
+import Foundation
 import ProjectDescription
+import DependencyPlugin
+
+//let project = Project(targets: .)
 
 let project = Project(
-    name: "26thAppTeam2IOS",
+    name: "app2",
     targets: [
+        
         .target(
             name: "26thAppTeam2IOS",
             destinations: .iOS,
@@ -29,3 +41,4 @@ let project = Project(
         ),
     ]
 )
+

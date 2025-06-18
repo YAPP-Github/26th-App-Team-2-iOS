@@ -1,6 +1,6 @@
 // swift-tools-version: 5.9
 import PackageDescription
-
+/*
 #if TUIST
     import ProjectDescription
 
@@ -20,3 +20,4 @@ let package = Package(
         // You can read more about dependencies here: https://docs.tuist.io/documentation/tuist/dependencies
     ]
 )
+*/
