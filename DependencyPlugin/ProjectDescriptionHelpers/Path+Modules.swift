@@ -9,7 +9,6 @@ import Foundation
 import ProjectDescription
 
 // MARK: ProjectDescription.Path + App
-
 public extension ProjectDescription.Path {
     static var app: Self {
         return .relativeToRoot("Projects/\(ModulePath.App.name)")
@@ -53,7 +52,6 @@ public extension ProjectDescription.Path {
 }
 
 // MARK: ProjectDescription.Path + Shared
-
 public extension ProjectDescription.Path {
     static var shared: Self {
         return .relativeToRoot("Projects/\(ModulePath.Shared.name)")

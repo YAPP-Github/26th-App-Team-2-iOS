@@ -17,7 +17,7 @@ let targets: [Target] = [
             infoPlist: .default,
             entitlements: .variable("App2.entitlements"),
             dependencies: [
-//                .feature
+                .feature
             ]
         )
     )

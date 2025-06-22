@@ -284,7 +284,6 @@ public extension Target {
 }
 
 // MARK: Target + Shared
-
 public extension Target {
     static func shared(factory: TargetFactory) -> Self {
         var newFactory = factory
