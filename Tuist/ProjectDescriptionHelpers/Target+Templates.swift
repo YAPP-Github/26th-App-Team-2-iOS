@@ -254,6 +254,7 @@ public extension Target {
     static func core(implements module: ModulePath.Core, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Core.name + module.rawValue
+        newFactory.sources = .sources
         
         return make(factory: newFactory)
     }

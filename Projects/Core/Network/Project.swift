@@ -22,7 +22,8 @@ let targets: [Target] = [
         implements: .Network,
         factory: .init(
             dependencies: [
-                .core(interface: .Network)
+                .core(interface: .Network),
+                .shared
             ]
         )
     ),
