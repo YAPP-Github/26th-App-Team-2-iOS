@@ -12,7 +12,11 @@ public enum NetworkError: Error {
     case invalidURL
     case badRequest
     case unknown
-    
+    case decoding
+    case authorization
+    case server
+    case internetConnection
+    case noResponse
     case urlRequest(URLRequestError)
     
     public var description: String {
@@ -20,8 +24,12 @@ public enum NetworkError: Error {
         case .invalidURL: "Invalid URL"
         case .badRequest: "Bad Request From Client"
         case .unknown: "Unknown Error"
-        case .urlRequest(let urlRequestError):
-            urlRequestError.description
+        case .decoding: "Decoding Error"
+        case .authorization: "Authorization Error"
+        case .server: "Server Error"
+        case .internetConnection: "Internet Connection is unstable"
+        case .noResponse: "No Response"
+        case .urlRequest(let urlRequestError): urlRequestError.description
         }
     }
     

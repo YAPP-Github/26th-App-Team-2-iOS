@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol NetworkProviderAble {
-    func request<Request: Networkable, Item: Decodable>(_ request: Request, isByPass: Bool) async throws -> Item where Request.Item == Item
+    static func request<Request: Networkable, Item: Decodable>(_ request: Request, isByPass: Bool) async throws -> Item where Request.Item == Item
 }
