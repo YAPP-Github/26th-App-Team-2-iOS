@@ -143,8 +143,9 @@ public extension Target {
             newFactory.name = Project.Environment.appName
             newFactory.bundleId = Project.Environment.bundlePrefix
             newFactory.resources = .resources(["Resources/**"])
-            newFactory.productName = "App2"
+            newFactory.productName = "Breake"
         }
+        
         return .make(factory: newFactory)
     }
 }
@@ -219,7 +220,7 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.Domain.name + module.rawValue + "Tests"
         newFactory.product = .unitTests
-        //         newFactory.sources = .tests
+        newFactory.sources = .tests
         
         return make(factory: newFactory)
     }
@@ -227,7 +228,7 @@ public extension Target {
     static func domain(testing module: ModulePath.Domain, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Domain.name + module.rawValue + "Testing"
-        //         newFactory.sources = .testing
+        newFactory.sources = .testing
         
         return make(factory: newFactory)
     }
@@ -296,11 +297,23 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.Shared.name + module.rawValue
         
-        //        if module == .DesignSystem {
-        //            newFactory.sources = .sources
-        //            newFactory.resources = ["Resources/**"]
-        //            newFactory.product = .staticFramework
-        //        }
+        return make(factory: newFactory)
+    }
+    
+
+    
+    static func shared(tests module: ModulePath.Shared, factory: TargetFactory) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.Shared.name + module.rawValue + "Tests"
+        newFactory.sources = .tests
+        
+        return make(factory: newFactory)
+    }
+    
+    static func shared(testing module: ModulePath.Shared, factory: TargetFactory) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.Shared.name + module.rawValue + "Testing"
+        newFactory.sources = .testing
         
         return make(factory: newFactory)
     }
@@ -312,4 +325,5 @@ public extension Target {
         
         return make(factory: newFactory)
     }
+
 }

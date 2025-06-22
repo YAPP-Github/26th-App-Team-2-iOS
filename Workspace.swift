@@ -1,3 +1,3 @@
 import ProjectDescription
 
-let workspace = Workspace(name: "app2", projects: ["Projects/*"])
+let workspace = Workspace(name: "breake", projects: ["Projects/*"])

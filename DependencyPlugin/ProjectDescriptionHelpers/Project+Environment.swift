@@ -12,7 +12,7 @@ public extension Project {
     enum Environment {
 #warning("앱 이름 변경하기")
         /// 앱 이름, 추후 변경사항
-        public static let appName = "app2"
+        public static let appName = "Breake"
         public static let deploymentTarget = DeploymentTargets.iOS("17.0")
         
 #warning("Bundle Identifier 추후 변경사항")

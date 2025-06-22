@@ -15,7 +15,7 @@ let targets: [Target] = [
         impletments: .IOS,
         factory: .init(
             infoPlist: .default,
-            entitlements: .variable("App2.entitlements"),
+            entitlements: .variable("Breake.entitlements"),
             dependencies: [
                 .feature
             ]
@@ -23,5 +23,5 @@ let targets: [Target] = [
     )
 ]
 
-let project: Project = .makeModule(name: "App2", targets: targets)
+let project: Project = .makeModule(name: "Breake", targets: targets)
 
