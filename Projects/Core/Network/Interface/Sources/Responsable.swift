@@ -10,5 +10,5 @@ import Foundation
 public struct EmptyData: Decodable, Equatable { }
 
 public protocol Responsable {
-    associatedtype Item = Decodable
+    associatedtype Item: Decodable
 }

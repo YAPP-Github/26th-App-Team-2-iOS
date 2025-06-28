@@ -9,14 +9,15 @@ import Foundation
 import CoreNetworkInterface
 import SharedUtil
 
-public enum NetworkProvider: NetworkProviderAble {
-    public static func request<Request, Item>(
-        _ endpoint: Request,
-        isByPass: Bool
+public class NetworkProvider: NetworkProviderable {
+    public func request<Request, Item>(
+        _ endpoint: Request
     ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
         do {
-            let urlRequest: URLRequest = try endpoint.makeURLRequest(isBypass: isByPass)
+            /// 여기 코드가 extension이 맞을까?
+            let urlRequest: URLRequest = try endpoint.makeURLRequest()
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
+            
             guard let response = response as? HTTPURLResponse else {
                 throw NetworkError.noResponse
             }

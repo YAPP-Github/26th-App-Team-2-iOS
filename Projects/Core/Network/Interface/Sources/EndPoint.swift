@@ -9,8 +9,9 @@ import Foundation
 
 public protocol Networkable: Requestable, Responsable { }
 
-public struct Endpoint<R>: Networkable {
+public struct Endpoint<R: Decodable>: Networkable {
     public typealias Response = R
+    public typealias Item = R
     
     public var path: String
     public var httpMethod: HTTPMethod

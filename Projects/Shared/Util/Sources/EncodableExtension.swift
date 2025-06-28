@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SharedUtilInterface
 
 public extension Encodable {
     func toDictionary() throws -> [String : Any]? {

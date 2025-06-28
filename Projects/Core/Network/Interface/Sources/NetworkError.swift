@@ -38,7 +38,7 @@ public enum NetworkError: Error {
         case queryEncoding
         case bodyEncoding
         case urlComponent
-        var description: String {
+        public var description: String {
             switch self {
             case .makeURL: "makeURLError"
             case .queryEncoding: "queryEncodingError"

@@ -7,6 +7,7 @@
 
 import Foundation
 
-public protocol NetworkProviderAble {
-    static func request<Request: Networkable, Item: Decodable>(_ request: Request, isByPass: Bool) async throws -> Item where Request.Item == Item
+public protocol NetworkProviderable {
+    func request<Request: Networkable, Item: Decodable>(_ request: Request) async throws -> Item where Request.Item == Item
 }
+
