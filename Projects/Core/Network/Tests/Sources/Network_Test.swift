@@ -36,7 +36,12 @@ final class Network_Test: XCTestCase {
     func test_request_네트워크_실제_통신() async {
         print(#function)
         
-        let networkProvider: NetworkProvider = NetworkProvider()
+        let networkProvider: NetworkProviderable = NetworkProvider(
+            config: .init(
+                baseURL: "https://jsonplaceholder.typicode.com", /// 여기서 직접 주입 가능해짐!!
+                prefix: nil
+            )
+        )
         
         let endpoint = Endpoint<TempTestResponse>(
             path: "/posts/1",

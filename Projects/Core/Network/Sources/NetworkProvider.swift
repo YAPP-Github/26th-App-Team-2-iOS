@@ -9,13 +9,30 @@ import Foundation
 import CoreNetworkInterface
 import SharedUtil
 
+/// URLComponentConig의 값이 달라지면 NetworkProvider 객체는 새로 생성해야함
+/// URLComponentConfig가 달라지는 것에 대한 대응은 되지만, 객체의 불변 객체의 정책을 따름
 public class NetworkProvider: NetworkProviderable {
+    
+    public let urlCompoentConfigurable: URLCompoentConfigurable
+    
+    public init(urlCompoentConfig: URLComponentConfig) {
+        self.urlCompoentConfigurable = urlCompoentConfig
+    }
+    
+    public init() {
+        let config = URLComponentConfig(
+            baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
+            prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
+        )
+        self.urlCompoentConfigurable = config
+    }
+    
     public func request<Request, Item>(
         _ endpoint: Request
     ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
         do {
-            /// 여기 코드가 extension이 맞을까?
-            let urlRequest: URLRequest = try endpoint.makeURLRequest()
+            let urlRequest: URLRequest = try makeURLRequest(endpoint, config: self.urlCompoentConfigurable)
+
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
             
             guard let response = response as? HTTPURLResponse else {
@@ -58,5 +75,39 @@ public class NetworkProvider: NetworkProviderable {
         } catch URLError.Code.notConnectedToInternet {
             throw NetworkError.internetConnection
         }
+    }
+    
+    /// 여기도 프로토콜에 주입하는게 좋을까..?
+    private func makeURLRequest<Request>(
+        _ endpoint: Request,
+        config: URLCompoentConfigurable
+    ) throws -> URLRequest where Request : CoreNetworkInterface.Networkable {
+        guard var urlComponent = try config.makeURLComponents(path: endpoint.path) else {
+            throw NetworkError.urlRequest(.urlComponent)
+        }
+        if let queryItems = try config.getQueryParameters(queryParameters: endpoint.queryParameters) {
+            urlComponent.queryItems = queryItems
+        }
+        
+        guard let url = urlComponent.url else {
+            throw NetworkError.invalidURL
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        
+        if let httpBody = try config.getBodyParameters(bodyParameters: endpoint.bodyParameters) {
+            urlRequest.httpBody = httpBody
+        }
+        
+        if let headers = endpoint.headers {
+            headers.forEach { key, value in
+                urlRequest.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+        
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpMethod = endpoint.httpMethod.rawValue
+        
+        return urlRequest
     }
 }
