@@ -16,7 +16,7 @@ let targets: [Target] = [
             .domain(implements: .User),
             .core
         ]
-    ))
+    )),
 ]
 
 let project: Project = .init(

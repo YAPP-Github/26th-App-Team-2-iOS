@@ -21,7 +21,10 @@ let targets: [Target] = [
                 "UIApplicationSceneManifest": [
                     "UIApplicationSupportsMultipleScenes": false,
                     "UISceneConfigurations": []
-                ]
+                ],
+                "UILaunchScreen": .dictionary([
+                    "UILaunchScreen": .dictionary([:])
+                ])
             ]),
             entitlements: .variable("Brake.entitlements"),
             dependencies: [

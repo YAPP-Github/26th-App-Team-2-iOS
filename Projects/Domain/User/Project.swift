@@ -12,13 +12,33 @@ import DependencyPlugin
 let project = Project.makeModule(
     name: "\(ModulePath.Domain.name)_\(ModulePath.Domain.User.rawValue)",
     targets: [
-        .domain(interface: .User, factory: .init(
-            dependencies: []
-        )),
-        .domain(implements: .User, factory: .init(
+        .domain(
+            interface: .User,
+            factory: .init(
+                dependencies: [
+                    .core
+                ]
+            )
+        ),
+        .domain(
+            implements: .User,
+            factory: .init(
+                dependencies: [
+                    .domain(interface: .User),
+                ]
+            )
+        ),
+        .domain(
+            testing: .User,
+            factory: .init(
+                dependencies: [
+                    .domain(interface: .User),
+                ]
+            )
+        ),
+        .domain(tests: .User, factory: .init(
             dependencies: [
-                .domain(interface: .User),
-                .core
+                .domain(testing: .User)
             ]
         ))
     ]

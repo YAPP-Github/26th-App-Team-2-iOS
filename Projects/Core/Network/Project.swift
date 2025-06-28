@@ -26,6 +26,22 @@ let targets: [Target] = [
             ]
         )
     ),
+    .core(
+        testing: .Network,
+        factory: .init(
+            dependencies: [
+                .core(interface: .Network)
+            ]
+        )
+    ),
+    .core(
+        tests: .Network,
+        factory: .init(
+            dependencies: [
+                .core(testing: .Network)
+            ]
+        )
+    )
     
 ]
 let project: Project = .makeModule(

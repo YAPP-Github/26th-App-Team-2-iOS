@@ -57,7 +57,7 @@ public struct TargetFactory {
         bundleId: String = "",
         deploymentTargets: DeploymentTargets? = nil,
         infoPlist: InfoPlist? = .default,
-        sources: SourceFilesList? = nil,
+        sources: SourceFilesList? = .sources,
         resources: ResourceFileElements? = nil,
         copyFiles: [CopyFilesAction]? = nil,
         headers: Headers? = nil,
@@ -163,6 +163,7 @@ public extension Target {
     static func feature(impletments module: ModulePath.Feature, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue
+        newFactory.sources = .sources
         
         return make(factory: newFactory)
     }
@@ -170,7 +171,6 @@ public extension Target {
     static func feature(tests module: ModulePath.Feature, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue + "Tests"
-        //        newFactory.sources = .paths([.test])
         newFactory.product = .unitTests
         
         return make(factory: newFactory)
