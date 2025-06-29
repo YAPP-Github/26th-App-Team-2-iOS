@@ -299,6 +299,12 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.Shared.name + module.rawValue
         newFactory.sources = .sources
+
+        if module == .DesignSystem {
+            newFactory.sources = .sources
+            newFactory.resources = ["Resources/**"]
+            newFactory.product = .staticFramework
+        }
         
         return make(factory: newFactory)
     }
