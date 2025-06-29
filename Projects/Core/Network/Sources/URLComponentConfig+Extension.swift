@@ -1,29 +1,24 @@
 //
-//  RequestableExtensions.swift
+//  URLComponentConfig+Extension.swift
 //  CoreNetwork
 //
-//  Created by Greem on 6/22/25.
+//  Created by Greem on 6/29/25.
 //
 
-import Foundation
 import CoreNetworkInterface
-import SharedUtil
+import Foundation
 
+extension URLComponentConfig {
 
-public struct URLComponentConfig {
-    public let baseURL: String?
-    public let prefix: String?
-    
-    public init(baseURL: String?, prefix: String?) {
-        self.baseURL = baseURL
-        self.prefix = prefix
-    }
     
     func makeURLComponents(path: String) throws -> URLComponents? {
-        guard let baseURL = self.baseURL, let prefix = self.prefix else {
+        guard let baseURL = self.baseURL else {
             throw NetworkError.urlRequest(.makeURL)
         }
-        return  URLComponents(string: baseURL + prefix + path)
+        guard let prefix = self.prefix else {
+            return URLComponents(string: baseURL + path)
+        }
+        return URLComponents(string: baseURL + prefix + path)
     }
     
     func getQueryParameters(queryParameters: Encodable?) throws -> [URLQueryItem]? {
@@ -65,3 +60,4 @@ public struct URLComponentConfig {
         return encodedBody
     }
 }
+

@@ -11,16 +11,7 @@ import SharedUtil
 
 /// URLComponentConig의 값이 달라지면 NetworkProvider 객체는 새로 생성해야함
 /// URLComponentConfig가 달라지는 것에 대한 대응은 되지만, 객체의 불변 객체의 정책을 따름
-public class NetworkProvider: NetworkProviderable {
-    
-    private let urlComponentConfig: URLComponentConfig
-    
-    public init(urlCompoentConfig: URLComponentConfig = URLComponentConfig(
-            baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
-            prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
-        )) {
-        self.urlComponentConfig = urlCompoentConfig
-    }
+extension NetworkProvider: @retroactive NetworkProviderable {
     
     public func request<Request, Item>(
         _ endpoint: Request
@@ -57,7 +48,7 @@ public class NetworkProvider: NetworkProviderable {
                     throw NetworkError.decoding
                 }
                 return decodedResponse
-            case 401 :
+            case 401:
                 throw NetworkError.authorization
             case 400...499:
                 throw NetworkError.badRequest

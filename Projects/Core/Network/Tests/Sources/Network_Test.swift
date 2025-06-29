@@ -8,16 +8,8 @@
 import XCTest
 import CoreNetworkInterface
 import CoreNetworkTesting
+import CoreNetwork
 
-@testable import CoreNetwork
-
-
-struct TempTestResponse: Decodable {
-    let userId: Int
-    let id: Int
-    let title: String
-    let body: String
-}
 
 final class Network_Test: XCTestCase {
     
@@ -37,7 +29,7 @@ final class Network_Test: XCTestCase {
         print(#function)
         
         let networkProvider: NetworkProviderable = NetworkProvider(
-            config: .init(
+            urlCompoentConfig: .init(
                 baseURL: "https://jsonplaceholder.typicode.com", /// 여기서 직접 주입 가능해짐!!
                 prefix: nil
             )
