@@ -301,7 +301,6 @@ public extension Target {
         newFactory.sources = .sources
 
         if module == .DesignSystem {
-            newFactory.sources = .sources
             newFactory.resources = ["Resources/**"]
             newFactory.product = .staticFramework
         }
