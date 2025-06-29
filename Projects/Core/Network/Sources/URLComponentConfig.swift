@@ -9,18 +9,24 @@ import Foundation
 import CoreNetworkInterface
 import SharedUtil
 
-public struct URLComponentConfig: URLCompoentConfigurable {
-    let baseURL: String?
-    let prefix: String?
+
+public struct URLComponentConfig {
+    public let baseURL: String?
+    public let prefix: String?
     
-    public func makeURLComponents(path: String) throws -> URLComponents? {
+    public init(baseURL: String?, prefix: String?) {
+        self.baseURL = baseURL
+        self.prefix = prefix
+    }
+    
+    func makeURLComponents(path: String) throws -> URLComponents? {
         guard let baseURL = self.baseURL, let prefix = self.prefix else {
             throw NetworkError.urlRequest(.makeURL)
         }
         return  URLComponents(string: baseURL + prefix + path)
     }
     
-    public func getQueryParameters(queryParameters: Encodable?) throws -> [URLQueryItem]? {
+    func getQueryParameters(queryParameters: Encodable?) throws -> [URLQueryItem]? {
         guard let queryParameters else {
             return nil
         }
@@ -43,7 +49,7 @@ public struct URLComponentConfig: URLCompoentConfigurable {
         return queryItemList
     }
     
-    public func getBodyParameters(bodyParameters: Encodable?) throws -> Data? {
+    func getBodyParameters(bodyParameters: Encodable?) throws -> Data? {
         guard let bodyParameters else {
             return nil
         }

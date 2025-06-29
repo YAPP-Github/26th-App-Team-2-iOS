@@ -8,8 +8,6 @@
 import Foundation
 
 public protocol NetworkProviderable {
-    var urlCompoentConfigurable: URLCompoentConfigurable { get }
-    
     func request<Request: Networkable, Item: Decodable>(_ request: Request) async throws -> Item where Request.Item == Item
 }
 

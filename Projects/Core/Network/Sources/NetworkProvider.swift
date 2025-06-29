@@ -13,25 +13,20 @@ import SharedUtil
 /// URLComponentConfig가 달라지는 것에 대한 대응은 되지만, 객체의 불변 객체의 정책을 따름
 public class NetworkProvider: NetworkProviderable {
     
-    public let urlCompoentConfigurable: URLCompoentConfigurable
+    private let urlComponentConfig: URLComponentConfig
     
-    public init(urlCompoentConfig: URLComponentConfig) {
-        self.urlCompoentConfigurable = urlCompoentConfig
-    }
-    
-    public init() {
-        let config = URLComponentConfig(
+    public init(urlCompoentConfig: URLComponentConfig = URLComponentConfig(
             baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
             prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
-        )
-        self.urlCompoentConfigurable = config
+        )) {
+        self.urlComponentConfig = urlCompoentConfig
     }
     
     public func request<Request, Item>(
         _ endpoint: Request
     ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
         do {
-            let urlRequest: URLRequest = try makeURLRequest(endpoint, config: self.urlCompoentConfigurable)
+            let urlRequest: URLRequest = try makeURLRequest(endpoint, config: self.urlComponentConfig)
 
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
             
@@ -80,7 +75,7 @@ public class NetworkProvider: NetworkProviderable {
     /// 여기도 프로토콜에 주입하는게 좋을까..?
     private func makeURLRequest<Request>(
         _ endpoint: Request,
-        config: URLCompoentConfigurable
+        config: URLComponentConfig
     ) throws -> URLRequest where Request : CoreNetworkInterface.Networkable {
         guard var urlComponent = try config.makeURLComponents(path: endpoint.path) else {
             throw NetworkError.urlRequest(.urlComponent)
