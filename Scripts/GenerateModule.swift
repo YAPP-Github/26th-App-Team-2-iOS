@@ -121,9 +121,6 @@ func makeDirectories(_ paths: [String]) {
 }
 
 func makeProjectSwift(targetString: String) {
-    let mainPath = "ModulePath.\(layer.rawValue).name"
-    let subPath = "ModulePath.\(layer.rawValue).\(moduleName).rawValue"
-
     let projectSwift = """
 import ProjectDescription
 import ProjectDescriptionHelpers
