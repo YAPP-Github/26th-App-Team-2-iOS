@@ -52,7 +52,7 @@ public struct TargetFactory {
     public init(
         name: String = "",
         destinations: Destinations = .iOS,
-        product: Product = .staticFramework,
+        product: Product = .staticLibrary,
         productName: String? = nil,
         bundleId: String = "",
         deploymentTargets: DeploymentTargets? = nil,
