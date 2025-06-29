@@ -52,6 +52,7 @@ public extension ModulePath {
         public static let name: String = "Core"
         
         case Network
+        case ScreenTime
     }
 }
 
