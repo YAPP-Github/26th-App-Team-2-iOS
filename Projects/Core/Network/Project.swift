@@ -10,7 +10,6 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let targets: [Target] = [
-    /// 인터페이스
     .core(
         interface: .Network,
         factory: .init(
@@ -19,41 +18,32 @@ let targets: [Target] = [
             ]
         )
     ),
-    /// 네트워크
     .core(
         implements: .Network,
         factory: .init(
             dependencies: [
-                .core(interface: .Network),
-                .shared
+                .core(interface: .Network)
             ]
         )
     ),
-    /// 테스트
-    .core(
-        tests: .Network,
-        factory: .init(
-            dependencies: [
-                .core(testing: .Network),
-                
-            ]
-        )
-    ),
-    /// 테스팅
     .core(
         testing: .Network,
         factory: .init(
             dependencies: [
-                .core(interface: .Network),
-                .core(implements: .Network)
+                .core(interface: .Network)
+            ]
+        )
+    ),
+    .core(
+        tests: .Network,
+        factory: .init(
+            dependencies: [
+                .core(testing: .Network)
             ]
         )
     )
+    
 ]
-
-
-
-
 let project: Project = .makeModule(
     name: "\(ModulePath.Core.name)_\(ModulePath.Core.Network.rawValue)",
     targets: targets

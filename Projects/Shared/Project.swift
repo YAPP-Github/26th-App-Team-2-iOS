@@ -13,7 +13,8 @@ let targets: [Target] = [
     .shared(
         factory: .init(
             dependencies: [
-                .shared(implements: .Util)
+                .shared(implements: .Util),
+                .shared(implements: .DesignSystem)
             ]
         ))
 ]

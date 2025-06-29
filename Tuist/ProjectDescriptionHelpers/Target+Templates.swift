@@ -52,12 +52,12 @@ public struct TargetFactory {
     public init(
         name: String = "",
         destinations: Destinations = .iOS,
-        product: Product = .staticFramework,
+        product: Product = .staticLibrary,
         productName: String? = nil,
         bundleId: String = "",
         deploymentTargets: DeploymentTargets? = nil,
         infoPlist: InfoPlist? = .default,
-        sources: SourceFilesList? = nil,
+        sources: SourceFilesList? = .sources,
         resources: ResourceFileElements? = nil,
         copyFiles: [CopyFilesAction]? = nil,
         headers: Headers? = nil,
@@ -163,6 +163,7 @@ public extension Target {
     static func feature(impletments module: ModulePath.Feature, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue
+        newFactory.sources = .sources
         
         return make(factory: newFactory)
     }
@@ -170,7 +171,6 @@ public extension Target {
     static func feature(tests module: ModulePath.Feature, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue + "Tests"
-        //        newFactory.sources = .paths([.test])
         newFactory.product = .unitTests
         
         return make(factory: newFactory)
@@ -299,6 +299,12 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.Shared.name + module.rawValue
         newFactory.sources = .sources
+
+        if module == .DesignSystem {
+            newFactory.sources = .sources
+            newFactory.resources = ["Resources/**"]
+            newFactory.product = .staticFramework
+        }
         
         return make(factory: newFactory)
     }

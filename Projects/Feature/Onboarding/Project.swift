@@ -18,10 +18,27 @@ let targets: [Target] = [
     ),
     .feature(
         impletments: .Onboarding,
-        factory: .init(dependencies: [
-            .domain,
-            .feature(interface: .Onboarding)
-        ])
+        factory: .init(
+            dependencies: [
+                .feature(interface: .Onboarding)
+            ]
+        )
+    ),
+    .feature(
+        testing: .Onboarding,
+        factory: .init(
+            dependencies: [
+                .feature(interface: .Onboarding)
+            ]
+        )
+    ),
+    .feature(
+        tests: .Onboarding,
+        factory: .init(
+            dependencies: [
+                .feature(testing: .Onboarding)
+            ]
+        )
     )
 ]
 
