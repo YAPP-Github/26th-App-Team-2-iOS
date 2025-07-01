@@ -25,23 +25,9 @@ extension NetworkProvider: @retroactive NetworkProviderable {
                 throw NetworkError.noResponse
             }
             
-            /// 여기 로거 만들고 대체할 필요 있음
-            print(urlRequest)
-            
-            if let requestBodyJsonString = String(data: urlRequest.httpBody ?? .SubSequence(), encoding: .utf8) {
-                /// 여기 로거 만들고 대체할 필요 있음
-                print(requestBodyJsonString)
-            }
-            
-            if let responseJsonString = String(data: data, encoding: .utf8) {
-                /// 여기 로거 만들고 대체할 필요 있음
-                print(responseJsonString)
-            }
-            
             if let emptyResponse = try JSONDecoder().decode(EmptyData.self, from: data) as? Item, data.isEmpty {
                 return emptyResponse
             }
-            print(response.statusCode)
             switch response.statusCode {
             case 200...299:
                 guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
@@ -63,7 +49,6 @@ extension NetworkProvider: @retroactive NetworkProviderable {
         }
     }
     
-    /// 여기도 프로토콜에 주입하는게 좋을까..?
     private func makeURLRequest<Request>(
         _ endpoint: Request,
         config: URLComponentConfig

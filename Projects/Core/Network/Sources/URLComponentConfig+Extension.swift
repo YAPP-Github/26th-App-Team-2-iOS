@@ -37,10 +37,6 @@ extension URLComponentConfig {
             queryItemList.append(queryItem)
         }
         
-        if queryItemList.isEmpty {
-            return nil
-        }
-        
         return queryItemList
     }
     
