@@ -29,7 +29,7 @@ final class Network_Test: XCTestCase {
         print(#function)
         
         let networkProvider: NetworkProviderable = NetworkProvider(
-            urlCompoentConfig: .init(
+            urlComponentConfig: .init(
                 baseURL: "https://jsonplaceholder.typicode.com", /// 여기서 직접 주입 가능해짐!!
                 prefix: nil
             )

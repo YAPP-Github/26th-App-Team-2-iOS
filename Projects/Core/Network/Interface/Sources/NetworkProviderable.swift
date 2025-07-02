@@ -15,10 +15,10 @@ public class NetworkProvider {
     
     public let urlComponentConfig: URLComponentConfig
     
-    public init(urlCompoentConfig: URLComponentConfig = URLComponentConfig(
+    public init(urlComponentConfig: URLComponentConfig = URLComponentConfig(
             baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
             prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
         )) {
-        self.urlComponentConfig = urlCompoentConfig
+        self.urlComponentConfig = urlComponentConfig
     }
 }
