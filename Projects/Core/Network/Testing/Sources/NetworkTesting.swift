@@ -8,6 +8,10 @@
 import CoreNetworkInterface
 import CoreNetwork
 
-public struct TempTestResponse: Codable {
+public struct TempTestResponse: Decodable {
     public let id: Int
+    
+    public init(id: Int) {
+        self.id = id
+    }
 }
