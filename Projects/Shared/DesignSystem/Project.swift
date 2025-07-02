@@ -13,7 +13,7 @@ let targets: [Target] = [
 ]
 
 let project: Project = .init(
-    name: "\(ModulePath.Shared.name)_\(ModulePath.Shared.DesignSystem.rawValue)",
+    name: ModulePath.Shared.name + ModulePath.Shared.DesignSystem.rawValue,
     targets: targets,
     resourceSynthesizers: [
         .assets(),

@@ -43,6 +43,6 @@ let targets: [Target] = [
 ]
 
 let project: Project = .makeModule(
-    name: "\(ModulePath.Feature.name)_\(ModulePath.Feature.Onboarding.rawValue)",
+    name: ModulePath.Feature.name + ModulePath.Feature.Onboarding.rawValue,
     targets: targets
 ) 

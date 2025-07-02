@@ -10,7 +10,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: "\(ModulePath.Domain.name)_\(ModulePath.Domain.User.rawValue)",
+    name: ModulePath.Domain.name + ModulePath.Domain.User.rawValue,
     targets: [
         .domain(
             interface: .User,

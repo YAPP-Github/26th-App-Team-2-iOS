@@ -25,6 +25,6 @@ let targets: [Target] = [
 ]
 
 let project: Project = .makeModule(
-    name: "\(ModulePath.Shared.name)_\(ModulePath.Shared.Util.rawValue)",
+    name: ModulePath.Shared.name + ModulePath.Shared.Util.rawValue,
     targets: targets
 )
