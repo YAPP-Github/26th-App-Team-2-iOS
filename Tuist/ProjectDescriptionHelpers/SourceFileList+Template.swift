@@ -24,4 +24,5 @@ public extension SourceFilesList {
     static let exampleSources: SourceFilesList = "Example/Sources/**"
     static let testing: SourceFilesList = "Testing/Sources/**"
     static let tests: SourceFilesList = "Tests/Sources/**"
+    static let notificationExtensionSources : SourceFilesList = "NotificationExtension/Sources/**"
 }

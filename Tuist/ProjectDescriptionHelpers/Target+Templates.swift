@@ -132,7 +132,7 @@ public extension Target {
 
 // MARK: -- Target + App
 public extension Target {
-    static func app(impletments module: ModulePath.App, factory: TargetFactory) -> Self {
+    static func app(implements module: ModulePath.App, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
         
@@ -145,6 +145,15 @@ public extension Target {
             newFactory.resources = .resources(["Resources/**"])
             newFactory.productName = "Brake"
             newFactory.sources = .sources
+            newFactory.entitlements = .variable("Brake.entitlements")
+        case .NotificationExtension:
+            newFactory.destinations = .iOS
+            newFactory.product = .appExtension
+            newFactory.name = "\(Project.Environment.appName)NotificationExtension"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).notification.extension"
+            newFactory.resources = .resources(["Resources/**"])
+            newFactory.sources = .notificationExtensionSources
+            newFactory.entitlements = .variable("Brake.entitlements")
         }
         
         return .make(factory: newFactory)
@@ -160,7 +169,7 @@ public extension Target {
         return make(factory: newFactory)
     }
     
-    static func feature(impletments module: ModulePath.Feature, factory: TargetFactory) -> Self {
+    static func feature(implements module: ModulePath.Feature, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue
         newFactory.sources = .sources
