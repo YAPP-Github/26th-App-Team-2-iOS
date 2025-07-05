@@ -5,15 +5,15 @@
 //  Created by Derrick kim on 7/5/25.
 //
 
-import UIKit
+import SwiftUI
 
-public extension UIFont {
+public extension Font {
     static func pretendard(size fontSize: CGFloat, type: PretendardFontType) -> UIFont {
         return UIFont(name: "\(type.name)", size: fontSize) ?? .init()
     }
 }
 
-public extension UIFont {
+public extension Font {
     enum PretendardFontType {
         case black
         case bold
