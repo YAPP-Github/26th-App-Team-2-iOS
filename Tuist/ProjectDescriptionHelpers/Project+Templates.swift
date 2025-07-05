@@ -9,18 +9,18 @@ import ProjectDescription
 import DependencyPlugin
 
 public extension Project {
-    static func makeModule(name: String, targets: [Target]) -> Self {
-        let name: String = name
-        let organizationName: String? = nil
-        let options: Project.Options = .options()
-        let packages: [Package] = []
-        let settings: Settings? = nil
-        let targets: [Target] = targets
-        let schemes: [Scheme] = []
-        let fileHeaderTemplate: FileHeaderTemplate? = nil
-        let additionalFiles: [FileElement] = []
-        let resourceSynthesizers: [ResourceSynthesizer] = []
-        
+    static func makeModule(
+        name: String,
+        organizationName: String? = nil,
+        options: Project.Options = .options(),
+        packages: [Package] = [],
+        settings: Settings? = nil,
+        targets: [Target],
+        schemes: [Scheme] = [],
+        fileHeaderTemplate: FileHeaderTemplate? = nil,
+        additionalFiles: [FileElement] = [],
+        resourceSynthesizers: [ResourceSynthesizer] = []
+    ) -> Self {
         return .init(
             name: name,
             organizationName: organizationName,

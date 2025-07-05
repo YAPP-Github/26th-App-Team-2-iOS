@@ -46,5 +46,13 @@ let targets: [Target] = [
     )
 ]
 
-let project: Project = .makeModule(name: "Brake", targets: targets)
-
+let project: Project = .makeModule(
+    name: "Brake",
+    settings: .settings(
+        base: [
+            "DEVELOPMENT_TEAM": "DX6WKZY687",
+            "CODE_SIGN_STYLE": "Automatic"
+        ]
+    ),
+    targets: targets
+)

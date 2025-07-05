@@ -15,6 +15,6 @@ public extension Project {
         public static let deploymentTarget = DeploymentTargets.iOS("17.0")
         
         /// 앱 번들, 추후 변경사항
-        public static let bundlePrefix = "com.example.app2"
+        public static let bundlePrefix = "yapp.breake"
     }
 }
