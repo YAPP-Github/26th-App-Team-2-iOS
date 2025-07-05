@@ -17,7 +17,7 @@ let targets: [Target] = [
         ])
     ),
     .feature(
-        impletments: .Onboarding,
+        implements: .Onboarding,
         factory: .init(
             dependencies: [
                 .feature(interface: .Onboarding)

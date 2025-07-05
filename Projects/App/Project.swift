@@ -12,7 +12,7 @@ import ProjectDescriptionHelpers
 
 let targets: [Target] = [
     .app(
-        impletments: .IOS,
+        implements: .IOS,
         factory: .init(
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
@@ -26,7 +26,19 @@ let targets: [Target] = [
                     "UILaunchScreen": .dictionary([:])
                 ])
             ]),
-            entitlements: .variable("Brake.entitlements"),
+            dependencies: [
+                .feature
+            ]
+        )
+    ),
+    .app(
+        implements: .NotificationExtension,
+        factory: .init(
+            infoPlist: .extendingDefault(with: [
+                "CFBundleShortVersionString": "1",
+                "CFBundleVersion": "1",
+                "CFBundleName": "Brake"
+            ]),
             dependencies: [
                 .feature
             ]
@@ -34,5 +46,13 @@ let targets: [Target] = [
     )
 ]
 
-let project: Project = .makeModule(name: "Brake", targets: targets)
-
+let project: Project = .makeModule(
+    name: "Brake",
+    settings: .settings(
+        base: [
+            "DEVELOPMENT_TEAM": "DX6WKZY687",
+            "CODE_SIGN_STYLE": "Automatic"
+        ]
+    ),
+    targets: targets
+)

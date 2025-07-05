@@ -22,6 +22,7 @@ public extension ModulePath {
     enum App: String, CaseIterable {
         public static let name: String = "App"
         case IOS
+        case NotificationExtension
     }
 }
 
