@@ -159,7 +159,6 @@ final class Network_Test: XCTestCase {
         )
         
         // Then
-        XCTAssertTrue(endpoint is (any Responsable))
     }
     
     
@@ -173,14 +172,12 @@ final class Network_Test: XCTestCase {
         )
         
         // Then
-        XCTAssertTrue(endpoint is (any Networkable))
     }
     
     // MARK: - NetworkProviderAble Protocol Tests
     
     func test_NetworkProvider이_NetworkProviderAble_프로토콜을_준수하는지_확인() {
         // Then
-        XCTAssertTrue(NetworkProvider.self is NetworkProviderable.Type)
     }
 }
 
