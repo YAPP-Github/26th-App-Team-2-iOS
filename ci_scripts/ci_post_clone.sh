@@ -1,7 +1,22 @@
 #!/bin/sh
 set -e
 cd ..
-curl https://mise.jdx.dev/install.sh | sh
+
+curl https://mise.run | sh
+export PATH="$HOME/.local/bin:$PATH"
+
+# Output the current PATH for debugging
+echo "❗️Current PATH: $PATH"
+
+echo "❗️mise version"
+mise --version
+echo "❗️mise install"
 mise install # Installs the version from .mise.toml
-# Runs the version of Tuist indicated in the .mise.toml file {#runs-the-version-of-tuist-indicated-in-the-misetoml-file}
-mise exec -- tuist generate
+eval "$(mise activate bash --shims)"
+
+echo "❗️mise doctor"
+mise doctor # verify the output of mise is correct on CI
+echo "❗️tuist install"
+tuist install
+echo "❗️tuist generate"
+tuist generate # Generate the Xcode Project using Tuist
