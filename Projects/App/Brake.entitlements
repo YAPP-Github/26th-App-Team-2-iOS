@@ -6,8 +6,6 @@
 	<true/>
 	<key>aps-environment</key>
 	<string>development</string>
-	<key>com.apple.developer.ubiquity-container-identifiers</key>
-	<string></string>
 	<key>com.apple.developer.applesignin</key>
 	<array>
 		<string>Default</string>
