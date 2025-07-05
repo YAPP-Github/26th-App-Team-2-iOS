@@ -145,7 +145,7 @@ public extension Target {
             newFactory.resources = .resources(["Resources/**"])
             newFactory.productName = "Brake"
             newFactory.sources = .sources
-            newFactory.entitlements = .variable("Brake.entitlements")
+            newFactory.entitlements = "Brake.entitlements"
         case .NotificationExtension:
             newFactory.destinations = .iOS
             newFactory.product = .appExtension
@@ -153,7 +153,7 @@ public extension Target {
             newFactory.bundleId = "\(Project.Environment.bundlePrefix).notification.extension"
             newFactory.resources = .resources(["Resources/**"])
             newFactory.sources = .notificationExtensionSources
-            newFactory.entitlements = .variable("Brake.entitlements")
+            newFactory.entitlements = "Brake.entitlements"
         }
         
         return .make(factory: newFactory)
