@@ -64,11 +64,11 @@ reviews:
     checkov:
       enabled: true
     ast-grep:
+      enabled: true
       packages: []
       rule_dirs: []
       util_dirs: []
       essential_rules: true
-
 chat:
   auto_reply: true
 
