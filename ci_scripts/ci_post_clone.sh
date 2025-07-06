@@ -17,12 +17,10 @@ eval "$(mise activate bash --shims)"
 
 echo "❗️ Setting GoogleService-Info.plist API_KEY : $API_KEY"
 
-echo "Project Directory: $PROJECT_DIR"
-
-plutil -replace API_KEY -string $API_KEY $PROJECT_DIR/App/Resources/GoogleService-Info.plist
+plutil -replace API_KEY -string $API_KEY $PROJECT_DIR/Projects/App/Resources/GoogleService-Info.plist
 
 # GoogleService-Info.plist 파일 내용 출력
-plutil -p $PROJECT_DIR/App/Resources/GoogleService-Info.plist
+plutil -p $PROJECT_DIR/Projects/App/Resources/GoogleService-Info.plist
 
 echo "❗️mise doctor"
 mise doctor # verify the output of mise is correct on CI
