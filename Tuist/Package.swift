@@ -1,8 +1,21 @@
-//
-//  Package.swift
-//  Config
-//
-//  Created by Greem on 7/6/25.
-//
+// swift-tools-version: 5.9
+@preconcurrency import PackageDescription
 
-import Foundation
+#if TUIST
+@preconcurrency  import ProjectDescription
+
+   let packageSettings = PackageSettings(
+       productTypes: [
+        "FirebaseAnalytics": .framework,
+        "FirebaseCrashlytics": .staticFramework
+       ]
+   )
+#endif
+
+let package = Package(
+   name: "BrakePackage",
+   dependencies: [
+   .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "11.15.0")
+   ]
+)
+

@@ -26,9 +26,39 @@ let targets: [Target] = [
                     "UILaunchScreen": .dictionary([:])
                 ])
             ]),
-            dependencies: [
-                .feature
-            ]
+         
+            scripts: [
+                .post(
+                    script: """
+                ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
+                "${ROOT_DIR}/Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+            echo "❗️ROOT_DIR Path: ${ROOT_DIR}"
+""",
+                    name: "Firebase Crashlytics",
+                    inputPaths: [
+                "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+                "$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+                "$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)"
+                    ],
+                    basedOnDependencyAnalysis: false
+                )
+            ], dependencies: [
+                .feature,
+                .external(name: "FirebaseAnalytics"),
+                .external(name: "FirebaseCrashlytics")
+            ],
+            /// Firebase Objc 오류를 위한 settings 설정
+            /// 참고 URL: https://sy-catbutler.tistory.com/60
+            settings: .settings(base: [
+                "OTHER_LDFLAGS":["-all_load -Objc"],
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+                "GENERATE_DEBUG_SYMBOLS": "YES",
+                "STRIP_DEBUG_SYMBOLS_DURING_COPY": "NO",
+                "STRIP_LINKED_PRODUCT": "NO",
+                "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
+                "ENABLE_DEBUG_DYLIB": "NO" /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib에러 해결
+                ])
+            
         )
     ),
     .app(
