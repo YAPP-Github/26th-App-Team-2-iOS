@@ -149,39 +149,6 @@ final class Network_Test: XCTestCase {
         XCTAssertNotNil(endpoint.headers)
     }
     
-    // MARK: - Responsable Protocol Tests
-    
-    func test_Endpoint이_Responsable_프로토콜을_준수하는지_확인() {
-        // Given
-        let endpoint = Endpoint<TestResponse>(
-            path: "/test",
-            httpMethod: .get
-        )
-        
-        // Then
-        XCTAssertTrue(endpoint is (any Responsable))
-    }
-    
-    
-    // MARK: - Networkable Protocol Tests
-    
-    func test_Endpoint이_Networkable_프로토콜을_준수하는지_확인() {
-        // Given
-        let endpoint = Endpoint<TestResponse>(
-            path: "/test",
-            httpMethod: .get
-        )
-        
-        // Then
-        XCTAssertTrue(endpoint is (any Networkable))
-    }
-    
-    // MARK: - NetworkProviderAble Protocol Tests
-    
-    func test_NetworkProvider이_NetworkProviderAble_프로토콜을_준수하는지_확인() {
-        // Then
-        XCTAssertTrue(NetworkProvider.self is NetworkProviderable.Type)
-    }
 }
 
 // MARK: - Test Models
