@@ -1,1 +1,6 @@
-
+//
+//  Project.swift
+//  Brake
+//
+//  Created by {{ env.USER }} on {{ now|date:"MM/dd/yy" }}.
+//

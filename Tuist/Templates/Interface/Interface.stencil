@@ -1,3 +1,10 @@
-public protocol {{ name }}Interface {
+//
+//  {{ name }}Protocol.swift
+//  Brake
+//
+//  Created by {{ env.USER }} on {{ now|date:"MM/dd/yy" }}.
+//
+
+public protocol {{ name }}Protocol {
 
 }
