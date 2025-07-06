@@ -12,20 +12,9 @@ import ProjectDescriptionHelpers
 
 let targets: [Target] = [
     .app(
-        implements: .IOS,
+        implements: .iOS,
         factory: .init(
-            infoPlist: .extendingDefault(with: [
-                "CFBundleShortVersionString": "1",
-                "CFBundleVersion": "1",
-                "CFBundleName": "Brake",
-                "UIApplicationSceneManifest": [
-                    "UIApplicationSupportsMultipleScenes": false,
-                    "UISceneConfigurations": []
-                ],
-                "UILaunchScreen": .dictionary([
-                    "UILaunchScreen": .dictionary([:])
-                ])
-            ]),
+            infoPlist: Project.Environment.appInfoPlist(),
             dependencies: [
                 .feature
             ]
@@ -47,12 +36,13 @@ let targets: [Target] = [
 ]
 
 let project: Project = .makeModule(
-    name: "Brake",
-    settings: .settings(
-        base: [
-            "DEVELOPMENT_TEAM": "DX6WKZY687",
-            "CODE_SIGN_STYLE": "Automatic"
-        ]
-    ),
-    targets: targets
+    name: Project.Environment.appName,
+    settings: Project.Environment.projectSettings,
+    targets: targets,
+    additionalFiles: [
+        "./xcconfigs/Shared.xcconfig",
+        "./xcconfigs/KakaoSecretKeys.xcconfig",
+        "./xcconfigs/TokenKeys.xcconfig",
+        "./xcconfigs/Secrets.xcconfig"
+    ]
 )
