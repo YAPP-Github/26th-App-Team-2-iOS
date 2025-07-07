@@ -9,6 +9,6 @@ import ProjectDescription
 
 let config = Config(
     plugins: [
-        .local(path: .relativeToRoot("DependencyPlugin"))
+        .local(path: .relativeToRoot("DependencyPlugin")),
     ]
 )
