@@ -2,7 +2,7 @@
 //  {{ name }}Protocol.swift
 //  Brake
 //
-//  Created by {{ env.USER }} on {{ now|date:"MM/dd/yy" }}.
+//  Created by {{ author }} on {{ date }}.
 //
 
 public protocol {{ name }}Protocol {
