@@ -180,6 +180,15 @@ public extension Target {
         return make(factory: newFactory)
     }
 
+    static func feature(interface module: ModulePath.Feature, factory: TargetFactory) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.Feature.name + module.rawValue + "Interface"
+        newFactory.sources = .interface
+        newFactory.product = Environment.forPreview.getBoolean(default: false) ? .framework : .staticLibrary
+
+        return make(factory: newFactory)
+    }
+
     static func feature(tests module: ModulePath.Feature, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue + "Tests"
@@ -191,14 +200,6 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.Feature.name + module.rawValue + "Testing"
         newFactory.sources = .testing
-
-        return make(factory: newFactory)
-    }
-
-    static func feature(interface module: ModulePath.Feature, factory: TargetFactory) -> Self {
-        var newFactory = factory
-        newFactory.name = ModulePath.Feature.name + module.rawValue + "Interface"
-        newFactory.sources = .interface
 
         return make(factory: newFactory)
     }
@@ -230,6 +231,14 @@ public extension Target {
         return make(factory: newFactory)
     }
 
+    static func domain(interface module: ModulePath.Domain, factory: TargetFactory) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.Domain.name + module.rawValue + "Interface"
+        newFactory.sources = .interface
+
+        return make(factory: newFactory)
+    }
+
     static func domain(tests module: ModulePath.Domain, factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Domain.name + module.rawValue + "Tests"
@@ -243,14 +252,6 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.Domain.name + module.rawValue + "Testing"
         newFactory.sources = .testing
-
-        return make(factory: newFactory)
-    }
-
-    static func domain(interface module: ModulePath.Domain, factory: TargetFactory) -> Self {
-        var newFactory = factory
-        newFactory.name = ModulePath.Domain.name + module.rawValue + "Interface"
-        newFactory.sources = .interface
 
         return make(factory: newFactory)
     }
