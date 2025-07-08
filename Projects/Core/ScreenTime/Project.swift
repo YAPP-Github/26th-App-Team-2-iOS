@@ -7,7 +7,11 @@ let project = Project.makeModule(
     targets: [
         .core(
             interface: .ScreenTime,
-            factory: .init()
+            factory: .init(
+                dependencies: [
+                    .shared
+                ]
+            )
         ),
         .core(
             implements: .ScreenTime,
