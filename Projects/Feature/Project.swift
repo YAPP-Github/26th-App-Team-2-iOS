@@ -20,4 +20,4 @@ let targets: [Target] = [
     )
 ]
 
-let projects: Project = .makeModule(name: "Feature", targets: targets)
+let project: Project = .makeModule(name: "Feature", targets: targets)
