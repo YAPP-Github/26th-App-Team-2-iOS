@@ -51,11 +51,11 @@ public struct TargetFactory {
 
     public init(
         name: String = "",
-        destinations: Destinations = .iOS,
+        destinations: Destinations = [.iPhone],
         product: Product = .staticLibrary,
         productName: String? = nil,
         bundleId: String = "",
-        deploymentTargets: DeploymentTargets? = nil,
+        deploymentTargets: DeploymentTargets? = Project.Environment.deploymentTarget,
         infoPlist: InfoPlist? = .default,
         sources: SourceFilesList? = .sources,
         resources: ResourceFileElements? = nil,
@@ -64,7 +64,7 @@ public struct TargetFactory {
         entitlements: Entitlements? = nil,
         scripts: [TargetScript] = [],
         dependencies: [TargetDependency] = [],
-        settings: Settings? = nil,
+        settings: Settings? = Project.Environment.projectSettings,
         coreDataModels: [CoreDataModel] = [],
         environmentVariables: [String : EnvironmentVariable] = [:],
         launchArguments: [LaunchArgument] = [],
@@ -132,31 +132,31 @@ public extension Target {
 
 // MARK: -- Target + App
 public extension Target {
-    static func app(implements module: ModulePath.App, factory: TargetFactory) -> Self {
+    static func app(
+        implements module: ModulePath.App,
+        deploymentTarget: ProjectDeploymentTarget,
+        factory: TargetFactory
+    ) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
 
         switch module {
         case .iOS:
-            newFactory.destinations = .iOS
             newFactory.product = .app
-            newFactory.name = Project.Environment.appName
-            newFactory.bundleId = Project.Environment.bundlePrefix
-            newFactory.resources = .resources(["Resources/**"])
-            newFactory.productName = "Brake"
+            newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+            newFactory.resources = ["Resources/**"]
+            newFactory.productName = Project.Environment.appName
             newFactory.sources = .sources
             newFactory.productName = Project.Environment.appName
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
             newFactory.dependencies = factory.dependencies
         case .NotificationExtension:
-            newFactory.destinations = .iOS
             newFactory.product = .appExtension
-            newFactory.name = "\(Project.Environment.appName)NotificationExtension"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).notification"
-            newFactory.resources = .resources(["Resources/**"])
+            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).notification"
+            newFactory.resources = ["Resources/**"]
             newFactory.sources = .notificationExtensionSources
-            newFactory.entitlements = "\(Project.Environment.appName).entitlements"
-            newFactory.dependencies = factory.dependencies
         }
 
         return .make(factory: newFactory)

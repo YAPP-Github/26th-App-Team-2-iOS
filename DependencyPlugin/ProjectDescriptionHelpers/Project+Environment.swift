@@ -19,16 +19,46 @@ public extension Project {
         public static let projectSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
-                "CODE_SIGN_STYLE": "Automatic"
+                "CODE_SIGN_STYLE": "Automatic",
+                "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+            ],
+            configurations: [
+                .build(.dev),
+                .build(.prod)
+            ]
+        )
+        public static let devTargetSettings: Settings = .settings(
+            base: [
+                "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
+                "CODE_SIGN_STYLE": "Automatic",
+                "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
             ],
             configurations: [
                 .build(.dev)
             ]
         )
+        public static let prodTargetSettings: Settings = .settings(
+            base: [
+                "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
+                "CODE_SIGN_STYLE": "Automatic",
+                "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+            ],
+            configurations: [
+                .build(.prod)
+            ]
+        )
+        public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
+            let kakaoNativeAppKey: String
+            let baseServerURL: String
 
-        public static func appInfoPlist() -> InfoPlist {
-            let kakaoNativeAppKey: String = "${KAKAO_NATIVE_APP_KEY_DEV}"
-            let baseServerURL: String = "${BASE _SERVER_URL_DEV}"
+            switch deploymentTarget {
+            case .dev:
+                kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEV}"
+                baseServerURL = "${BASE_SERVER_URL_DEV}"
+            case .prod:
+                kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_PROD}"
+                baseServerURL = "${BASE_SERVER_URL_PROD}"
+            }
 
             return .extendingDefault(with: [
                 "CFBundleShortVersionString": "\(currentAppVersion)",
@@ -53,7 +83,10 @@ public extension Project {
                 ],
                 "KAKAO_NATIVE_APP_KEY": "\(kakaoNativeAppKey)",
                 "BASE_SERVER_URL": "\(baseServerURL)",
-                "LSApplicationQueriesSchemes": [ ],
+                "LSApplicationQueriesSchemes": [
+                    "kakaokompassauth",
+                    "kakaolink"
+                ],
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",

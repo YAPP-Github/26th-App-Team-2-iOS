@@ -12,9 +12,9 @@ public extension Project {
     static func makeModule(
         name: String,
         organizationName: String? = nil,
-        options: Project.Options = .options(),
+        options: Project.Options = .options(automaticSchemesOptions: .disabled),
         packages: [Package] = [],
-        settings: Settings? = nil,
+        settings: Settings? = Project.Environment.projectSettings,
         targets: [Target],
         schemes: [Scheme] = [],
         fileHeaderTemplate: FileHeaderTemplate? = nil,
