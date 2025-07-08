@@ -33,7 +33,6 @@ let project = Project.makeModule(
                     .core(testing: .ScreenTime)
                 ]
             )
-        ),
-
+        )
     ]
 )
