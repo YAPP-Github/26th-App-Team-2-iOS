@@ -25,14 +25,10 @@ public struct TokenStorage: TokenStorageInterface {
     }
 
     public func read<T: TokenType>(key: String) throws -> T? {
-        do {
-            guard let data = try keychain.read(key: key) else {
-                return nil
-            }
-            return try JSONDecoder().decode(T.self, from: data)
-        } catch {
-            throw error
+        guard let data = try keychain.read(key: key) else {
+            return nil
         }
+        return try JSONDecoder().decode(T.self, from: data)
     }
 
     public func save<T: TokenType>(
