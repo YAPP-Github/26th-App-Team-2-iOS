@@ -49,7 +49,11 @@ let appTargets: [Target] = [
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)"
+                "CFBundleName": "\(Project.Environment.appName)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
+                ]
             ]),
             settings: Project.Environment.devTargetSettings
         )
@@ -61,7 +65,11 @@ let appTargets: [Target] = [
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
-                "CFBundleName": "Brake"
+                "CFBundleName": "\(Project.Environment.appName)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
+                ]
             ]),
             settings: Project.Environment.prodTargetSettings
         )
