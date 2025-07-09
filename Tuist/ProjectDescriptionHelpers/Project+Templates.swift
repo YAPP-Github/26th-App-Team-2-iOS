@@ -12,7 +12,7 @@ public extension Project {
     static func makeModule(
         name: String,
         organizationName: String? = nil,
-        options: Project.Options = .options(automaticSchemesOptions: .disabled),
+        options: Project.Options = .options(),
         packages: [Package] = [],
         settings: Settings? = Project.Environment.projectSettings,
         targets: [Target],
