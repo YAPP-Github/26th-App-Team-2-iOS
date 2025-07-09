@@ -7,5 +7,5 @@
 
 @_exported import CoreNetwork
 @_exported import CoreNetworkInterface
-@_exported import CoreScreenTime
-@_exported import CoreScreenTimeInterface
+@_exported import CoreLocalStorage
+@_exported import CoreLocalStorageInterface
