@@ -10,7 +10,18 @@ import CoreLocalStorage
 import Testing
 
 struct LocalStorageTests {
-    let tokenStorage = TokenStorage()
+    @Test
+    func accessTokenCRUD() async throws {
+        let tokenStorage = TokenStorage()
+        // 테스트 로직...
+    }
+
+    @Test
+    func refreshTokenCRUD() async throws {
+        let tokenStorage = TokenStorage()
+        // 테스트 로직...
+    }
+}
 
     @Test
     func accessTokenCRUD() async throws {
