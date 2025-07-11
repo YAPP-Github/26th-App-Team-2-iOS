@@ -1,14 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/xcode,swift,objective-c,macos,swiftpackagemanager,swiftpm,cocoapods,git,fastlane,homebrew
 # Edit at https://www.toptal.com/developers/gitignore?templates=xcode,swift,objective-c,macos,swiftpackagemanager,swiftpm,cocoapods,git,fastlane,homebrew
 
-### fastlane ###
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots/**/*.png
-fastlane/screenshots/screenshots.html
-fastlane/test_output
-fastlane/FastlaneRunner
-
 ### Git ###
 *.orig
 *.BACKUP.*
@@ -73,19 +65,6 @@ timeline.xctimeline
 playground.xcworkspace
 
 .build/
-
-### Firebase ###
-.idea
-**/node_modules/*
-**/.firebaserc
-Google
-GoogleService-Info.plist
-
-### Firebase Patch ###
-.runtimeconfig.json
-.firebase/
-GoogleService-Info.plist
-# End of https://www.toptal.com/developers/gitignore/api/firebase
 
 # Accio dependency management
 Dependencies/
