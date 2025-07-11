@@ -1,5 +1,5 @@
 //
-//  TokenStorage.swift
+//  KeyChainTokenStorage.swift
 //  CoreLocalStorageInterface
 //
 //  Created by Derrick kim on 7/9/25.
@@ -9,7 +9,7 @@ import Foundation
 import CoreLocalStorageInterface
 import SharedUtil
 
-public struct TokenStorage: TokenStorageInterface {
+public struct KeyChainTokenStorage: KeyChainTokenStorageProtocol {
     public let keychain: Keychain
 
     public init(keychain: Keychain) {
