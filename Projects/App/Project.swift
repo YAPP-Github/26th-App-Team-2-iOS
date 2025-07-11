@@ -25,7 +25,11 @@ import ProjectDescriptionHelpers
     ]),
     scripts: [
         .post(
-            path: "scripts/run_crashlytics.sh",
+            script: """
+                ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
+                "${ROOT_DIR}/Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+            echo "❗️ROOT_DIR Path: ${ROOT_DIR}"
+""",
             name: "Firebase Crashlytics",
             inputPaths: [
         "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
@@ -35,7 +39,11 @@ import ProjectDescriptionHelpers
             basedOnDependencyAnalysis: false
         ),
             .pre(
-                path: "scripts/set_firebase_api_key.sh",
+                script: """
+echo "❗️ Find GoogleService-Info.plist API_KEY in Secrets.xcconfig"
+FIREBASE_API_KEY=$(grep "FIREBASE_API_KEY" ./Resources/Secrets.xcconfig | cut -d "=" -f 2 | tr -d ' ')
+plutil -replace API_KEY -string $FIREBASE_API_KEY ./Resources/GoogleService-Info.plist 
+""",
                 name: "Google-Service Key Setting",
                 basedOnDependencyAnalysis: false
             )
