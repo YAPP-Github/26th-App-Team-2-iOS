@@ -16,7 +16,11 @@ eval "$(mise activate bash --shims)"
 
 echo "❗️ Make Secrets.xcconfig"
 touch ./Projects/App/Resources/Secrets.xcconfig
+
 chmod 644 ./Projects/App/Resources/Secrets.xcconfig
+
+echo "❗️ Make Scripts executable"
+chmod +x ./Projects/App/scripts/*
 
 echo "❗️ Secrets.xcconfig 파일 내용:"
 cat ./Projects/App/Resources/Secrets.xcconfig
@@ -27,4 +31,3 @@ echo "❗️tuist install"
 tuist install
 echo "❗️tuist generate"
 tuist generate # Generate the Xcode Project using Tuist
-
