@@ -18,10 +18,8 @@ echo "❗️ Make Secrets.xcconfig"
 touch ./Projects/App/Resources/Secrets.xcconfig
 
 chmod 644 ./Projects/App/Resources/Secrets.xcconfig
+echo "FIREBASE_API_KEY = $(FIREBASE_API_KEY)" >> ./Projects/App/Resources/Secrets.xcconfig
 
-echo "❗️ Make Scripts executable"
-chmod +x ./Projects/App/scripts/run_crashlytics.sh
-chmod +x ./Projects/App/scripts/set_firebase_api_key.sh
 
 echo "❗️ Secrets.xcconfig 파일 내용:"
 cat ./Projects/App/Resources/Secrets.xcconfig
