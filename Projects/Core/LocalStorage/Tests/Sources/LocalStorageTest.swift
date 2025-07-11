@@ -12,19 +12,7 @@ import Testing
 struct LocalStorageTests {
     @Test
     func accessTokenCRUD() async throws {
-        let tokenStorage = TokenStorage()
-        // 테스트 로직...
-    }
-
-    @Test
-    func refreshTokenCRUD() async throws {
-        let tokenStorage = TokenStorage()
-        // 테스트 로직...
-    }
-}
-
-    @Test
-    func accessTokenCRUD() async throws {
+        let tokenStorage = KeyChainTokenStorage()
         // 1. 읽기(비어있음)
         let emptyAccessToken: AccessToken? = try tokenStorage.read(key: "testingAccessTokenKey")
         #expect(emptyAccessToken == nil)
@@ -51,6 +39,7 @@ struct LocalStorageTests {
 
     @Test
     func refreshTokenCRUD() async throws {
+        let tokenStorage = KeyChainTokenStorage()
         let emptyRefreshToken: RefreshToken? = try tokenStorage.read(key: "testingRefreshTokenKey")
         #expect(emptyRefreshToken == nil)
 
