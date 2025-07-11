@@ -158,6 +158,31 @@ public extension Target {
         
         return .make(factory: newFactory)
     }
+    
+    static func app(tests module: ModulePath.App, factory: TargetFactory) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.App.name + module.rawValue + "Tests"
+        newFactory.product = .unitTests
+        
+        switch module {
+        case .IOS:
+            newFactory.destinations = .iOS
+            newFactory.name = "\(Project.Environment.appName)Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).tests"
+            newFactory.sources = .tests
+            newFactory.resources = .resources(["Resources/**"])  // 테스트 타겟에 리소스 추가
+        case .NotificationExtension:
+            newFactory.destinations = .iOS
+            newFactory.name = "\(Project.Environment.appName)NotificationExtensionTests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).notification.extension.tests"
+            newFactory.sources = .tests
+            newFactory.resources = .resources(["Resources/**"])  // 테스트 타겟에 리소스 추가
+        }
+        
+        return .make(factory: newFactory)
+    }
+    
+    
 }
 
 // MARK: -- Target + Feature

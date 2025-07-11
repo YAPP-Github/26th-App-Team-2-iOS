@@ -10,64 +10,68 @@ import ProjectDescription
 import DependencyPlugin
 import ProjectDescriptionHelpers
 
-let targets: [Target] = [
+@MainActor let appTargetFactory: TargetFactory = .init(
+    infoPlist: .extendingDefault(with: [
+        "CFBundleShortVersionString": "1",
+        "CFBundleVersion": "1",
+        "CFBundleName": "Brake",
+        "UIApplicationSceneManifest": [
+            "UIApplicationSupportsMultipleScenes": false,
+            "UISceneConfigurations": []
+        ],
+        "UILaunchScreen": .dictionary([
+            "UILaunchScreen": .dictionary([:])
+        ])
+    ]),
+    scripts: [
+        .post(
+            path: "scripts/run_crashlytics.sh",
+            name: "Firebase Crashlytics",
+            inputPaths: [
+        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+        "$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+        "$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)"
+            ],
+            basedOnDependencyAnalysis: false
+        ),
+            .pre(
+                path: "scripts/set_firebase_api_key.sh",
+                name: "Google-Service Key Setting",
+                basedOnDependencyAnalysis: false
+            )
+    ],
+    dependencies: [
+        .feature,
+        .external(name: "FirebaseAnalytics"),
+        .external(name: "FirebaseCrashlytics")
+    ],
+    /// Firebase Objc 오류를 위한 settings 설정
+    /// 참고 URL: https://sy-catbutler.tistory.com/60
+    settings:
+            .settings(base: [
+                "OTHER_LDFLAGS":["-all_load -Objc"],
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+                "GENERATE_DEBUG_SYMBOLS": "YES",
+                "STRIP_DEBUG_SYMBOLS_DURING_COPY": "NO",
+                "STRIP_LINKED_PRODUCT": "NO",
+                "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
+                "ENABLE_DEBUG_DYLIB": "NO", /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib 에러 해결
+                "SWIFT_VERSION": "5.9"
+            ]
+            , defaultSettings: .none)
+)
+
+@MainActor let targets: [Target] = [
+    
     .app(
         implements: .IOS,
-        factory: .init(
-            infoPlist: .extendingDefault(with: [
-                "CFBundleShortVersionString": "1",
-                "CFBundleVersion": "1",
-                "CFBundleName": "Brake",
-                "UIApplicationSceneManifest": [
-                    "UIApplicationSupportsMultipleScenes": false,
-                    "UISceneConfigurations": []
-                ],
-                "UILaunchScreen": .dictionary([
-                    "UILaunchScreen": .dictionary([:])
-                ])
-            ]),
-         
-            scripts: [
-                .post(
-                    script: """
-                ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
-                "${ROOT_DIR}/Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
-            echo "❗️ROOT_DIR Path: ${ROOT_DIR}"
-""",
-                    name: "Firebase Crashlytics",
-                    inputPaths: [
-                "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
-                "$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-                "$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)"
-                    ],
-                    basedOnDependencyAnalysis: false
-                ),
-                .pre(script: """
-                    echo "❗️ Find GoogleService-Info.plist API_KEY in Secrets.xcconfig"
-                    FIREBASE_API_KEY=$(grep "FIREBASE_API_KEY" ./Resources/Secrets.xcconfig | cut -d "=" -f 2 | tr -d ' ')
-                    plutil -replace API_KEY -string $FIREBASE_API_KEY ./Resources/GoogleService-Info.plist
-    """, name: "Google-Service Key Setting", basedOnDependencyAnalysis: false)
-            ], dependencies: [
-                .feature,
-                .external(name: "FirebaseAnalytics"),
-                .external(name: "FirebaseCrashlytics")
-            ],
-            /// Firebase Objc 오류를 위한 settings 설정
-            /// 참고 URL: https://sy-catbutler.tistory.com/60
-            settings:
-                    .settings(base: [
-                        "OTHER_LDFLAGS":["-all_load -Objc"],
-                        "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
-                        "GENERATE_DEBUG_SYMBOLS": "YES",
-                        "STRIP_DEBUG_SYMBOLS_DURING_COPY": "NO",
-                        "STRIP_LINKED_PRODUCT": "NO",
-                        "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
-                        "ENABLE_DEBUG_DYLIB": "NO", /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib에러 해결
-                        "SWIFT_VERSION": "5.9"
-                    ]
-                    , defaultSettings: .none)
-        )
+        factory: appTargetFactory
     ),
+    .app(
+        tests: .IOS,
+        factory: appTargetFactory
+    ),
+    
     .app(
         implements: .NotificationExtension,
         factory: .init(
@@ -83,7 +87,7 @@ let targets: [Target] = [
     )
 ]
 
-let project: Project = .makeModule(
+@MainActor let project: Project = .makeModule(
     name: "Brake",
     settings: .settings(
         base: [

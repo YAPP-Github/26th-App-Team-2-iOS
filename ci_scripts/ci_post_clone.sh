@@ -14,15 +14,9 @@ echo "❗️mise install"
 mise install # Installs the version from .mise.toml
 eval "$(mise activate bash --shims)"
 
-# echo "❗️ Replace API_KEY in GoogleService-Info.plist"
-# plutil -replace API_KEY -string $FIREBASE_API_KEY ./Projects/App/Resources/GoogleService-Info.plist
-
 echo "❗️ Make Secrets.xcconfig"
 touch ./Projects/App/Resources/Secrets.xcconfig
 chmod 644 ./Projects/App/Resources/Secrets.xcconfig
-
-echo "❗️ Add FIREBASE_API_KEY to Secrets.xcconfig"
-echo "FIREBASE_API_KEY = $FIREBASE_API_KEY" >> ./Projects/App/Resources/Secrets.xcconfig
 
 echo "❗️ Secrets.xcconfig 파일 내용:"
 cat ./Projects/App/Resources/Secrets.xcconfig
