@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
+echo "❗️ Shell Script - Start Directory: $(pwd)"
+
 cd ..
+
 
 curl https://mise.run | sh
 export PATH="$HOME/.local/bin:$PATH"
@@ -18,8 +21,7 @@ echo "❗️ Make Secrets.xcconfig"
 touch ./Projects/App/Resources/Secrets.xcconfig
 
 chmod 644 ./Projects/App/Resources/Secrets.xcconfig
-echo "FIREBASE_API_KEY = $(FIREBASE_API_KEY)" >> ./Projects/App/Resources/Secrets.xcconfig
-
+echo "FIREBASE_API_KEY = $FIREBASE_API_KEY" >> ./Projects/App/Resources/Secrets.xcconfig
 
 echo "❗️ Secrets.xcconfig 파일 내용:"
 cat ./Projects/App/Resources/Secrets.xcconfig
