@@ -142,10 +142,4 @@ public extension TargetDependency {
     static func shared(implements module: ModulePath.Shared) -> Self {
         return .project(target: ModulePath.Shared.name + module.rawValue, path: .shared(implementation: module))
     }
-    
-    /// 특정 Shared 모듈의 인터페이스에 대한 의존성을 반환
-    /// - Parameter module: 인터페이스를 가져올 Shared 모듈
-    static func shared(interface module: ModulePath.Shared) -> Self {
-        return .project(target: ModulePath.Shared.name + module.rawValue + "Interface", path: .shared(implementation: module))
-    }
 }

@@ -14,7 +14,7 @@ public extension Project {
         organizationName: String? = nil,
         options: Project.Options = .options(),
         packages: [Package] = [],
-        settings: Settings? = nil,
+        settings: Settings? = Project.Environment.projectSettings,
         targets: [Target],
         schemes: [Scheme] = [],
         fileHeaderTemplate: FileHeaderTemplate? = nil,

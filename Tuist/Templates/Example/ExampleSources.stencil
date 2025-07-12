@@ -1,7 +1,23 @@
-// This is for Tuist
+//
+//  {{ name }}View.swift
+//  Brake
+//
+//  Created by {{ author }} on {{ date }}.
+//
 
-import UIKit
+import SwiftUI
 
-final class {{ name }}ViewController: UIViewController {
+struct {{ name }}View: View {
+    var body: some View {
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundStyle(.tint)
+            Text("Hello, Brake!")
+        }
+    }
+}
 
+#Preview {
+    {{ name }}View()
 }

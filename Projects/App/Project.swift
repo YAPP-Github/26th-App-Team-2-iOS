@@ -10,49 +10,80 @@ import ProjectDescription
 import DependencyPlugin
 import ProjectDescriptionHelpers
 
-let targets: [Target] = [
+let appSchemes: [Scheme] = [
+    .makeScheme(.dev, name: Project.Environment.appName),
+    .makeScheme(.prod, name: Project.Environment.appName)
+]
+
+let appTargets: [Target] = [
     .app(
-        implements: .IOS,
+        implements: .iOS,
+        deploymentTarget: .dev,
         factory: .init(
-            infoPlist: .extendingDefault(with: [
-                "CFBundleShortVersionString": "1",
-                "CFBundleVersion": "1",
-                "CFBundleName": "Brake",
-                "UIApplicationSceneManifest": [
-                    "UIApplicationSupportsMultipleScenes": false,
-                    "UISceneConfigurations": []
-                ],
-                "UILaunchScreen": .dictionary([
-                    "UILaunchScreen": .dictionary([:])
-                ])
-            ]),
+            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .dev),
+            entitlements: "\(Project.Environment.appName).entitlements",
             dependencies: [
+                .target(name: "Brake-DEV-NotificationExtension"),
                 .feature
-            ]
+            ],
+            settings: Project.Environment.devTargetSettings
+        )
+    ),
+    .app(
+        implements: .iOS,
+        deploymentTarget: .prod,
+        factory: .init(
+            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .prod),
+            entitlements: "\(Project.Environment.appName).entitlements",
+            dependencies: [
+                .target(name: "Brake-PROD-NotificationExtension"),
+                .feature
+            ],
+            settings: Project.Environment.prodTargetSettings
         )
     ),
     .app(
         implements: .NotificationExtension,
+        deploymentTarget: .dev,
         factory: .init(
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
-                "CFBundleName": "Brake"
+                "CFBundleName": "\(Project.Environment.appName)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
+                ]
             ]),
-            dependencies: [
-                .feature
-            ]
+            settings: Project.Environment.devTargetSettings
+        )
+    ),
+    .app(
+        implements: .NotificationExtension,
+        deploymentTarget: .prod,
+        factory: .init(
+            infoPlist: .extendingDefault(with: [
+                "CFBundleShortVersionString": "1",
+                "CFBundleVersion": "1",
+                "CFBundleName": "\(Project.Environment.appName)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
+                ]
+            ]),
+            settings: Project.Environment.prodTargetSettings
         )
     )
 ]
 
 let project: Project = .makeModule(
-    name: "Brake",
-    settings: .settings(
-        base: [
-            "DEVELOPMENT_TEAM": "DX6WKZY687",
-            "CODE_SIGN_STYLE": "Automatic"
-        ]
-    ),
-    targets: targets
+    name: Project.Environment.appName,
+    targets: appTargets,
+    schemes: appSchemes,
+    additionalFiles: [
+        "./xcconfigs/Shared.xcconfig",
+        "./xcconfigs/KakaoSecretKeys.xcconfig",
+        "./xcconfigs/TokenKeys.xcconfig",
+        "./xcconfigs/Secrets.xcconfig"
+    ]
 )
