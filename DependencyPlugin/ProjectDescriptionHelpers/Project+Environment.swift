@@ -12,7 +12,7 @@ public extension Project {
     enum Environment {
         
         public static let appName = "Brake"
-        public static let deploymentTarget = DeploymentTargets.iOS("17.0")
+        public static let deploymentTarget = DeploymentTargets.iOS("17.2")
         
         /// 앱 번들, 추후 변경사항
         public static let bundlePrefix = "yapp.breake"

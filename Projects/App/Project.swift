@@ -11,6 +11,7 @@ import DependencyPlugin
 import ProjectDescriptionHelpers
 
 @MainActor let appTargetFactory: TargetFactory = .init(
+    deploymentTargets: Project.Environment.deploymentTarget,
     infoPlist: .extendingDefault(with: [
         "CFBundleShortVersionString": "1",
         "CFBundleVersion": "1",
