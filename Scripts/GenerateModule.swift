@@ -143,18 +143,44 @@ func makeProjectDirectory() {
 }
 
 func makeProjectScaffold(targetString: String) {
+    let author = NSFullUserName()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy/MM/dd"
+    let date = dateFormatter.string(from: Date())
+
     _ = try? bash.run(
         commandName: "tuist",
-        arguments: ["scaffold", "Module", "--name", "\(moduleName)", "--layer", "\(layer.rawValue)", "--target", "\(targetString)"]
+        arguments: [
+            "scaffold",
+            "Module",
+            "--name", "\(moduleName)",
+            "--layer", "\(layer.rawValue)",
+            "--target", "\(targetString)",
+            "--author", "\(author)",
+            "--date", "\(date)"
+        ]
     )
 }
 
 func makeScaffold(target: MicroTargetType) {
+    let author = NSFullUserName()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy/MM/dd"
+    let date = dateFormatter.string(from: Date())
+
     _ = try? bash.run(
         commandName: "tuist",
-        arguments: ["scaffold", "\(target.rawValue)", "--name", "\(moduleName)", "--layer", "\(layer.rawValue)"]
+        arguments: [
+            "scaffold",
+            "\(target.rawValue)",
+            "--name", "\(moduleName)",
+            "--layer", "\(layer.rawValue)",
+            "--author", "\(author)",
+            "--date", "\(date)"
+        ]
     )
 }
+
 
 func writeContentInFile(path: String, content: String) {
     let fileURL = URL(fileURLWithPath: path)

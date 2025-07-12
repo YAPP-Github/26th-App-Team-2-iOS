@@ -21,7 +21,7 @@ public extension ModulePath {
     /// 이 앱이 구동될 디바이스에 대한 정의를 합니다.
     enum App: String, CaseIterable {
         public static let name: String = "App"
-        case IOS
+        case iOS
         case NotificationExtension
     }
 }
@@ -53,7 +53,7 @@ public extension ModulePath {
         public static let name: String = "Core"
         
         case Network
-        case ScreenTime
+        case LocalStorage
     }
 }
 

@@ -19,7 +19,7 @@ let targets: [Target] = [
     )),
 ]
 
-let project: Project = .init(
+let project: Project = .makeModule(
     name: "Domain",
     targets: targets
 )

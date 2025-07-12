@@ -1,3 +1,10 @@
+//
+//  Project.swift
+//  Brake
+//
+//  Created by {{ author }} on {{ date }}.
+//
+
 import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
