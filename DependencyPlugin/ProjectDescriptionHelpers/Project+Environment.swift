@@ -13,53 +13,81 @@ public extension Project {
         public static let appName = "Brake"
         public static let deploymentTarget = DeploymentTargets.iOS("17.2")
         public static let currentAppVersion: String = "0.0.0"
-
+        
         /// 앱 번들, 추후 변경사항
         public static let bundlePrefix = "yapp.breake"
         public static let projectSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
                 "CODE_SIGN_STYLE": "Automatic",
-                "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+                "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
+                "OTHER_LDFLAGS":["-all_load -Objc"],
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+                "GENERATE_DEBUG_SYMBOLS": "YES",
+                "STRIP_DEBUG_SYMBOLS_DURING_COPY": "NO",
+                "STRIP_LINKED_PRODUCT": "NO",
+                "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
+                "ENABLE_DEBUG_DYLIB": "NO", /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib 에러 해결
+                "SWIFT_VERSION": "5.9"
             ],
             configurations: [
-                .build(.dev),
-                .build(.prod)
+//                .build(.dev),
+//                .build(.prod)
+                .build(.debug),
+                .build(.release)
             ]
         )
         public static let devTargetSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
                 "CODE_SIGN_STYLE": "Automatic",
-                "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+                "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
+                "OTHER_LDFLAGS":["-all_load -Objc"],
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+                "GENERATE_DEBUG_SYMBOLS": "YES",
+                "STRIP_DEBUG_SYMBOLS_DURING_COPY": "NO",
+                "STRIP_LINKED_PRODUCT": "NO",
+                "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
+                "ENABLE_DEBUG_DYLIB": "NO", /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib 에러 해결
+                "SWIFT_VERSION": "5.9"
             ],
             configurations: [
-                .build(.dev)
+//                .build(.dev)
+                .build(.debug)
             ]
         )
         public static let prodTargetSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
                 "CODE_SIGN_STYLE": "Automatic",
-                "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+                "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+                "OTHER_LDFLAGS":["-all_load -Objc"],
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym",
+                "GENERATE_DEBUG_SYMBOLS": "YES",
+                "STRIP_DEBUG_SYMBOLS_DURING_COPY": "NO",
+                "STRIP_LINKED_PRODUCT": "NO",
+                "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
+                "ENABLE_DEBUG_DYLIB": "NO", /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib 에러 해결
+                "SWIFT_VERSION": "5.9"
             ],
             configurations: [
-                .build(.prod)
+//                .build(.prod)
+                .build(.release)
             ]
         )
         public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
             let kakaoNativeAppKey: String
             let baseServerURL: String
-
+            
             switch deploymentTarget {
-            case .dev:
+            case .dev, .debug:
                 kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEV}"
                 baseServerURL = "${BASE_SERVER_URL_DEV}"
-            case .prod:
+            case .prod, .release:
                 kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_PROD}"
                 baseServerURL = "${BASE_SERVER_URL_PROD}"
             }
-
+            
             return .extendingDefault(with: [
                 "CFBundleShortVersionString": "\(currentAppVersion)",
                 "CFBundleVersion": "1",
@@ -93,5 +121,33 @@ public extension Project {
                 "ITSAppUsesNonExemptEncryption": false
             ])
         }
+        
+        
+        public static let appScripts: [TargetScript] = [
+            AppTargetScript.firebaseCrashlytics,
+            AppTargetScript.firebaseAPIKey
+        ]
+    }
+}
+
+
+extension Project.Environment {
+    enum AppTargetScript {
+        static let firebaseAPIKey: TargetScript = .pre(
+            path: .path("./Scripts/set_firebase_api_key.sh"),
+            name: "Google-Service Key Setting",
+            basedOnDependencyAnalysis: false
+        )
+        
+        static let firebaseCrashlytics: TargetScript = .post(
+            path: .path("./Scripts/run_crashlytics.sh"),
+            name: "Firebase Crashlytics",
+            inputPaths: [
+                "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+                "$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+                "$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)"
+            ],
+            basedOnDependencyAnalysis: false
+        )
     }
 }

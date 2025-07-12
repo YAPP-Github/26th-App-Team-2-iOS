@@ -1,9 +1,15 @@
+#! /bin/bash
+
+# GoogleService-Info.plist 파일 생성
+touch ./Projects/App/Resources/GoogleService-Info.plist
+chmod 644 ./Projects/App/Resources/GoogleService-Info.plist
+cat <<EOF > ./Projects/App/Resources/GoogleService-Info.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string></string>
+	<string>$FIREBASE_API_KEY</string>
 	<key>BUNDLE_ID</key>
 	<string>yapp.breake</string>
 	<key>GCM_SENDER_ID</key>
@@ -28,3 +34,4 @@
 	<string>brake-61b4d.firebasestorage.app</string>
 </dict>
 </plist>
+EOF

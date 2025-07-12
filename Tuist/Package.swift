@@ -6,7 +6,7 @@
 
    let packageSettings = PackageSettings(
        productTypes: [
-        "FirebaseAnalytics": .framework,
+        "FirebaseAnalytics": .staticFramework,
         "FirebaseCrashlytics": .staticFramework
        ]
    )

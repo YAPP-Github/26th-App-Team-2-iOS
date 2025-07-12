@@ -22,6 +22,10 @@ extension Configuration {
                 name: type.configurationName,
                 xcconfig: .relativeToXCConfig(target: .prod)
             )
+        case .debug:
+            return .debug(name: "Debug")
+        case .release:
+            return .release(name: "Release")
         }
     }
 }

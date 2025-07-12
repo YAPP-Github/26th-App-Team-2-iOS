@@ -100,6 +100,8 @@ Derived/
 *.p12
 master.key
 
+Projects/App/Resources/GoogleService-Info.plist
+
 ### xcconfig ###
 Projects/App/xcconfigs/KakaoSecretKeys.xcconfig
 Projects/App/xcconfigs/TokenKeys.xcconfig

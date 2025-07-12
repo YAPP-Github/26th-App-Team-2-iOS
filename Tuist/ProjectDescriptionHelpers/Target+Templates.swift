@@ -148,7 +148,6 @@ public extension Target {
             newFactory.resources = ["Resources/**"]
             newFactory.productName = Project.Environment.appName
             newFactory.sources = .sources
-            newFactory.productName = Project.Environment.appName
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
             newFactory.dependencies = factory.dependencies
         case .NotificationExtension:
@@ -163,29 +162,28 @@ public extension Target {
     }
     
     static func app(tests module: ModulePath.App, factory: TargetFactory) -> Self {
+        let deploymentTarget = ProjectDeploymentTarget.dev
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue + "Tests"
         newFactory.product = .unitTests
         
         switch module {
-        case .IOS:
+        case .iOS:
             newFactory.destinations = .iOS
-            newFactory.name = "\(Project.Environment.appName)Tests"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).tests"
+            newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)-Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).tests"
             newFactory.sources = .tests
-            newFactory.resources = .resources(["Resources/**"])  // 테스트 타겟에 리소스 추가
+            newFactory.resources = .resources(["Resources/**"])
         case .NotificationExtension:
             newFactory.destinations = .iOS
-            newFactory.name = "\(Project.Environment.appName)NotificationExtensionTests"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).notification.extension.tests"
+            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension-Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).notification.tests"
             newFactory.sources = .tests
-            newFactory.resources = .resources(["Resources/**"])  // 테스트 타겟에 리소스 추가
+            newFactory.resources = .resources(["Resources/**"])
         }
         
         return .make(factory: newFactory)
     }
-    
-    
 }
 
 // MARK: -- Target + Feature
