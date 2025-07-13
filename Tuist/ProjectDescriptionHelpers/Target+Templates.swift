@@ -140,6 +140,8 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
         
+        let name: String = deploymentTarget == .debug ? Project.Environment.appName + "-\(deploymentTarget.rawValue)" : Project.Environment.appName
+        
         let bundleId: String = if deploymentTarget == .debug {
             "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
         } else {
@@ -149,7 +151,7 @@ public extension Target {
         switch module {
         case .iOS:
             newFactory.product = .app
-            newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)"
+            newFactory.name = name
             newFactory.bundleId = bundleId
             newFactory.resources = ["Resources/**"]
             newFactory.productName = Project.Environment.appName

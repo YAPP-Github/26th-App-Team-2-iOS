@@ -130,7 +130,12 @@ extension Project.Environment {
     enum AppTargetScript {
         
         static let firebaseCrashlytics: TargetScript = .post(
-            path: .path("./Scripts/run_crashlytics.sh"),
+//            path: .path("./Scripts/run_crashlytics.sh"),
+            script: """
+ROOT_DIR=${TUIST_ROOT_DIR}
+"${ROOT_DIR}/Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+echo "❗️ROOT_DIR Path: ${ROOT_DIR}"
+""",
             name: "Firebase Crashlytics",
             inputPaths: [
                 "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
