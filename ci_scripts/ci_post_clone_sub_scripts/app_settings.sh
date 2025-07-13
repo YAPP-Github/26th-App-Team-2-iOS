@@ -46,9 +46,7 @@ echo "❗️ Make Shared.xcconfig"
 touch ./Projects/App/xcconfigs/Shared.xcconfig
 chmod 644 ./Projects/App/xcconfigs/Shared.xcconfig
 cat <<EOF > ./Projects/App/xcconfigs/Shared.xcconfig
-#include "./KakaoSecretKeys.xcconfig"
 #include "./TokenKeys.xcconfig"
-#include "./Secrets.xcconfig"
 
 OTHER_SWIFT_FLAGS[config=Debug][sdk=*] = $(inherited) -DDEBUG
 BASE_SERVER_URL_DEBUG = $BASE_SERVER_URL_DEBUG
@@ -64,6 +62,5 @@ chmod 644 ./Projects/App/xcconfigs/TokenKeys.xcconfig
 
 echo "❗️ Set execute permission for App Target Scripts"
 chmod +x ./Projects/App/Scripts/run_crashlytics.sh
-chmod +x ./Projects/App/Scripts/set_firebase_api_key.sh
 
 echo "🎉 App settings configuration completed successfully!"

@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# 스크립트 실행 위치를 고정
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR/../.."
+
 # GoogleService-Info.plist 파일 생성
 touch ./Projects/App/Resources/GoogleService-Info.plist
 chmod 644 ./Projects/App/Resources/GoogleService-Info.plist
