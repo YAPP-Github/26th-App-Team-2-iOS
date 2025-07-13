@@ -109,6 +109,8 @@ Projects/App/xcconfigs/Secrets.xcconfig
 Projects/App/xcconfigs/DEV.xcconfig
 Projects/App/xcconfigs/PROD.xcconfig
 Projects/App/xcconfigs/Shared.xcconfig
+Projects/App/xcconfigs/Debug.xcconfig
+Projects/App/xcconfigs/Release.xcconfig
 
 
 **/Secrets.xcconfig

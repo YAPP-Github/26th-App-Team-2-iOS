@@ -12,20 +12,16 @@ extension Configuration {
         _ type: ProjectDeploymentTarget
     ) -> Self {
         switch type {
-        case .dev:
+        case .debug:
             return .debug(
                 name: type.configurationName,
-                xcconfig: .relativeToXCConfig(target: .dev)
+                xcconfig: .relativeToXCConfig(target: type)
             )
-        case .prod:
+        case .release:
             return .release(
                 name: type.configurationName,
-                xcconfig: .relativeToXCConfig(target: .prod)
+                xcconfig: .relativeToXCConfig(target: type)
             )
-        case .debug:
-            return .debug(name: "Debug")
-        case .release:
-            return .release(name: "Release")
         }
     }
 }

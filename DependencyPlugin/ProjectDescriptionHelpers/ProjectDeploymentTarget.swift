@@ -8,8 +8,6 @@
 import ProjectDescription
 
 public enum ProjectDeploymentTarget: String {
-	case dev = "DEV"
-	case prod = "PROD"
     case debug = "Debug"
     case release = "Release"
     

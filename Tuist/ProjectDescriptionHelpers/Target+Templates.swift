@@ -162,7 +162,7 @@ public extension Target {
     }
     
     static func app(tests module: ModulePath.App, factory: TargetFactory) -> Self {
-        let deploymentTarget = ProjectDeploymentTarget.dev
+        let deploymentTarget = ProjectDeploymentTarget.debug
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue + "Tests"
         newFactory.product = .unitTests

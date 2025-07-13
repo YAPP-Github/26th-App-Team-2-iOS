@@ -31,13 +31,11 @@ public extension Project {
                 "SWIFT_VERSION": "5.9"
             ],
             configurations: [
-//                .build(.dev),
-//                .build(.prod)
                 .build(.debug),
                 .build(.release)
             ]
         )
-        public static let devTargetSettings: Settings = .settings(
+        public static let debugTargetSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
                 "CODE_SIGN_STYLE": "Automatic",
@@ -52,11 +50,10 @@ public extension Project {
                 "SWIFT_VERSION": "5.9"
             ],
             configurations: [
-//                .build(.dev)
                 .build(.debug)
             ]
         )
-        public static let prodTargetSettings: Settings = .settings(
+        public static let releaseTargetSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
                 "CODE_SIGN_STYLE": "Automatic",
@@ -71,7 +68,6 @@ public extension Project {
                 "SWIFT_VERSION": "5.9"
             ],
             configurations: [
-//                .build(.prod)
                 .build(.release)
             ]
         )
@@ -80,10 +76,10 @@ public extension Project {
             let baseServerURL: String
             
             switch deploymentTarget {
-            case .dev, .debug:
+            case .debug:
                 kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEV}"
                 baseServerURL = "${BASE_SERVER_URL_DEV}"
-            case .prod, .release:
+            case .release:
                 kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_PROD}"
                 baseServerURL = "${BASE_SERVER_URL_PROD}"
             }
@@ -124,8 +120,7 @@ public extension Project {
         
         
         public static let appScripts: [TargetScript] = [
-            AppTargetScript.firebaseCrashlytics,
-            AppTargetScript.firebaseAPIKey
+            AppTargetScript.firebaseCrashlytics
         ]
     }
 }
@@ -133,11 +128,6 @@ public extension Project {
 
 extension Project.Environment {
     enum AppTargetScript {
-        static let firebaseAPIKey: TargetScript = .pre(
-            path: .path("./Scripts/set_firebase_api_key.sh"),
-            name: "Google-Service Key Setting",
-            basedOnDependencyAnalysis: false
-        )
         
         static let firebaseCrashlytics: TargetScript = .post(
             path: .path("./Scripts/run_crashlytics.sh"),
