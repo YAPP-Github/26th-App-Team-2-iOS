@@ -139,12 +139,18 @@ public extension Target {
     ) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
-
+        
+        let bundleId: String = if deploymentTarget == .debug {
+            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+        } else {
+            Project.Environment.bundlePrefix
+        }
+        
         switch module {
         case .iOS:
             newFactory.product = .app
             newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+            newFactory.bundleId = bundleId
             newFactory.resources = ["Resources/**"]
             newFactory.productName = Project.Environment.appName
             newFactory.sources = .sources
@@ -153,7 +159,7 @@ public extension Target {
         case .NotificationExtension:
             newFactory.product = .appExtension
             newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).notification"
+            newFactory.bundleId = "\(bundleId).notification"
             newFactory.resources = ["Resources/**"]
             newFactory.sources = .notificationExtensionSources
         }
@@ -167,11 +173,17 @@ public extension Target {
         newFactory.name = ModulePath.App.name + module.rawValue + "Tests"
         newFactory.product = .unitTests
         
+        let bundleId: String = if deploymentTarget == .debug {
+            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+        } else {
+            Project.Environment.bundlePrefix
+        }
+        
         switch module {
         case .iOS:
             newFactory.destinations = .iOS
             newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)-Tests"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).tests"
+            newFactory.bundleId = "\(bundleId).tests"
             newFactory.sources = .tests
             newFactory.resources = .resources(["Resources/**"])
         case .NotificationExtension:
