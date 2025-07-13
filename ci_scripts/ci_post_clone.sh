@@ -13,7 +13,7 @@ echo "❗️Current PATH: $PATH"
 
 chmod +x ./ci_scripts/ci_post_clone_sub_scripts/app_settings.sh
 sh ./ci_scripts/ci_post_clone_sub_scripts/app_settings.sh
-chmod +x ./ci_scripts/ci_post_clone_sub_scripts/firebase_settings.sh
+chmod +x ./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
 sh ./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
 
 # echo "❗️ Make Secrets.xcconfig"
