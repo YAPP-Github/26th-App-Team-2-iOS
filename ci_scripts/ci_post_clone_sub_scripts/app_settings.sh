@@ -18,30 +18,28 @@ check_env_var() {
 
 # Projects > App xcconfig 구성
 
-echo "❗️ Make DEV xcconfig"
-touch ./Projects/App/xcconfigs/DEV.xcconfig
-chmod 644 ./Projects/App/xcconfigs/DEV.xcconfig
-cat <<EOF > ./Projects/App/xcconfigs/DEV.xcconfig
+echo "❗️ Make Debug xcconfig"
+touch ./Projects/App/xcconfigs/Debug.xcconfig
+chmod 644 ./Projects/App/xcconfigs/Debug.xcconfig
+cat <<EOF > ./Projects/App/xcconfigs/Debug.xcconfig
 #include "./Shared.xcconfig"
-EOF
 
-echo "❗️ Make PROD xcconfig"
-touch ./Projects/App/xcconfigs/PROD.xcconfig
-chmod 644 ./Projects/App/xcconfigs/PROD.xcconfig
-cat <<EOF > ./Projects/App/xcconfigs/PROD.xcconfig
-#include "./Shared.xcconfig"
-EOF
-
-echo "❗️ Make Secrets.xcconfig"
-touch ./Projects/App/xcconfigs/Secrets.xcconfig
-chmod 644 ./Projects/App/xcconfigs/Secrets.xcconfig
-cat <<EOF > ./Projects/App/xcconfigs/Secrets.xcconfig
 DEVELOPMENT_TEAM_ID = $DEVELOPMENT_TEAM_ID
 
-FIREBASE_API_KEY = $FIREBASE_API_KEY
+KAKAO_NATIVE_APP_KEY_RELEASE = $KAKAO_NATIVE_APP_KEY_RELEASE
+KAKAO_NATIVE_APP_KEY_DEBUG = $KAKAO_NATIVE_APP_KEY_DEBUG
 
-KAKAO_NATIVE_APP_KEY_PROD = $KAKAO_NATIVE_APP_KEY_PROD
-KAKAO_NATIVE_APP_KEY_DEV = $KAKAO_NATIVE_APP_KEY_DEV
+EOF
+
+echo "❗️ Make Release xcconfig"
+touch ./Projects/App/xcconfigs/Release.xcconfig
+chmod 644 ./Projects/App/xcconfigs/Release.xcconfig
+cat <<EOF > ./Projects/App/xcconfigs/Release.xcconfig
+#include "./Shared.xcconfig"
+DEVELOPMENT_TEAM_ID = $DEVELOPMENT_TEAM_ID
+
+KAKAO_NATIVE_APP_KEY_RELEASE = $KAKAO_NATIVE_APP_KEY_RELEASE
+KAKAO_NATIVE_APP_KEY_DEBUG = $KAKAO_NATIVE_APP_KEY_DEBUG
 EOF
 
 echo "❗️ Make Shared.xcconfig"
@@ -52,11 +50,12 @@ cat <<EOF > ./Projects/App/xcconfigs/Shared.xcconfig
 #include "./TokenKeys.xcconfig"
 #include "./Secrets.xcconfig"
 
-OTHER_SWIFT_FLAGS[config=PROD][sdk=*] = \$(inherited) -DPROD
-BASE_SERVER_URL_PROD = $BASE_SERVER_URL_PROD
+OTHER_SWIFT_FLAGS[config=Debug][sdk=*] = $(inherited) -DDEBUG
+BASE_SERVER_URL_DEBUG = $BASE_SERVER_URL_DEBUG
 
-OTHER_SWIFT_FLAGS[config=DEV][sdk=*] = \$(inherited) -DDEV
-BASE_SERVER_URL_DEV = $BASE_SERVER_URL_DEV
+
+OTHER_SWIFT_FLAGS[config=Release][sdk=*] = $(inherited) -DRELEASE
+BASE_SERVER_URL_RELEASE = $BASE_SERVER_URL_RELEASE
 EOF
 
 echo "❗️ Make TokenKeys.xcconfig"

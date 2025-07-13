@@ -77,11 +77,11 @@ public extension Project {
             
             switch deploymentTarget {
             case .debug:
-                kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEV}"
-                baseServerURL = "${BASE_SERVER_URL_DEV}"
+                kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEBUG}"
+                baseServerURL = "${BASE_SERVER_URL_DEBUG}"
             case .release:
-                kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_PROD}"
-                baseServerURL = "${BASE_SERVER_URL_PROD}"
+                kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_RELEASE}"
+                baseServerURL = "${BASE_SERVER_URL_RELEASE}"
             }
             
             return .extendingDefault(with: [

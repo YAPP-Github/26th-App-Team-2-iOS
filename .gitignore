@@ -103,11 +103,8 @@ master.key
 Projects/App/Resources/GoogleService-Info.plist
 
 ### xcconfig ###
-Projects/App/xcconfigs/KakaoSecretKeys.xcconfig
 Projects/App/xcconfigs/TokenKeys.xcconfig
 Projects/App/xcconfigs/Secrets.xcconfig
-Projects/App/xcconfigs/DEV.xcconfig
-Projects/App/xcconfigs/PROD.xcconfig
 Projects/App/xcconfigs/Shared.xcconfig
 Projects/App/xcconfigs/Debug.xcconfig
 Projects/App/xcconfigs/Release.xcconfig
