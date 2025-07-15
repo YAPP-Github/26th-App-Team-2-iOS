@@ -55,15 +55,6 @@ jobs:
       - name: Log created issue
         run: echo "Jira Issue ${{ steps.issue-parser.outputs.issueparser_parentKey }}/${{ steps.create.outputs.issue }} was created"
 
-      - name: Create branch with Ticket number
-        run: |
-          LABELS="${{ steps.issue-parser.outputs.issueparser_issueLabel }}"
-          BRANCH_PREFIX="${LABELS%%,*}"
-          ISSUE_NUMBER="${{ steps.create.outputs.issue }}"
-          BRANCH_NAME="${BRANCH_PREFIX}/${ISSUE_NUMBER}"
-          git checkout -b "${BRANCH_NAME}"
-          git push origin "${BRANCH_NAME}"
-
       - name: Update issue title
         uses: actions-cool/issues-helper@v3
         with:
