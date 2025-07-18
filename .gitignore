@@ -111,3 +111,6 @@ Projects/App/xcconfigs/Release.xcconfig
 
 
 **/Secrets.xcconfig
+
+# CI/CD를 위한 SwiftPM 빌드 산출물 무시
+.build/
