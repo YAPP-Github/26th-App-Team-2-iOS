@@ -1,31 +1,35 @@
 #!/bin/sh
 set -e
+
 echo "❗️ Shell Script - Start Directory: $(pwd)"
 
-cd ..
-
-
+# mise 설치 (한 번만)
 curl https://mise.run | sh
-export PATH="$HOME/.local/bin:$PATH"
 
-# Output the current PATH for debugging
+# mise PATH 추가 (공식 문서 참고)
+export PATH="$HOME/.local/share/mise/bin:$PATH"
+
 echo "❗️Current PATH: $PATH"
 
-chmod 644 ./ci_scripts/ci_post_clone_sub_scripts/app_settings.sh
-sh ./ci_scripts/ci_post_clone_sub_scripts/app_settings.sh
-chmod 644 ./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
-sh ./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
+# 하위 스크립트 실행
+chmod +x ./ci_scripts/ci_post_clone_sub_scripts/app_settings.sh
+./ci_scripts/ci_post_clone_sub_scripts/app_settings.sh
+chmod +x ./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
+./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
 
 echo "❗️mise version"
 mise --version
+
 echo "❗️mise install"
-curl https://mise.run | sh
-mise install # Installs the version from .mise.toml
-eval "$(mise activate bash --shims)"
+mise install
+
+eval "$(mise activate sh --shims)"
 
 echo "❗️mise doctor"
-mise doctor # verify the output of mise is correct on CI
+mise doctor
+
 echo "❗️tuist install"
 tuist install
+
 echo "❗️tuist generate"
-tuist generate # Generate the Xcode Project using Tuist
+tuist generate
