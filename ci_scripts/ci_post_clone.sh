@@ -7,7 +7,6 @@ echo "❗️ Shell Script - Start Directory: $(pwd)"
 # curl https://mise.run | sh
 brew install mise
 
-mise PATH 추가 (공식 문서 참고)
 export PATH="$HOME/.local/share/mise/bin:$PATH"
 
 echo "❗️Current PATH: $PATH"
