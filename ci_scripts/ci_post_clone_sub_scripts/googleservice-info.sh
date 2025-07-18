@@ -39,3 +39,5 @@ cat <<EOF > ./Projects/App/Resources/GoogleService-Info.plist
 </dict>
 </plist>
 EOF
+
+echo "🎉 GoogleService-Info.plist configuration completed successfully!"

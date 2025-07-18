@@ -13,7 +13,7 @@ chmod +x ./ci_post_clone_sub_scripts/googleservice-info.sh
 # curl https://mise.run | sh
 brew install mise
 
-export PATH="$HOME/.local/share/mise/bin:$PATH"
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 echo "❗️Current PATH: $PATH"
 
