@@ -80,7 +80,7 @@ let appTargets: [Target] = [
     .app(
         tests: .iOS,
         factory: .init(
-            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .debug),
+            infoPlist: Project.Environment.testAppInfoPlist(),
             entitlements: "\(Project.Environment.appName).entitlements",
             scripts: Project.Environment.appScripts,
             dependencies: [

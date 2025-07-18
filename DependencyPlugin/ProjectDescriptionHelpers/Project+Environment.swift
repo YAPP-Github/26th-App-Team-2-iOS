@@ -119,6 +119,38 @@ public extension Project {
         }
         
         
+        public static func testAppInfoPlist() -> InfoPlist {
+            
+            return .extendingDefault(with: [
+                "CFBundleShortVersionString": "\(currentAppVersion)",
+                "CFBundleVersion": "1",
+                "UILaunchStoryboardName": "LaunchScreen",
+                "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
+                "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
+                "UIApplicationSceneManifest": [
+                    "UIApplicationSupportsMultipleScenes": true,
+                    "UISceneConfigurations": [
+                        "UIWindowSceneSessionRoleApplication": [[
+                            "UISceneConfigurationName": "Default Configuration",
+                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                        ]]
+                    ]
+                ],
+                "LSApplicationQueriesSchemes": [
+                    "kakaokompassauth",
+                    "kakaolink"
+                ],
+                "KAKAO_NATIVE_APP_KEY_DEBUG": "${KAKAO_NATIVE_APP_KEY_DEBUG}",
+                "KAKAO_NATIVE_APP_KEY_RELEASE" :  "${KAKAO_NATIVE_APP_KEY_RELEASE}",
+                "BASE_SERVER_URL_DEBUG" : "${BASE_SERVER_URL_DEBUG}",
+                "BASE_SERVER_URL_RELEASE" : "${BASE_SERVER_URL_RELEASE}",
+                "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
+                "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
+                "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
+                "ITSAppUsesNonExemptEncryption": false
+            ])
+        }
+        
         public static let appScripts: [TargetScript] = [
             AppTargetScript.firebaseCrashlytics
         ]
