@@ -49,11 +49,11 @@ chmod 644 ./Projects/App/xcconfigs/Shared.xcconfig
 cat <<EOF > ./Projects/App/xcconfigs/Shared.xcconfig
 #include "./TokenKeys.xcconfig"
 
-OTHER_SWIFT_FLAGS[config=Debug][sdk=*] = \$\(inherited\) -DDEBUG
+OTHER_SWIFT_FLAGS[config=Debug][sdk=*] = $(inherited) -DDEBUG
 BASE_SERVER_URL_DEBUG = $BASE_SERVER_URL_DEBUG
 
 
-OTHER_SWIFT_FLAGS[config=Release][sdk=*] = \$\(inherited\) -DRELEASE
+OTHER_SWIFT_FLAGS[config=Release][sdk=*] = $(inherited) -DRELEASE
 BASE_SERVER_URL_RELEASE = $BASE_SERVER_URL_RELEASE
 EOF
 
