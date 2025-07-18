@@ -28,9 +28,9 @@ eval "$(mise activate sh --shims)"
 echo "❗️mise doctor"
 mise doctor
 
-mise use -g tuist@4.17.0
+mise use -g tuist
 # mise 설정이 끝남
-cd "$CI_WORKSPACE_PATH" || {
+cd "$CI_WORKSPACE_PATH/repository" || {
   echo "❌ CI_WORKSPACE_PATH로 이동 실패: $CI_WORKSPACE_PATH"
   exit 1
 }
