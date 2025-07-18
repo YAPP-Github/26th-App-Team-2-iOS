@@ -51,7 +51,7 @@ let appTargets: [Target] = [
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)",
+                "CFBundleName": "\(Project.Environment.appName)-\(ProjectDeploymentTarget.debug.rawValue)",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
@@ -68,6 +68,7 @@ let appTargets: [Target] = [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
                 "CFBundleName": "\(Project.Environment.appName)",
+                
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"

@@ -140,7 +140,11 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
         
-        let name: String = deploymentTarget == .debug ? Project.Environment.appName + "-\(deploymentTarget.rawValue)" : Project.Environment.appName
+        let name: String = if deploymentTarget == .debug {
+            Project.Environment.appName + "-\(deploymentTarget.rawValue)"
+        } else {
+            Project.Environment.appName
+        }
         
         let bundleId: String = if deploymentTarget == .debug {
             "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
