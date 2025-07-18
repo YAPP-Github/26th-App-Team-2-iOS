@@ -19,6 +19,7 @@ sh ./ci_scripts/ci_post_clone_sub_scripts/googleservice-info.sh
 echo "❗️mise version"
 mise --version
 echo "❗️mise install"
+curl https://mise.run | sh
 mise install # Installs the version from .mise.toml
 eval "$(mise activate bash --shims)"
 
