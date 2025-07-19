@@ -140,23 +140,23 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
         
-        let name: String = if deploymentTarget == .debug {
-            Project.Environment.appName + "-\(deploymentTarget.rawValue)"
-        } else {
-            Project.Environment.appName
-        }
-        
-        let bundleId: String = if deploymentTarget == .debug {
-            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
-        } else {
-            Project.Environment.bundlePrefix
-        }
+//        let name: String = if deploymentTarget == .debug {
+//            Project.Environment.appName + "-\(deploymentTarget.rawValue)"
+//        } else {
+//            Project.Environment.appName
+//        }
+//        
+//        let bundleId: String = if deploymentTarget == .debug {
+//            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+//        } else {
+//            Project.Environment.bundlePrefix
+//        }
         
         switch module {
         case .iOS:
             newFactory.product = .app
-            newFactory.name = name
-            newFactory.bundleId = bundleId
+            newFactory.name = Project.Environment.targetName(deploymentTarget: deploymentTarget)
+            newFactory.bundleId = Project.Environment.bundleId(deploymentTarget: deploymentTarget)
             newFactory.resources = ["Resources/**"]
             newFactory.productName = Project.Environment.appName
             newFactory.sources = .sources
@@ -165,7 +165,7 @@ public extension Target {
         case .NotificationExtension:
             newFactory.product = .appExtension
             newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension"
-            newFactory.bundleId = "\(bundleId).notification"
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).notification"
             newFactory.resources = ["Resources/**"]
             newFactory.sources = .notificationExtensionSources
         }

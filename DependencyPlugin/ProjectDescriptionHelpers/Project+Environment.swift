@@ -10,12 +10,27 @@ import ProjectDescription
 
 public extension Project {
     enum Environment {
-        public static let appName = "Brake"
         public static let deploymentTarget = DeploymentTargets.iOS("17.2")
         public static let currentAppVersion: String = "0.0.0"
         
-        /// 앱 번들, 추후 변경사항
+        /// 앱 이름, 타겟 이름 - 스키마 대응
+        public static let appName = "Brake"
+        public static func targetName(deploymentTarget: ProjectDeploymentTarget) -> String {
+            switch deploymentTarget {
+            case .debug: Project.Environment.appName + "-\(deploymentTarget.rawValue)"
+            case .release: Project.Environment.appName
+            }
+        }
+        
+        /// 앱 번들 - 스키마 대응
         public static let bundlePrefix = "yapp.breake"
+        public static func bundleId(deploymentTarget: ProjectDeploymentTarget) -> String {
+            switch deploymentTarget {
+            case .debug:  "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+            case .release: Project.Environment.bundlePrefix
+            }
+        }
+        
         public static let projectSettings: Settings = .settings(
             base: [
                 "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
