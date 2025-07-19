@@ -8,6 +8,9 @@
 import ProjectDescription
 
 extension Configuration {
+    /// Creates a `Configuration` instance based on the specified deployment target.
+    /// - Parameter type: The deployment target for which to build the configuration.
+    /// - Returns: A `Configuration` corresponding to the given deployment target, with appropriate name and xcconfig settings.
     public static func build(
         _ type: ProjectDeploymentTarget
     ) -> Self {

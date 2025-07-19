@@ -71,6 +71,9 @@ public extension Project {
                 .build(.release)
             ]
         )
+        /// Generates an `InfoPlist` configuration tailored to the specified deployment target.
+        /// - Parameter deploymentTarget: The build environment, either `.debug` or `.release`, which determines environment-specific keys and server URLs.
+        /// - Returns: An `InfoPlist` object with versioning, launch, security, URL scheme, and environment-specific configuration values.
         public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
             let kakaoNativeAppKey: String
             let baseServerURL: String
@@ -119,6 +122,9 @@ public extension Project {
         }
         
         
+        /// Returns an `InfoPlist` object configured for testing, including both debug and release environment keys for Kakao app integration, server URLs, token keys, and other standard app metadata.
+        ///
+        /// The returned plist extends the default configuration with values suitable for test builds, allowing access to both debug and release environment variables.
         public static func testAppInfoPlist() -> InfoPlist {
             
             return .extendingDefault(with: [

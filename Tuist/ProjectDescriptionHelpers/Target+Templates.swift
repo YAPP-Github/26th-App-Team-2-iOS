@@ -132,6 +132,12 @@ public extension Target {
 
 // MARK: -- Target + App
 public extension Target {
+    /// Creates an app target for the specified app module and deployment target.
+    /// - Parameters:
+    ///   - module: The app module type (e.g., iOS app or notification extension).
+    ///   - deploymentTarget: The deployment environment (e.g., debug or release).
+    ///   - factory: The base target configuration to customize.
+    /// - Returns: A configured app target with adjusted name, bundle identifier, sources, resources, and other properties based on the module and deployment target.
     static func app(
         implements module: ModulePath.App,
         deploymentTarget: ProjectDeploymentTarget,
@@ -173,6 +179,11 @@ public extension Target {
         return .make(factory: newFactory)
     }
     
+    /// Creates a unit test target for the specified app module with debug deployment configuration.
+    /// - Parameters:
+    ///   - module: The app module for which to create the test target.
+    ///   - factory: The base target factory configuration to customize.
+    /// - Returns: A configured unit test target for the given app module.
     static func app(tests module: ModulePath.App, factory: TargetFactory) -> Self {
         let deploymentTarget = ProjectDeploymentTarget.debug
         var newFactory = factory

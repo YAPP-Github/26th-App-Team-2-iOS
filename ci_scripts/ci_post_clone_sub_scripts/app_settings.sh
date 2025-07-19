@@ -8,7 +8,7 @@ cd "$SCRIPT_DIR/../.."
 mkdir -p ./Projects/App/xcconfigs
 chmod -R 777 ./Projects/App/xcconfigs
 
-# 필수 환경 변수 확인
+# check_env_var checks if the specified environment variable is set; if not, prints an error and exits with status 1.
 check_env_var() {
     if [ -z "${!1}" ]; then
         echo "❌ ERROR: Environment variable $1 is not set"
