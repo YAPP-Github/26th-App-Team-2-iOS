@@ -1,22 +1,44 @@
 #!/bin/sh
 set -e
-cd ..
 
-curl https://mise.run | sh
-export PATH="$HOME/.local/bin:$PATH"
+echo "❗️ Shell Script - Start Directory: $(pwd)"
 
-# Output the current PATH for debugging
+# 하위 스크립트 실행
+chmod +x ./ci_post_clone_sub_scripts/app_settings.sh
+./ci_post_clone_sub_scripts/app_settings.sh
+chmod +x ./ci_post_clone_sub_scripts/googleservice-info.sh
+./ci_post_clone_sub_scripts/googleservice-info.sh
+
+# mise 설치 (한 번만)
+# curl https://mise.run | sh
+brew install mise
+
+export PATH="$HOME/.local/share/mise/shims:$PATH"
+
 echo "❗️Current PATH: $PATH"
 
 echo "❗️mise version"
 mise --version
+
 echo "❗️mise install"
-mise install # Installs the version from .mise.toml
-eval "$(mise activate bash --shims)"
+mise install
+
+eval "$(mise activate sh --shims)"
 
 echo "❗️mise doctor"
-mise doctor # verify the output of mise is correct on CI
+mise doctor
+
+mise use -g tuist
+# mise 설정이 끝남
+cd "$CI_WORKSPACE_PATH/repository" || {
+  echo "❌ CI_WORKSPACE_PATH로 이동 실패: $CI_WORKSPACE_PATH"
+  exit 1
+}
+
 echo "❗️tuist install"
 tuist install
+
+
+
 echo "❗️tuist generate"
-tuist generate # Generate the Xcode Project using Tuist
+tuist generate

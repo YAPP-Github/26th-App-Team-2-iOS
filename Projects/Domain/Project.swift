@@ -15,7 +15,11 @@ let targets: [Target] = [
         dependencies: [
             .domain(implements: .User),
             .core
-        ]
+        ],
+        settings: .settings(configurations: [
+            .build(.debug),
+            .build(.release)
+        ])
     )),
 ]
 

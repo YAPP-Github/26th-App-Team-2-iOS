@@ -15,7 +15,11 @@ let targets: [Target] = [
             dependencies: [
                 .domain,
                 .feature(implements: .Onboarding)
-            ]
+            ],
+            settings: .settings(configurations: [
+                .build(.debug),
+                .build(.release)
+            ])
         )
     )
 ]

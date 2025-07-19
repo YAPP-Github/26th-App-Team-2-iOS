@@ -9,9 +9,11 @@ import ProjectDescription
 
 extension Scheme {
     public static func makeScheme(_ type: ProjectDeploymentTarget, name: String) -> Self {
+        let schemeName: String = type == .debug ? "\(name)-\(type.rawValue)" : name
+        let targetName: String = type == .debug ? "\(name)-\(type.rawValue)" : name
         return .scheme(
-            name: "\(name)-\(type.rawValue)",
-            buildAction: .buildAction(targets: ["\(name)-\(type.rawValue)"]),
+            name: schemeName,
+            buildAction: .buildAction(targets: ["\(targetName)"]),
             runAction: .runAction(configuration: type.configurationName),
             archiveAction: .archiveAction(configuration: type.configurationName),
             profileAction: .profileAction(configuration: type.configurationName),

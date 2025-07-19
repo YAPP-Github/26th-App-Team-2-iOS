@@ -139,26 +139,67 @@ public extension Target {
     ) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
-
+        
+//        let name: String = if deploymentTarget == .debug {
+//            Project.Environment.appName + "-\(deploymentTarget.rawValue)"
+//        } else {
+//            Project.Environment.appName
+//        }
+//        
+//        let bundleId: String = if deploymentTarget == .debug {
+//            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+//        } else {
+//            Project.Environment.bundlePrefix
+//        }
+        
         switch module {
         case .iOS:
             newFactory.product = .app
-            newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+            newFactory.name = Project.Environment.targetName(deploymentTarget: deploymentTarget)
+            newFactory.bundleId = Project.Environment.bundleId(deploymentTarget: deploymentTarget)
             newFactory.resources = ["Resources/**"]
             newFactory.productName = Project.Environment.appName
             newFactory.sources = .sources
-            newFactory.productName = Project.Environment.appName
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
             newFactory.dependencies = factory.dependencies
         case .NotificationExtension:
             newFactory.product = .appExtension
             newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension"
-            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).notification"
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).notification"
             newFactory.resources = ["Resources/**"]
             newFactory.sources = .notificationExtensionSources
         }
 
+        return .make(factory: newFactory)
+    }
+    
+    static func app(tests module: ModulePath.App, factory: TargetFactory) -> Self {
+        let deploymentTarget = ProjectDeploymentTarget.debug
+        var newFactory = factory
+        newFactory.name = ModulePath.App.name + module.rawValue + "Tests"
+        newFactory.product = .unitTests
+        
+        let bundleId: String = if deploymentTarget == .debug {
+            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
+        } else {
+            Project.Environment.bundlePrefix
+        }
+        
+        switch module {
+        case .iOS:
+            newFactory.destinations = .iOS
+            newFactory.name = Project.Environment.appName + "-\(deploymentTarget.rawValue)-Tests"
+            newFactory.bundleId = "\(bundleId).tests"
+            newFactory.sources = .tests
+            newFactory.resources = .resources(["Resources/**"])
+        case .NotificationExtension:
+            newFactory.destinations = .iOS
+            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension-Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).notification.tests"
+            newFactory.sources = .tests
+            newFactory.resources = .resources(["Resources/**"])
+        }
+        
         return .make(factory: newFactory)
     }
 }

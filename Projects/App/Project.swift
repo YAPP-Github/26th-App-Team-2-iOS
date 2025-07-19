@@ -11,40 +11,58 @@ import DependencyPlugin
 import ProjectDescriptionHelpers
 
 let appSchemes: [Scheme] = [
-    .makeScheme(.dev, name: Project.Environment.appName),
-    .makeScheme(.prod, name: Project.Environment.appName)
+    .makeScheme(.debug, name: Project.Environment.appName),
+    .makeScheme(.release, name: Project.Environment.appName)
 ]
 
 let appTargets: [Target] = [
     .app(
         implements: .iOS,
-        deploymentTarget: .dev,
+        deploymentTarget: .debug,
         factory: .init(
-            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .dev),
+            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .debug),
             entitlements: "\(Project.Environment.appName).entitlements",
+            scripts: Project.Environment.appScripts,
             dependencies: [
-                .target(name: "Brake-DEV-NotificationExtension"),
+                .target(name: "Brake-Debug-NotificationExtension"),
                 .feature
             ],
-            settings: Project.Environment.devTargetSettings
+            settings: Project.Environment.debugTargetSettings
         )
     ),
     .app(
         implements: .iOS,
-        deploymentTarget: .prod,
+        deploymentTarget: .release,
         factory: .init(
-            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .prod),
+            infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .release),
             entitlements: "\(Project.Environment.appName).entitlements",
+            scripts: Project.Environment.appScripts,
             dependencies: [
-                .target(name: "Brake-PROD-NotificationExtension"),
+                .target(name: "Brake-Release-NotificationExtension"),
                 .feature
             ],
-            settings: Project.Environment.prodTargetSettings
+            settings: Project.Environment.releaseTargetSettings
         )
     ),
     .app(
         implements: .NotificationExtension,
-        deploymentTarget: .dev,
+        deploymentTarget: .debug,
+        factory: .init(
+            infoPlist: .extendingDefault(with: [
+                "CFBundleShortVersionString": "1",
+                "CFBundleVersion": "1",
+                "CFBundleName": "\(Project.Environment.appName)-\(ProjectDeploymentTarget.debug.rawValue)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
+                ]
+            ]),
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app(
+        implements: .NotificationExtension,
+        deploymentTarget: .release,
         factory: .init(
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
@@ -55,25 +73,22 @@ let appTargets: [Target] = [
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
                 ]
             ]),
-            settings: Project.Environment.devTargetSettings
+            settings: Project.Environment.releaseTargetSettings
         )
     ),
+    
     .app(
-        implements: .NotificationExtension,
-        deploymentTarget: .prod,
+        tests: .iOS,
         factory: .init(
-            infoPlist: .extendingDefault(with: [
-                "CFBundleShortVersionString": "1",
-                "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)",
-                "NSExtension": [
-                    "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
-                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
-                ]
-            ]),
-            settings: Project.Environment.prodTargetSettings
+            infoPlist: Project.Environment.testAppInfoPlist(),
+            entitlements: "\(Project.Environment.appName).entitlements",
+            scripts: Project.Environment.appScripts,
+            dependencies: [
+                .feature
+            ],
+            settings: Project.Environment.debugTargetSettings
         )
-    )
+    ),
 ]
 
 let project: Project = .makeModule(
@@ -82,8 +97,6 @@ let project: Project = .makeModule(
     schemes: appSchemes,
     additionalFiles: [
         "./xcconfigs/Shared.xcconfig",
-        "./xcconfigs/KakaoSecretKeys.xcconfig",
         "./xcconfigs/TokenKeys.xcconfig",
-        "./xcconfigs/Secrets.xcconfig"
     ]
 )

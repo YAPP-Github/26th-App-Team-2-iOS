@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct BreakeApp: App {
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -22,7 +23,6 @@ struct ContentView: View {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
-            Text("Hello, Brake!")
         }
     }
 }
