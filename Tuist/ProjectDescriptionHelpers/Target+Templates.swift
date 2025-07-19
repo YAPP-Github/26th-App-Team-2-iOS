@@ -140,25 +140,13 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue
         
-//        let name: String = if deploymentTarget == .debug {
-//            Project.Environment.appName + "-\(deploymentTarget.rawValue)"
-//        } else {
-//            Project.Environment.appName
-//        }
-//        
-//        let bundleId: String = if deploymentTarget == .debug {
-//            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
-//        } else {
-//            Project.Environment.bundlePrefix
-//        }
-        
         switch module {
         case .iOS:
             newFactory.product = .app
             newFactory.name = Project.Environment.targetName(deploymentTarget: deploymentTarget)
             newFactory.bundleId = Project.Environment.bundleId(deploymentTarget: deploymentTarget)
             newFactory.resources = ["Resources/**"]
-            newFactory.productName = Project.Environment.appName
+            newFactory.productName = Project.Environment.targetName(deploymentTarget: deploymentTarget)
             newFactory.sources = .sources
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
             newFactory.dependencies = factory.dependencies
@@ -178,6 +166,7 @@ public extension Target {
         var newFactory = factory
         newFactory.name = ModulePath.App.name + module.rawValue + "Tests"
         newFactory.product = .unitTests
+        newFactory.productName = nil  // 단위 테스트는 productName이 필요 없음
         
         let bundleId: String = if deploymentTarget == .debug {
             "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
