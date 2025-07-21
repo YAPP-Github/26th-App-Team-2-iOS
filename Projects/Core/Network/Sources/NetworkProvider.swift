@@ -13,7 +13,6 @@ import SharedUtil
 /// URLComponentConfig가 달라지는 것에 대한 대응은 되지만, 객체의 불변 객체의 정책을 따름
 extension NetworkProvider: @retroactive NetworkProviderable {
     
-    
     public func req<Request, Item>(
         _ endpoint: Request
     ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
@@ -24,16 +23,7 @@ extension NetworkProvider: @retroactive NetworkProviderable {
             } else {
                 return try await self.request<Item>(urlRequest: urlRequest)
             }
-        } catch NetworkError.authorization {
-            guard let retryResult: RetryResult = await requestInterceptor?.retry() else {
-                throw NetworkError.interceptorError("reqeustInterceptor가 없습니다.")
-            }
-            switch retryResult {
-            case .retry: return try await req(endpoint)
-            case .doNotRetry: throw NetworkError.interceptorError("기간이 만료되었습니다!!")
-            case .doNotRetryWithEror(let error): throw error
-            }
-        } catch NetworkError.interceptorError(let description) {
+        } catch NetworkError.authorization { /// 인증 실패 에러 발생
             guard let retryResult: RetryResult = await requestInterceptor?.retry() else {
                 throw NetworkError.interceptorError("reqeustInterceptor가 없습니다.")
             }
@@ -45,6 +35,8 @@ extension NetworkProvider: @retroactive NetworkProviderable {
         }
         catch URLError.Code.notConnectedToInternet {
             throw NetworkError.internetConnection
+        } catch {
+            throw error
         }
     }
     
@@ -71,40 +63,21 @@ extension NetworkProvider: @retroactive NetworkProviderable {
     ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
         do {
             let urlRequest: URLRequest = try makeURLRequest(endpoint, config: self.urlComponentConfig)
-                
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
-            
-            guard let response = response as? HTTPURLResponse else {
-                throw NetworkError.noResponse
-            }
+            try response.validateResponse()
             
             if let emptyResponse = try JSONDecoder().decode(EmptyData.self, from: data) as? Item, data.isEmpty {
                 return emptyResponse
             }
-            switch response.statusCode {
-            case 200...299:
-                guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
-                    throw NetworkError.decoding
-                }
-                return decodedResponse
-            case 401:
-                throw NetworkError.authorization
-            case 400...499:
-                throw NetworkError.badRequest
-            case 500...599 :
-                throw NetworkError.server
-            default:
-                throw NetworkError.unknown
+            
+            guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
+                throw NetworkError.decoding
             }
             
+            return decodedResponse
         } catch URLError.Code.notConnectedToInternet {
             throw NetworkError.internetConnection
         }
-    }
-    
-    
-    private func requestItem() {
-        
     }
     
     private func makeURLRequest<Request>(

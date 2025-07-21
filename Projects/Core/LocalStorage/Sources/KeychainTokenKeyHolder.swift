@@ -9,7 +9,7 @@ import CoreLocalStorageInterface
 import SharedUtil
 import Foundation
 
-extension KeychainTokenKeyHolder: TokenKeyHolderProtocol {
+extension KeychainTokenKeyHolder: @retroactive TokenKeyHolderProtocol {
     public func fetchAccessTokenKey() throws -> String {
         if let accessTokenKey = Bundle.main.accessTokenKey {
             return accessTokenKey

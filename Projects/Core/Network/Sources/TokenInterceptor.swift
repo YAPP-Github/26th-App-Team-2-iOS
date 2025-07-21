@@ -13,9 +13,6 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
     /// 1. 토큰 Response DTO 제작 작업
     /// 2. EndPoint path 설정 및 httpMethod 설정 작업
     /// 3. TokenKey를 어떻게 설정하면 되는가? -> 이거 테스트하려면 나중에 Xcode Cloud에도 키 값을 추가해야할 듯...
-    struct TempResponse: Decodable {
-        
-    }
     
     public func adapt(_ urlRequest: URLRequest) async throws -> URLRequest {
         do {
@@ -43,10 +40,11 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             guard let refreshToken: RefreshToken = try self.tokenStorage.read(key: fetchedRefreshTokenKey) else {
                 return .doNotRetry
             }
-            
-            let reissueEndPoint = Endpoint<TempResponse>(
-                path: "v1/reissue",
-                httpMethod: .post
+            let refreshTokenDTO = AuthRefreshTokenDTO(refreshToken: refreshToken.token)
+            let reissueEndPoint = Endpoint<ServerResponseDTO<AuthRefreshDTO>>(
+                path: "/refresh",
+                httpMethod: .post,
+                bodyParameters: refreshTokenDTO
             )
             
             let reissueURLRequest: URLRequest = try reissueEndPoint.makeURLRequest(config: .default)
@@ -64,10 +62,10 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             let (data, response) = try await URLSession.shared.data(for: request)
             
             try response.validateResponse()
-            let tempResponse = try JSONDecoder().decode(TempResponse.self, from: data)
+            let serverResponseDTO: ServerResponseDTO<AuthRefreshDTO> = try JSONDecoder().decode(ServerResponseDTO<AuthRefreshDTO>.self, from: data)
             
-            let accessToken: AccessToken = try jwtDecoder.decode("asdfasdfs", as: AccessToken.self)
-            let refreshToken: RefreshToken = try jwtDecoder.decode("asdfas", as: RefreshToken.self)
+            let accessToken: AccessToken = try jwtDecoder.decode(serverResponseDTO.data.accessToken, as: AccessToken.self)
+            let refreshToken: RefreshToken = try jwtDecoder.decode(serverResponseDTO.data.refreshToken, as: RefreshToken.self)
             
             
             let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
