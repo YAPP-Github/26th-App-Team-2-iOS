@@ -66,7 +66,7 @@ public struct Keychain {
 
         let attributesToUpdate = [kSecValueData: data] as CFDictionary
         let updateStatus = SecItemUpdate(updateQuery as CFDictionary, attributesToUpdate)
-
+        
         switch updateStatus {
         case errSecSuccess:
             return
@@ -84,7 +84,7 @@ public struct Keychain {
         var result: AnyObject?
 
         let readStatus = SecItemCopyMatching(query as CFDictionary, &result)
-
+        
         switch readStatus {
         case errSecSuccess:
             guard let data = result as? Data else {

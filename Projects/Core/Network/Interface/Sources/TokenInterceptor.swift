@@ -14,9 +14,9 @@ final public class TokenInterceptor {
     public let jwtDecoder: JWTDecoder = .init()
     public let tokenKeyHolder: TokenKeyHolderProtocol
     
-    init(
+    public init(
         tokenStorage: TokenStorageProtocol,
-        tokenKeyHolder: TokenKeyHolderProtocol
+        tokenKeyHolder: TokenKeyHolderProtocol = KeychainTokenKeyHolder()
     ) {
         self.tokenStorage = tokenStorage
         self.tokenKeyHolder = tokenKeyHolder
