@@ -13,7 +13,7 @@ public protocol TokenKeyHolderProtocol {
     func fetchRefreshTokenKey() throws -> String
 }
 
-public struct KeychainTokenKeyHolder: TokenKeyHolderProtocol {
+public struct BundleTokenKeyHolder: TokenKeyHolderProtocol {
 
     public init() { }
     

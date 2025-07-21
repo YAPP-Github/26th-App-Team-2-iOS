@@ -16,7 +16,7 @@ final public class TokenInterceptor {
     
     public init(
         tokenStorage: TokenStorageProtocol,
-        tokenKeyHolder: TokenKeyHolderProtocol = KeychainTokenKeyHolder()
+        tokenKeyHolder: TokenKeyHolderProtocol = BundleTokenKeyHolder()
     ) {
         self.tokenStorage = tokenStorage
         self.tokenKeyHolder = tokenKeyHolder
