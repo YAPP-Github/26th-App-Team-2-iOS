@@ -9,10 +9,10 @@ import Foundation
 
 public protocol TokenStorageProtocol {
     
-    func read<T: TokenType>(key: String) throws -> T?
+    func read<T: TokenType>(key: String) async throws -> T?
     
-    func save<T: TokenType>(token: T, for key: String) throws
+    func save<T: TokenType>(token: T, for key: String) async throws
     
     @discardableResult
-    func delete(for key: String) throws -> Bool
+    func delete(for key: String) async throws -> Bool
 }

@@ -17,7 +17,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
     public func adapt(_ urlRequest: URLRequest) async throws -> URLRequest {
         do {
             let fetchedAccessTokenKey: String = try self.tokenKeyHolder.fetchAccessTokenKey()
-            guard let accessToken: AccessToken = try self.tokenStorage.read(key: fetchedAccessTokenKey) else {
+            guard let accessToken: AccessToken = try await self.tokenStorage.read(key: fetchedAccessTokenKey) else {
                 return urlRequest
             }
             
@@ -37,7 +37,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
     public func retry() async -> RetryResult {
         do {
             let fetchedRefreshTokenKey: String = try self.tokenKeyHolder.fetchRefreshTokenKey()
-            guard let refreshToken: RefreshToken = try self.tokenStorage.read(key: fetchedRefreshTokenKey) else {
+            guard let refreshToken: RefreshToken = try await self.tokenStorage.read(key: fetchedRefreshTokenKey) else {
                 return .doNotRetry
             }
             let refreshTokenDTO = AuthRefreshTokenDTO(refreshToken: refreshToken.token)
@@ -71,8 +71,8 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
             let refreshTokenKey = try tokenKeyHolder.fetchRefreshTokenKey()
             
-            try self.tokenStorage.save(token: accessToken, for: accessTokenKey)
-            try self.tokenStorage.save(token: refreshToken, for: refreshTokenKey)
+            try await self.tokenStorage.save(token: accessToken, for: accessTokenKey)
+            try await self.tokenStorage.save(token: refreshToken, for: refreshTokenKey)
             
             return .retry
         } catch {
