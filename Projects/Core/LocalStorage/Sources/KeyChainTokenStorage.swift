@@ -9,7 +9,7 @@ import Foundation
 import CoreLocalStorageInterface
 import SharedUtil
 
-public struct KeyChainTokenStorage: KeyChainTokenStorageProtocol {
+public struct KeyChainTokenStorage: TokenStorageProtocol {
     public let keychain: Keychain
 
     public init(keychain: Keychain) {

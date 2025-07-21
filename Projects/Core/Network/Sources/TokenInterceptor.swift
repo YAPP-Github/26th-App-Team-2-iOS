@@ -6,37 +6,79 @@
 //
 
 import CoreNetworkInterface
+import CoreLocalStorageInterface
 import Foundation
 
 extension TokenInterceptor: @retroactive URLRequestInterceptor {
+    /// 1. 토큰 Response DTO 제작 작업
+    /// 2. EndPoint path 설정 및 httpMethod 설정 작업
+    /// 3. TokenKey를 어떻게 설정하면 되는가? -> 이거 테스트하려면 나중에 Xcode Cloud에도 키 값을 추가해야할 듯...
+    struct TempResponse: Decodable {
+        
+    }
     
     public func adapt(_ urlRequest: URLRequest) async throws -> URLRequest {
         do {
+            let fetchedAccessTokenKey: String = try self.tokenKeyHolder.fetchAccessTokenKey()
+            guard let accessToken: AccessToken = try self.tokenStorage.read(key: fetchedAccessTokenKey) else {
+                return urlRequest
+            }
             
-            /// 우선 엑세스 토큰키를 로컬에서 가져온다.
-            /// 토큰키를 기반으로 accessToken을 가져온다.
-            /// accessToken이 없으면 에러를 방출한다.
             var request = urlRequest
-            request.setValue("Bearer ", forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
+            
+            return request
+        } catch TokenKeyHolderError.refreshTokenKeyMissing {
+            throw NetworkError.interceptorError("액세스 토큰 키가 없습니다.")
+        } catch DecodingError.dataCorrupted(let context) { // JSONDecoder 에러
+            throw NetworkError.interceptorError("Token Storage 디코딩을 실패했습니다. \(context.debugDescription)")
         } catch { /// 각각의 fetch 실패에 따른 에러 메시지를 interceptorError로 변환한다.
-            throw NetworkError.interceptorError("무언가 잘 못 되었으니 retry를 하면 되겠지...")
+            throw NetworkError.interceptorError("알 수 없는 Token Interceptor 에러")
         }
-        
-        return urlRequest
     }
     
-    public func retry(
-//        dueTo error: NetworkError
-    ) async -> RetryResult {
-        
-        /// 네트워크 이후에 받은 값이 무엇인지 확인한다.
-        /// 만약, API와 통신한 에러 케이스가 토큰 만료 에러라면 retryResult를 doNotRetry로 반환한다.
-        
-        
-        
-        /// 리프레시 토큰 키를 로컬에서 가져온다.
-        /// 리프레시 토큰 키를 기반으로 refreshToken을 가져온다.
-        /// 토큰을 받아오면 .retry 타입을 반환한다.
-        return .retry
+    public func retry() async -> RetryResult {
+        do {
+            let fetchedRefreshTokenKey: String = try self.tokenKeyHolder.fetchRefreshTokenKey()
+            guard let refreshToken: RefreshToken = try self.tokenStorage.read(key: fetchedRefreshTokenKey) else {
+                return .doNotRetry
+            }
+            
+            let reissueEndPoint = Endpoint<TempResponse>(
+                path: "v1/reissue",
+                httpMethod: .post
+            )
+            
+            let reissueURLRequest: URLRequest = try reissueEndPoint.makeURLRequest(config: .default)
+            
+            let retryResult = await reissueToken(request: reissueURLRequest)
+            return retryResult
+        } catch {
+            return .doNotRetryWithEror(error)
+        }
+    }
+    
+    /// 토큰 재발행
+    private func reissueToken(request: URLRequest) async -> RetryResult  {
+        do {
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            try response.validateResponse()
+            let tempResponse = try JSONDecoder().decode(TempResponse.self, from: data)
+            
+            let accessToken: AccessToken = try jwtDecoder.decode("asdfasdfs", as: AccessToken.self)
+            let refreshToken: RefreshToken = try jwtDecoder.decode("asdfas", as: RefreshToken.self)
+            
+            
+            let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
+            let refreshTokenKey = try tokenKeyHolder.fetchRefreshTokenKey()
+            
+            try self.tokenStorage.save(token: accessToken, for: accessTokenKey)
+            try self.tokenStorage.save(token: refreshToken, for: refreshTokenKey)
+            
+            return .retry
+        } catch {
+            return .doNotRetryWithEror(error)
+        }
     }
 }

@@ -50,29 +50,19 @@ extension NetworkProvider: @retroactive NetworkProviderable {
     
     
     private func request<Item: Decodable>(urlRequest: URLRequest) async throws -> Item {
-        let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
-        
-        guard let response = response as? HTTPURLResponse else {
-            throw NetworkError.noResponse
-        }
-        
-        if let emptyResponse = try JSONDecoder().decode(EmptyData.self, from: data) as? Item, data.isEmpty {
-            return emptyResponse
-        }
-        switch response.statusCode {
-        case 200...299:
+        do {
+            let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
+            try response.validateResponse()
+            
+            if let emptyResponse = try JSONDecoder().decode(EmptyData.self, from: data) as? Item, data.isEmpty {
+                return emptyResponse
+            }
             guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
                 throw NetworkError.decoding
             }
             return decodedResponse
-        case 401:
-            throw NetworkError.authorization
-        case 400...499:
-            throw NetworkError.badRequest
-        case 500...599 :
-            throw NetworkError.server
-        default:
-            throw NetworkError.unknown
+        } catch URLError.Code.notConnectedToInternet {
+            throw NetworkError.internetConnection
         }
     }
     
@@ -82,7 +72,6 @@ extension NetworkProvider: @retroactive NetworkProviderable {
         do {
             let urlRequest: URLRequest = try makeURLRequest(endpoint, config: self.urlComponentConfig)
                 
-
             let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
             
             guard let response = response as? HTTPURLResponse else {

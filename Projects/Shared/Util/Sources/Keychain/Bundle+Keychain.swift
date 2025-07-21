@@ -15,4 +15,9 @@ public extension Bundle {
     var refreshTokenKey: String? {
         return self.object(forInfoDictionaryKey: "REFRESH_TOKEN_KEY") as? String
     }
+    
+    /// 임시적인 baseURL 구성...
+    var baseURLString: String? {
+        return self.object(forInfoDictionaryKey: "BASE_URL_STRING") as? String
+    }
 }
