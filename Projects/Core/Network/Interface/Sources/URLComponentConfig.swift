@@ -8,7 +8,6 @@
 import Foundation
 import SharedUtil
 
-
 public struct URLComponentConfig {
     public let baseURL: String?
     public let prefix: String?

@@ -18,6 +18,7 @@ public enum NetworkError: Error {
     case internetConnection
     case noResponse
     case urlRequest(URLRequestError)
+    case interceptorError(String)
     
     public var description: String {
         switch self {
@@ -30,6 +31,7 @@ public enum NetworkError: Error {
         case .internetConnection: "Internet Connection is unstable"
         case .noResponse: "No Response"
         case .urlRequest(let urlRequestError): urlRequestError.description
+        case .interceptorError(let errorString): errorString
         }
     }
     

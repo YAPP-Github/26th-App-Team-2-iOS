@@ -8,11 +8,14 @@
 import Foundation
 
 public protocol KeyChainTokenStorageProtocol {
+    
     func read<T: TokenType>(key: String) throws -> T?
+    
     func save<T: TokenType>(
         token: T,
         for key: String
     ) throws
+    
     @discardableResult
     func delete(for key: String) throws -> Bool
 }

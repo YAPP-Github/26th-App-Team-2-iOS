@@ -14,11 +14,16 @@ public protocol NetworkProviderable {
 public class NetworkProvider {
     
     public let urlComponentConfig: URLComponentConfig
+    public let requestInterceptor: URLRequestInterceptor?
     
-    public init(urlComponentConfig: URLComponentConfig = URLComponentConfig(
+    public init(
+        reqeustInterceptor: URLRequestInterceptor? = nil,
+        urlComponentConfig: URLComponentConfig = URLComponentConfig(
             baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
             prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
-        )) {
+        )
+    ) {
+        self.requestInterceptor = reqeustInterceptor
         self.urlComponentConfig = urlComponentConfig
     }
 }

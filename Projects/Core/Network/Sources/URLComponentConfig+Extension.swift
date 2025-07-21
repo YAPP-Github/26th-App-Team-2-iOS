@@ -10,7 +10,6 @@ import Foundation
 
 extension URLComponentConfig {
 
-    
     func makeURLComponents(path: String) throws -> URLComponents? {
         guard let baseURL = self.baseURL else {
             throw NetworkError.urlRequest(.makeURL)
