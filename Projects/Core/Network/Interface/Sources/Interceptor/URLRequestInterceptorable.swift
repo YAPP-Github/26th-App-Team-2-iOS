@@ -15,5 +15,5 @@ public enum RetryResult {
 
 public protocol URLRequestInterceptor {
     func adapt(_ urlRequest: URLRequest) async throws -> URLRequest
-    func retry() async -> RetryResult
+    func retry(session: URLSession) async -> RetryResult 
 }

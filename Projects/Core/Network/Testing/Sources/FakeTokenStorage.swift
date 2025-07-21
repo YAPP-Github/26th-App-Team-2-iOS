@@ -9,6 +9,8 @@ import Foundation
 import CoreLocalStorageInterface
 
 public class FakeTokenStorage: TokenStorageProtocol {
+    public static let fakeAccessToken = "fakeAccessToken"
+    public static let fakeRefreshToken = "fakeRefreshToken"
     private var storage: [String: Any] = [:]
 
     public init() { }

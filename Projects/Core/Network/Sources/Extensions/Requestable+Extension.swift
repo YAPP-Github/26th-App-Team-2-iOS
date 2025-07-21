@@ -9,9 +9,8 @@ import CoreNetworkInterface
 import Foundation
 
 extension Requestable {
-    func makeURLRequest(
-        config: URLComponentConfig
-    ) throws -> URLRequest {
+    
+    func makeURLRequest(config: URLComponentConfiguration) throws -> URLRequest {
         guard var urlComponent = try config.makeURLComponents(path: self.path) else {
             throw NetworkError.urlRequest(.urlComponent)
         }

@@ -8,23 +8,22 @@
 import Foundation
 
 public protocol NetworkProviderProtocol {
-    var requestInterceptor: URLRequestInterceptor? { get }
     func request<Request: Networkable, Item: Decodable>(_ request: Request) async throws -> Item where Request.Item == Item
 }
 
 public class NetworkProvider {
     
-    public let requestInterceptor: URLRequestInterceptor?
-    public let urlComponentConfig: URLComponentConfig
+    public let networkSession: NetworkSession
+    public let urlComponentConfig: URLComponentConfiguration
     
     public init(
-        reqeustInterceptor: URLRequestInterceptor? = nil,
-        urlComponentConfig: URLComponentConfig = URLComponentConfig(
+        networkSession: NetworkSession,
+        urlComponentConfig: URLComponentConfiguration = URLComponentConfiguration(
             baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
             prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
         )
     ) {
-        self.requestInterceptor = reqeustInterceptor
+        self.networkSession = networkSession
         self.urlComponentConfig = urlComponentConfig
     }
 }

@@ -30,14 +30,14 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
         }
     }
     
-    public func retry() async -> RetryResult {
+    public func retry(session: URLSession) async -> RetryResult {
         do {
             let fetchedRefreshTokenKey: String = try self.tokenKeyHolder.fetchRefreshTokenKey()
             guard let refreshToken: RefreshToken = try await self.tokenStorage.read(key: fetchedRefreshTokenKey) else {
                 return .doNotRetry
             }
-            let refreshTokenDTO = AuthRefreshTokenDTO(refreshToken: refreshToken.token)
-            let reissueEndPoint = Endpoint<ServerResponseDTO<AuthRefreshDTO>>(
+            let refreshTokenDTO = AuthRefreshRequest(refreshToken: refreshToken.token)
+            let reissueEndPoint = Endpoint<BrakeResponseDTO<AuthRefreshResponse>>(
                 path: "/refresh",
                 httpMethod: .post,
                 bodyParameters: refreshTokenDTO
@@ -45,7 +45,10 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             
             let reissueURLRequest: URLRequest = try reissueEndPoint.makeURLRequest(config: .default)
             
-            let retryResult = await reissueToken(request: reissueURLRequest)
+            let retryResult = await reissueToken(
+                session: session,
+                request: reissueURLRequest
+            )
             return retryResult
         } catch {
             return .doNotRetryWithEror(error)
@@ -53,12 +56,15 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
     }
     
     /// 토큰 재발행
-    private func reissueToken(request: URLRequest) async -> RetryResult  {
+    private func reissueToken(
+        session: URLSession,
+        request: URLRequest
+    ) async -> RetryResult  {
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await session.data(for: request)
             
             try response.validateResponse()
-            let serverResponseDTO: ServerResponseDTO<AuthRefreshDTO> = try JSONDecoder().decode(ServerResponseDTO<AuthRefreshDTO>.self, from: data)
+            let serverResponseDTO: BrakeResponseDTO<AuthRefreshResponse> = try JSONDecoder().decode(BrakeResponseDTO<AuthRefreshResponse>.self, from: data)
             
             let accessToken: AccessToken = try jwtDecoder.decode(serverResponseDTO.data.accessToken, as: AccessToken.self)
             let refreshToken: RefreshToken = try jwtDecoder.decode(serverResponseDTO.data.refreshToken, as: RefreshToken.self)

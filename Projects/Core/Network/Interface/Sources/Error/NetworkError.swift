@@ -8,12 +8,11 @@
 import Foundation
 
 public enum NetworkError: Error {
-    
     case invalidURL
     case badRequest
     case unknown
     case decoding
-    case authorization
+    case authorization // 토큰 만료 에러입니다.
     case server
     case internetConnection
     case noResponse

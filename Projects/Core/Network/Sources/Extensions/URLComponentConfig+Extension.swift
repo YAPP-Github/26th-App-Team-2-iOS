@@ -8,7 +8,7 @@
 import CoreNetworkInterface
 import Foundation
 
-extension URLComponentConfig {
+extension URLComponentConfiguration {
 
     func makeURLComponents(path: String) throws -> URLComponents? {
         guard let baseURL = self.baseURL else {
