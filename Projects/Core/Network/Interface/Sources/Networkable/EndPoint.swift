@@ -7,9 +7,7 @@
 
 import Foundation
 
-public protocol Networkable: Requestable, Responsable { }
-
-public struct Endpoint<R: Decodable>: Networkable {
+public struct Endpoint<R: Decodable>: HTTPNetworkProtocol {
     public typealias Response = R
     public typealias Item = R
     

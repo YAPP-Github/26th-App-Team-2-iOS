@@ -31,7 +31,6 @@ struct RequestInterceptTests {
         )
         
         MockURLProtocol.requestHandler = { request in
-            
             let mockResponse = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 401,
@@ -57,6 +56,8 @@ struct RequestInterceptTests {
         )
         
         let _ : AccessToken! = try fakeTokenStorage.read(key: tokenInterceptor.dummyAccessTokenKey)
+        let authRouter = BrakeRouter.AuthEndPoint<AuthRefreshResponse>.refresh(.init(refreshToken: "hello world!!"))
+        
         let endpoint = Endpoint<EmptyData>(path: "", httpMethod: .post)
         
         do {

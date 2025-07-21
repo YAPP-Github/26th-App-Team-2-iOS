@@ -15,14 +15,14 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
     /// 별도의 인증/재시도 처리가 필요하지 않습니다.
     public func request<Request, Item>(
         _ endpoint: Request
-    ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
+    ) async throws -> Item where Request : HTTPNetworkProtocol, Item : Decodable, Item == Request.Item {
         try await self.requestWithLimitCount(endpoint, limitCount: 0)
     }
     
     private func requestWithLimitCount<Request, Item>(
         _ endpoint: Request,
         limitCount: Int
-    ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
+    ) async throws -> Item where Request : HTTPNetworkProtocol, Item : Decodable, Item == Request.Item {
         
         guard limitCount < 5 else {
             throw NetworkError.interceptorError("limitCount 5번 이상으로 재귀 호출되었습니다.")

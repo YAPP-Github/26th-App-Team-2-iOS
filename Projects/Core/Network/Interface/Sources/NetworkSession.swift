@@ -25,7 +25,7 @@ public struct NetworkSession {
             return try await urlSession.data(for: request)
         }
         let interceptorURLRequest: URLRequest = try await requestInterceptor.adapt(request)
-        return try await urlSession.data(for: request)
+        return try await urlSession.data(for: interceptorURLRequest)
     }
     
     public func retryInterceptor() async throws -> RetryResult {

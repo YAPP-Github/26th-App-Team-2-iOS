@@ -37,11 +37,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
                 return .doNotRetry
             }
             let refreshTokenDTO = AuthRefreshRequest(refreshToken: refreshToken.token)
-            let reissueEndPoint = Endpoint<BrakeResponseDTO<AuthRefreshResponse>>(
-                path: "/refresh",
-                httpMethod: .post,
-                bodyParameters: refreshTokenDTO
-            )
+            let reissueEndPoint = BrakeRouter.AuthEndPoint<AuthRefreshResponse>.refresh(refreshTokenDTO)
             
             let reissueURLRequest: URLRequest = try reissueEndPoint.makeURLRequest(config: .default)
             
@@ -49,6 +45,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
                 session: session,
                 request: reissueURLRequest
             )
+            
             return retryResult
         } catch {
             return .doNotRetryWithEror(error)

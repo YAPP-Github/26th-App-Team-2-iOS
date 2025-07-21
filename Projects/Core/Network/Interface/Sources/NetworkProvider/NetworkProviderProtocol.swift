@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol NetworkProviderProtocol {
-    func request<Request: Networkable, Item: Decodable>(_ request: Request) async throws -> Item where Request.Item == Item
+    func request<Request: HTTPNetworkProtocol, Item: Decodable>(_ request: Request) async throws -> Item where Request.Item == Item
 }
 
 public class NetworkProvider {

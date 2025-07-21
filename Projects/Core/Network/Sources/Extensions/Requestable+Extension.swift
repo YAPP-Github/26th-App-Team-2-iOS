@@ -8,7 +8,7 @@
 import CoreNetworkInterface
 import Foundation
 
-extension Requestable {
+extension HTTPRequestProtocol {
     
     func makeURLRequest(config: URLComponentConfiguration) throws -> URLRequest {
         guard var urlComponent = try config.makeURLComponents(path: self.path) else {

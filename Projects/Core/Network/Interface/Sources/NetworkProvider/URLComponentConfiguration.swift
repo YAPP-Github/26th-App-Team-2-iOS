@@ -12,7 +12,7 @@ public struct URLComponentConfiguration {
     public let baseURL: String?
     public let prefix: String?
     
-    /// 프로젝트 서버 URL을 사용하는 URLComponent 생성자
+    /// Brake 서버 URL을 사용하는 URLComponent 생성자
     public static let `default` = URLComponentConfiguration(
         baseURL: Bundle.main.baseServerURLString,
         prefix: "/v1"
