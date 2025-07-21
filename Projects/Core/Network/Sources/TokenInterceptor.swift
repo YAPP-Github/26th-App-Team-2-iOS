@@ -10,10 +10,6 @@ import CoreLocalStorageInterface
 import Foundation
 
 extension TokenInterceptor: @retroactive URLRequestInterceptor {
-    /// 1. 토큰 Response DTO 제작 작업
-    /// 2. EndPoint path 설정 및 httpMethod 설정 작업
-    /// 3. TokenKey를 어떻게 설정하면 되는가? -> 이거 테스트하려면 나중에 Xcode Cloud에도 키 값을 추가해야할 듯...
-    
     public func adapt(_ urlRequest: URLRequest) async throws -> URLRequest {
         do {
             let fetchedAccessTokenKey: String = try self.tokenKeyHolder.fetchAccessTokenKey()

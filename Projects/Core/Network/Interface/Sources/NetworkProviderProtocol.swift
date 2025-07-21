@@ -7,14 +7,15 @@
 
 import Foundation
 
-public protocol NetworkProviderable {
+public protocol NetworkProviderProtocol {
+    var requestInterceptor: URLRequestInterceptor? { get }
     func request<Request: Networkable, Item: Decodable>(_ request: Request) async throws -> Item where Request.Item == Item
 }
 
 public class NetworkProvider {
     
-    public let urlComponentConfig: URLComponentConfig
     public let requestInterceptor: URLRequestInterceptor?
+    public let urlComponentConfig: URLComponentConfig
     
     public init(
         reqeustInterceptor: URLRequestInterceptor? = nil,

@@ -1,5 +1,5 @@
 //
-//  Endpoint+Extension.swift
+//  Requestable+Extension.swift
 //  CoreNetwork
 //
 //  Created by Greem on 7/21/25.
@@ -8,8 +8,10 @@
 import CoreNetworkInterface
 import Foundation
 
-extension Endpoint {
-     func makeURLRequest(config: URLComponentConfig) throws -> URLRequest {
+extension Requestable {
+    func makeURLRequest(
+        config: URLComponentConfig
+    ) throws -> URLRequest {
         guard var urlComponent = try config.makeURLComponents(path: self.path) else {
             throw NetworkError.urlRequest(.urlComponent)
         }
