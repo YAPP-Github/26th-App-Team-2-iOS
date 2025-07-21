@@ -16,19 +16,30 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
     public func request<Request, Item>(
         _ endpoint: Request
     ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
+        try await self.requestWithLimitCount(endpoint, limitCount: 0)
+    }
+    
+    
+    private func requestWithLimitCount<Request, Item>(
+        _ endpoint: Request,
+        limitCount: Int
+    ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
+        guard limitCount < 5 else {
+            throw NetworkError.interceptorError("limitCount 5번 이상으로 재귀 호출되었습니다.")
+        }
         do {
             let urlRequest: URLRequest = try endpoint.makeURLRequest(config: self.urlComponentConfig)
-            if let interceptRequest: URLRequest = try await requestInterceptor?.adapt(urlRequest) {
-                return try await self.request<Item>(urlRequest: interceptRequest)
-            } else {
+            guard let requestInterceptor else {
                 return try await self.request<Item>(urlRequest: urlRequest)
             }
+            let interceptRequest: URLRequest = try await requestInterceptor.adapt(urlRequest)
+            return try await self.request<Item>(urlRequest: interceptRequest)
         } catch NetworkError.authorization { /// 인증 실패 에러 발생
             guard let retryResult: RetryResult = await requestInterceptor?.retry() else {
                 throw NetworkError.interceptorError("reqeustInterceptor가 없습니다.")
             }
             switch retryResult {
-            case .retry: return try await request(endpoint)
+            case .retry: return try await self.requestWithLimitCount(endpoint, limitCount: limitCount + 1)
             case .doNotRetry: throw NetworkError.interceptorError("기간이 만료되었습니다!!")
             case .doNotRetryWithEror(let error): throw error
             }
@@ -39,7 +50,6 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
             throw error
         }
     }
-    
     
     private func request<Item: Decodable>(urlRequest: URLRequest) async throws -> Item {
         do {
