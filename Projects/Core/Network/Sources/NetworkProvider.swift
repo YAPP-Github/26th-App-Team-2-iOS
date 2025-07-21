@@ -52,7 +52,7 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
             case .retry:
                 return try await self.requestWithLimitCount(endpoint, limitCount: limitCount + 1)
             case .doNotRetry: throw NetworkError.interceptorError("기간이 만료되었습니다!!")
-            case .doNotRetryWithEror(let error):
+            case .doNotRetryWithError(let error):
                 throw error
             }
         }

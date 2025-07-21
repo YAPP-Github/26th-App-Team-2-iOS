@@ -18,10 +18,7 @@ public class NetworkProvider {
     
     public init(
         networkSession: NetworkSession,
-        urlComponentConfig: URLComponentConfiguration = URLComponentConfiguration(
-            baseURL: Bundle.main.infoDictionary?["BASE_URL"] as? String,
-            prefix: Bundle.main.infoDictionary?["BASE_URL_PREFIX"] as? String
-        )
+        urlComponentConfig: URLComponentConfiguration = .default
     ) {
         self.networkSession = networkSession
         self.urlComponentConfig = urlComponentConfig

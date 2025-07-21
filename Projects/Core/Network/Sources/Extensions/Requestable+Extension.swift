@@ -34,7 +34,10 @@ extension HTTPRequestProtocol {
             }
         }
         
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if urlRequest.value(forHTTPHeaderField: "Content-Type") == nil {
+           urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+       }
+        
         urlRequest.httpMethod = self.httpMethod.rawValue
         
         return urlRequest

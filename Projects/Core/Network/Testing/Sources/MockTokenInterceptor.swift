@@ -9,7 +9,6 @@ import Foundation
 import CoreNetworkInterface
 import CoreLocalStorageInterface
 import Shared
-import Foundation
 
 final public class MockTokenInterceptor: URLRequestInterceptor {
     

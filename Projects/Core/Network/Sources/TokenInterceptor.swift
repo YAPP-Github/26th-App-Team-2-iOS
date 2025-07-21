@@ -21,7 +21,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             request.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
             
             return request
-        } catch TokenKeyHolderError.refreshTokenKeyMissing {
+        } catch TokenKeyHolderError.accessTokenKeyMissing {
             throw NetworkError.interceptorError("액세스 토큰 키가 없습니다.")
         } catch DecodingError.dataCorrupted(let context) { // JSONDecoder 에러
             throw NetworkError.interceptorError("Token Storage 디코딩을 실패했습니다. \(context.debugDescription)")
@@ -48,7 +48,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             
             return retryResult
         } catch {
-            return .doNotRetryWithEror(error)
+            return .doNotRetryWithError(error)
         }
     }
     
@@ -75,7 +75,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             
             return .retry
         } catch {
-            return .doNotRetryWithEror(error)
+            return .doNotRetryWithError(error)
         }
     }
 }

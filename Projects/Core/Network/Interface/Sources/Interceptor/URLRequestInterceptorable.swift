@@ -10,7 +10,7 @@ import Foundation
 public enum RetryResult {
     case retry
     case doNotRetry
-    case doNotRetryWithEror(Error)
+    case doNotRetryWithError(Error)
 }
 
 public protocol URLRequestInterceptor {
