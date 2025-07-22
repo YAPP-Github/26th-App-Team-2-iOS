@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import FeatureOnboarding
 
 @main
 struct OnbardingExampleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LoginView()
         }
     }
 }

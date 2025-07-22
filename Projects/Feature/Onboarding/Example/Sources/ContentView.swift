@@ -6,13 +6,17 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct ContentView: View {
+    @State var isPressed: Bool = false
     var body: some View {
-        Button {
-            
-        } label: {
-            Text("Hello world!!")
+        VStack {
+            Button {
+                
+            } label: {
+                Text("Apple로 로그인")
+            }
         }
     }
 }
@@ -20,3 +24,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
