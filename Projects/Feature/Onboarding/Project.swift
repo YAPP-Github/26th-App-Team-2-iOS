@@ -12,7 +12,8 @@ import DependencyPlugin
 let targets: [Target] = [
     .feature(
         interface: .Onboarding,
-        factory: .init(dependencies: [
+        factory: .init(
+            dependencies: [
             .domain
         ])
     ),
@@ -38,6 +39,50 @@ let targets: [Target] = [
             dependencies: [
                 .feature(testing: .Onboarding)
             ]
+        )
+    ),
+    .feature(
+        example: .Onboarding,
+        factory: .init(
+            infoPlist: .extendingDefault(with: [
+                "CFBundleShortVersionString": "\(Project.Environment.currentAppVersion)",
+                "CFBundleVersion": "1",
+                "UILaunchStoryboardName": "LaunchScreen",
+                "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
+                "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
+                "UIApplicationSceneManifest": [
+                    "UIApplicationSupportsMultipleScenes": true,
+                    "UISceneConfigurations": [
+                        "UIWindowSceneSessionRoleApplication": [[
+                            "UISceneConfigurationName": "Default Configuration",
+                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                        ]]
+                    ]
+                ],
+                "CFBundleURLTypes": [
+                    [
+                        "CFBundleURLName": "",
+                        "CFBundleURLSchemes": ["kakao${KAKAO_NATIVE_APP_KEY_DEBUG}"]
+                    ]
+                ],
+                "KAKAO_NATIVE_APP_KEY": "${KAKAO_NATIVE_APP_KEY_DEBUG}",
+                "BASE_SERVER_URL": "${BASE_SERVER_URL_DEBUG}",
+                "LSApplicationQueriesSchemes": [
+                    "kakaokompassauth",
+                    "kakaolink"
+                ],
+                "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
+                "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
+                "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
+                "ITSAppUsesNonExemptEncryption": false,
+                "CFBundleIdentifier" : "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(ModulePath.Feature.Onboarding.rawValue)",
+            ]),
+            scripts: Project.Environment.appScripts,
+            dependencies: [
+                .feature(interface: .Onboarding),
+                .feature(implements: .Onboarding)
+            ],
+            settings: Project.Environment.exampleTargetSettings
         )
     )
 ]

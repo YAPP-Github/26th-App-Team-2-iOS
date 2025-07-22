@@ -86,6 +86,20 @@ public extension Project {
                 .build(.release)
             ]
         )
+        
+        public static let exampleTargetSettings: Settings = .settings(
+            base: [
+                "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
+                "CODE_SIGN_STYLE": "Automatic",
+                "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+                "ENABLE_DEBUG_DYLIB": "YES",
+                "SWIFT_VERSION": "5.9"
+            ],
+            configurations: [
+                .build(.debug)
+            ]
+        )
+        
         public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
             let kakaoNativeAppKey: String
             let baseServerURL: String
