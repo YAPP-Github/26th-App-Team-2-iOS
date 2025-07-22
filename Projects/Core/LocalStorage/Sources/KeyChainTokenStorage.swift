@@ -9,7 +9,7 @@ import Foundation
 import CoreLocalStorageInterface
 import SharedUtil
 
-public struct KeyChainTokenStorage: KeyChainTokenStorageProtocol {
+public actor KeyChainTokenStorage: TokenStorageProtocol {
     public let keychain: Keychain
 
     public init(keychain: Keychain) {
@@ -24,7 +24,7 @@ public struct KeyChainTokenStorage: KeyChainTokenStorageProtocol {
         self.keychain = Keychain(option: option)
     }
 
-    public func read<T: TokenType>(key: String) throws -> T? {
+    public func read<T: TokenType>(key: String) async throws -> T? {
         guard let data = try keychain.read(key: key) else {
             return nil
         }
@@ -34,13 +34,13 @@ public struct KeyChainTokenStorage: KeyChainTokenStorageProtocol {
     public func save<T: TokenType>(
         token: T,
         for key: String
-    ) throws {
+    ) async throws {
         let data = try JSONEncoder().encode(token)
         try keychain.save(key: key, data: data)
     }
 
     @discardableResult
-    public func delete(for key: String) throws -> Bool {
+    public func delete(for key: String) async throws -> Bool {
         return try keychain.delete(key: key)
     }
 }

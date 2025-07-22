@@ -308,6 +308,10 @@ public extension Target {
         newFactory.name = ModulePath.Core.name + module.rawValue + "Tests"
         newFactory.product = .unitTests
         newFactory.sources = .tests
+        
+        if module == .LocalStorage {
+            newFactory.bundleId = "com.brake.app.CoreLocalStorageTests"
+        }
 
         return make(factory: newFactory)
     }

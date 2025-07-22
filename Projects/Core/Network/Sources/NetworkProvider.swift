@@ -9,76 +9,51 @@ import Foundation
 import CoreNetworkInterface
 import SharedUtil
 
-/// URLComponentConig의 값이 달라지면 NetworkProvider 객체는 새로 생성해야함
-/// URLComponentConfig가 달라지는 것에 대한 대응은 되지만, 객체의 불변 객체의 정책을 따름
-extension NetworkProvider: @retroactive NetworkProviderable {
+extension NetworkProvider: @retroactive NetworkProviderProtocol {
     
+    /// 이 메서드는 생성자의 인자로 받은 requestInterceptor를 통해 인증 갱신, 재시도 등 부가 처리를 자동으로 수행합니다.
+    /// 별도의 인증/재시도 처리가 필요하지 않습니다.
     public func request<Request, Item>(
         _ endpoint: Request
-    ) async throws -> Item where Request : CoreNetworkInterface.Networkable, Item : Decodable, Item == Request.Item {
-        do {
-            let urlRequest: URLRequest = try makeURLRequest(endpoint, config: self.urlComponentConfig)
-
-            let (data, response) = try await URLSession.shared.data(for: urlRequest, delegate: nil)
-            
-            guard let response = response as? HTTPURLResponse else {
-                throw NetworkError.noResponse
-            }
-            
-            if let emptyResponse = try JSONDecoder().decode(EmptyData.self, from: data) as? Item, data.isEmpty {
-                return emptyResponse
-            }
-            switch response.statusCode {
-            case 200...299:
-                guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
-                    throw NetworkError.decoding
-                }
-                return decodedResponse
-            case 401:
-                throw NetworkError.authorization
-            case 400...499:
-                throw NetworkError.badRequest
-            case 500...599 :
-                throw NetworkError.server
-            default:
-                throw NetworkError.unknown
-            }
-            
-        } catch URLError.Code.notConnectedToInternet {
-            throw NetworkError.internetConnection
-        }
+    ) async throws -> Item where Request : HTTPNetworkProtocol, Item : Decodable, Item == Request.Item {
+        try await self.requestWithLimitCount(endpoint, limitCount: 0)
     }
     
-    private func makeURLRequest<Request>(
+    private func requestWithLimitCount<Request, Item>(
         _ endpoint: Request,
-        config: URLComponentConfig
-    ) throws -> URLRequest where Request : CoreNetworkInterface.Networkable {
-        guard var urlComponent = try config.makeURLComponents(path: endpoint.path) else {
-            throw NetworkError.urlRequest(.urlComponent)
-        }
-        if let queryItems = try config.getQueryParameters(queryParameters: endpoint.queryParameters) {
-            urlComponent.queryItems = queryItems
+        limitCount: Int
+    ) async throws -> Item where Request : HTTPNetworkProtocol, Item : Decodable, Item == Request.Item {
+        
+        guard limitCount < 5 else {
+            throw NetworkError.interceptorError("limitCount 5번 이상으로 재귀 호출되었습니다.")
         }
         
-        guard let url = urlComponent.url else {
-            throw NetworkError.invalidURL
+        do {
+            let urlRequest: URLRequest = try endpoint.makeURLRequest(config: self.urlComponentConfig)
+            let (data, response) = try await self.networkSession.dataTask(for: urlRequest)
+            try response.validateResponse()
+            
+            guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
+                throw NetworkError.decoding
+            }
+            
+            return decodedResponse
         }
-        
-        var urlRequest = URLRequest(url: url)
-        
-        if let httpBody = try config.getBodyParameters(bodyParameters: endpoint.bodyParameters) {
-            urlRequest.httpBody = httpBody
-        }
-        
-        if let headers = endpoint.headers {
-            headers.forEach { key, value in
-                urlRequest.setValue(value, forHTTPHeaderField: key)
+        catch NetworkError.authorization { /// 인증 실패 에러 발생
+            let retryResult = try await networkSession.retryInterceptor()
+            switch retryResult {
+            case .retry:
+                return try await self.requestWithLimitCount(endpoint, limitCount: limitCount + 1)
+            case .doNotRetry: throw NetworkError.interceptorError("기간이 만료되었습니다!!")
+            case .doNotRetryWithError(let error):
+                throw error
             }
         }
-        
-        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.httpMethod = endpoint.httpMethod.rawValue
-        
-        return urlRequest
+        catch URLError.Code.notConnectedToInternet {
+            throw NetworkError.internetConnection
+        } catch {
+            throw error
+        }
     }
 }
+

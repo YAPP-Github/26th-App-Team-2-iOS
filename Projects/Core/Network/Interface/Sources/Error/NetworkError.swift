@@ -8,16 +8,16 @@
 import Foundation
 
 public enum NetworkError: Error {
-    
     case invalidURL
     case badRequest
     case unknown
     case decoding
-    case authorization
+    case authorization // 토큰 만료 에러입니다.
     case server
     case internetConnection
     case noResponse
     case urlRequest(URLRequestError)
+    case interceptorError(String)
     
     public var description: String {
         switch self {
@@ -30,6 +30,7 @@ public enum NetworkError: Error {
         case .internetConnection: "Internet Connection is unstable"
         case .noResponse: "No Response"
         case .urlRequest(let urlRequestError): urlRequestError.description
+        case .interceptorError(let errorString): errorString
         }
     }
     

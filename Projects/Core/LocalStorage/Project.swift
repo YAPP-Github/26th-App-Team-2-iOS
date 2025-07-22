@@ -39,6 +39,7 @@ let project = Project.makeModule(
         .core(
             tests: .LocalStorage,
             factory: .init(
+                entitlements: "\(Project.Environment.appName).entitlements",
                 dependencies: [
                     .core(testing: .LocalStorage),
                     .core(implements: .LocalStorage),
