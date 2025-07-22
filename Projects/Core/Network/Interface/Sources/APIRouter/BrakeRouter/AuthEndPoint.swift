@@ -1,5 +1,5 @@
 //
-//  Auth.swift
+//  AuthEndPoint.swift
 //  CoreNetwork
 //
 //  Created by Greem on 7/21/25.
@@ -27,15 +27,15 @@ public extension BrakeRouter {
             }
         }
         
-        public var queryParameters: (any Encodable)? {
+        public var queryParameters: Encodable? {
             switch self {
             case .refresh: nil
             }
         }
         
-        public var bodyParameters: (any Encodable)? {
+        public var bodyParameters: Encodable? {
             switch self {
-            case .refresh(let request): try? JSONEncoder().encode(request)
+            case .refresh(let requestDTO): requestDTO
             }
         }
         
@@ -45,6 +45,5 @@ public extension BrakeRouter {
             default: return defaultHeader
             }
         }
-        
     }
 }
