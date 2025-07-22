@@ -14,7 +14,11 @@ let project = Project.makeModule(
     targets: [
         .domain(
             interface: .OAuth,
-            factory: .init()
+            factory: .init(
+                dependencies: [
+                    .core
+                ]
+            )
         ),
         .domain(
             implements: .OAuth,

@@ -12,9 +12,14 @@ import DomainOAuthInterface
 public final class LogInViewModel {
     
     let appleLogInUseCase: OAuthLogInUseCase
+    let kakaoLogInUseCase: OAuthLogInUseCase
     
-    public init(appleLogInUseCase: OAuthLogInUseCase) {
+    public init(
+        appleLogInUseCase: OAuthLogInUseCase,
+        kakaoLogInUseCase: OAuthLogInUseCase
+    ) {
         self.appleLogInUseCase = appleLogInUseCase
+        self.kakaoLogInUseCase = kakaoLogInUseCase
     }
     
     func appleLogInBtnTapped() {
@@ -31,6 +36,13 @@ public final class LogInViewModel {
     }
     
     func kakaoLogInBtnTapped() {
-        
+        Task { @MainActor in
+            do {
+                let type = try await kakaoLogInUseCase.execute()
+                print("타입 반환 \(type)")
+            } catch {
+                print("에러 발생 \(error)")
+            }
+        }
     }
 }

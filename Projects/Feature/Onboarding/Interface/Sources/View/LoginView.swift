@@ -33,7 +33,8 @@ public struct LoginView: View {
     LoginView()
         .environment(
             LogInViewModel(
-                appleLogInUseCase: OAuthLogInUseCase.make(authType: .apple)
+                appleLogInUseCase: OAuthLogInUseCase.make(authType: .apple),
+                kakaoLogInUseCase: OAuthLogInUseCase.make(authType: .kakao)
             )
         )
 }
