@@ -10,9 +10,7 @@ public struct LoginView: View {
     
     @Environment(LogInViewModel.self) var logInViewModel
     
-    public init() {
-        
-    }
+    public init() { }
     
     public var body: some View {
         VStack {

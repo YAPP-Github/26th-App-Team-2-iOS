@@ -48,7 +48,7 @@ let targets: [Target] = [
                 deploymentTarget: .debug,
                 bundleID: "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(ModulePath.Feature.Onboarding.rawValue)"
             ),
-            scripts: Project.Environment.appScripts,
+            entitlements: "\(Project.Environment.appName).entitlements",
             dependencies: [
                 .feature(interface: .Onboarding),
                 .feature(implements: .Onboarding)

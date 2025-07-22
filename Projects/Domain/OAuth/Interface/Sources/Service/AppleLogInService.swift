@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Core
+
 
 public final class AppleLogInService: NSObject {
     public var identityContinuation: AsyncStream<Result<String, Error>>.Continuation?
