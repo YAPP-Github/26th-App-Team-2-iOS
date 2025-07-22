@@ -28,10 +28,9 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol {
         controller.presentationContextProvider = self
         controller.performRequests()
         
-        for await userIdentity in identityStream {
-            switch userIdentity {
-            case .success(let success):
-                print("성공한 login", success)
+        for await userIdentityResult in identityStream {
+            switch userIdentityResult {
+            case .success(let userIdentity):
                 return .apple
             case .failure(let failure): throw failure
             }
@@ -61,7 +60,6 @@ extension AppleLogInService: @retroactive ASAuthorizationControllerDelegate {
         }
         
         let identityToken: String = String(decoding: identityTokenData, as: UTF8.self)
-        
         identityContinuation?.yield(.success(identityToken))
         identityContinuation?.finish()
     }

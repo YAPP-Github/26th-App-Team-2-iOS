@@ -6,12 +6,22 @@
 //
 
 import Foundation
+import CoreLocalStorageInterface
+import CoreNetworkInterface
 
 
 public final class AppleLogInService: NSObject {
-    public var identityContinuation: AsyncStream<Result<String, Error>>.Continuation?
+    public let networkProvider: NetworkProviderable
+    public let tokenStorage: KeyChainTokenStorageProtocol
     
-    public override init() {
+    public var identityContinuation: AsyncStream<Result<String, Error>>.Continuation?
+
+    public init(
+        networkProvider: NetworkProviderable,
+        tokenStorage: KeyChainTokenStorageProtocol
+    ) {
+        self.networkProvider = networkProvider
+        self.tokenStorage = tokenStorage
         super.init()
     }
 }
