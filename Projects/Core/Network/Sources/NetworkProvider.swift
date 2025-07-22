@@ -33,13 +33,6 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
             let (data, response) = try await self.networkSession.dataTask(for: urlRequest)
             try response.validateResponse()
             
-            if let emptyResponse = try JSONDecoder().decode(
-                EmptyData.self,
-                from: data
-            ) as? Item, data.isEmpty {
-                return emptyResponse
-            }
-            
             guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
                 throw NetworkError.decoding
             }
