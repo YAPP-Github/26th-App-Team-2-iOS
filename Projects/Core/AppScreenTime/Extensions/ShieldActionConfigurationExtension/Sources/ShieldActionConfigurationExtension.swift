@@ -13,6 +13,8 @@ import CoreLocalStorageInterface
 import CoreLocalStorage
 
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
+    private let appGroupsStorage: AppGroupsStorageProtocol = AppGroupsStorage()
+
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
@@ -31,12 +33,12 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             // 노티피케이션 요청
             scheduleNotification(with: "Notification")
             // AppGroupsStorage를 통해 차단 상태 저장
-            AppGroupsStorage.shared.saveBlockingStatus(true)
+            appGroupsStorage.saveBlockingStatus(true)
             completionHandler(.defer)
         case .secondaryButtonPressed:
             // 차단 상태가 true라면 차단 해제
-            if AppGroupsStorage.shared.getBlockingStatus() {
-                AppGroupsStorage.shared.saveBlockingStatus(false)
+            if appGroupsStorage.getBlockingStatus() {
+                appGroupsStorage.saveBlockingStatus(false)
                 completionHandler(.defer)
             } else {
                 completionHandler(.close)

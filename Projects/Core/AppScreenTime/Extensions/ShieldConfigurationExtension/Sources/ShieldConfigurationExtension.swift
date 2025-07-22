@@ -13,6 +13,8 @@ import CoreLocalStorageInterface
 import CoreLocalStorage
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
+    private let appGroupsStorage: AppGroupsStorageProtocol = AppGroupsStorage()
+
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
         return setShieldConfig(displayName)
@@ -46,7 +48,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
     private func isNotificationArrived() -> Bool {
         // AppGroupsStorage를 사용하여 알림 상태 확인
-        return AppGroupsStorage.shared.getBlockingStatus()
+        return appGroupsStorage.getBlockingStatus()
     }
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
