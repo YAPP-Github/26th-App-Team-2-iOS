@@ -7,10 +7,20 @@
 
 import Foundation
 
+
 public struct OAuthLogInUseCase {
     private let oAuthService: OAuthServiceProtocol
     
-    public init(oAuthService: OAuthServiceProtocol) {
+    public static func make(authType: OAuthType) -> Self {
+        switch authType {
+        case .apple:
+            OAuthLogInUseCase(oAuthService: AppleLogInService() as! OAuthServiceProtocol)
+        case .kakao:
+            OAuthLogInUseCase(oAuthService: AppleLogInService() as! OAuthServiceProtocol)
+        }
+    }
+    
+    init(oAuthService: OAuthServiceProtocol) {
         self.oAuthService = oAuthService
     }
     

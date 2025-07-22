@@ -5,12 +5,16 @@
 //  Created by Greem on 7/22/25.
 //
 import SwiftUI
-
-struct LoginView: View {
+import DomainOAuthInterface
+public struct LoginView: View {
     
     @Environment(LogInViewModel.self) var logInViewModel
     
-    var body: some View {
+    public init() {
+        
+    }
+    
+    public var body: some View {
         VStack {
             Button {
                 logInViewModel.appleLogInBtnTapped()
@@ -29,5 +33,9 @@ struct LoginView: View {
 
 #Preview {
     LoginView()
-        .environment(LogInViewModel())
+        .environment(
+            LogInViewModel(
+                appleLogInUseCase: OAuthLogInUseCase.make(authType: .apple)
+            )
+        )
 }

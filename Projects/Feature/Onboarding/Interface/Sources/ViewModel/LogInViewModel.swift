@@ -6,13 +6,27 @@
 //
 
 import Foundation
+import DomainOAuthInterface
 
 @Observable
-final class LogInViewModel {
+public final class LogInViewModel {
     
+    let appleLogInUseCase: OAuthLogInUseCase
     
+    public init(appleLogInUseCase: OAuthLogInUseCase) {
+        self.appleLogInUseCase = appleLogInUseCase
+    }
     
     func appleLogInBtnTapped() {
+        
+        Task {
+            do {
+                let type = try await appleLogInUseCase.execute()
+                print("타입 반환 \(type)")
+            } catch {
+                print("에러 발생 \(error)")
+            }
+        }
         
     }
     

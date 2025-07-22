@@ -6,13 +6,19 @@
 //
 
 import SwiftUI
-import FeatureOnboarding
+import FeatureOnboardingInterface
+import DomainOAuthInterface
 
 @main
 struct OnbardingExampleApp: App {
     var body: some Scene {
         WindowGroup {
             LoginView()
+                .environment(
+                    LogInViewModel(
+                        appleLogInUseCase: OAuthLogInUseCase.make(authType: .apple)
+                    )
+                )
         }
     }
 }
