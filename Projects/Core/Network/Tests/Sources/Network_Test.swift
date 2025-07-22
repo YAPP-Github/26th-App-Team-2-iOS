@@ -28,7 +28,8 @@ final class Network_Test: XCTestCase {
     func test_request_네트워크_실제_통신() async {
         print(#function)
         
-        let networkProvider: NetworkProviderable = NetworkProvider(
+        let networkProvider: NetworkProviderProtocol = NetworkProvider(
+            networkSession: NetworkSession(),
             urlComponentConfig: .init(
                 baseURL: "https://jsonplaceholder.typicode.com", /// 여기서 직접 주입 가능해짐!!
                 prefix: nil

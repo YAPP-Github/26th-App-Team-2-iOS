@@ -7,9 +7,7 @@
 
 import Foundation
 
-public protocol Networkable: Requestable, Responsable { }
-
-public struct Endpoint<R: Decodable>: Networkable {
+public struct Endpoint<R: Decodable>: HTTPNetworkProtocol {
     public typealias Response = R
     public typealias Item = R
     
@@ -19,11 +17,12 @@ public struct Endpoint<R: Decodable>: Networkable {
     public var bodyParameters: Encodable?
     public var headers: [String : String]?
     
-    public init(path: String,
-                httpMethod: HTTPMethod,
-                queryParameters: Encodable? = nil,
-                bodyParameters : Encodable? = nil,
-                headers: [String : String]? = nil
+    public init(
+        path: String,
+        httpMethod: HTTPMethod,
+        queryParameters: Encodable? = nil,
+        bodyParameters : Encodable? = nil,
+        headers: [String : String]? = nil
     ) {
         self.path = path
         self.httpMethod = httpMethod
