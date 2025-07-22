@@ -24,5 +24,9 @@ public extension SourceFilesList {
     static let exampleSources: SourceFilesList = "Example/Sources/**"
     static let testing: SourceFilesList = "Testing/Sources/**"
     static let tests: SourceFilesList = "Tests/Sources/**"
-    static let notificationExtensionSources : SourceFilesList = "NotificationExtension/Sources/**"
+    static let notificationExtensionSources : SourceFilesList = "Extensions/NotificationExtension/Sources/**"
+    static let deviceActivityMonitorExtensionSources : SourceFilesList = "Extensions/DeviceActivityMonitorExtension/Sources/**"
+    static let shieldConfigurationExtensionSources : SourceFilesList = "Extensions/ShieldConfigurationExtension/Sources/**"
+    static let shieldActionConfigurationExtensionSources : SourceFilesList = "Extensions/ShieldActionConfigurationExtension/Sources/**"
+    static let coreAppScreenTimeExampleSources : SourceFilesList = "Core/AppScreenTime/Example/Sources/**"
 }
