@@ -12,7 +12,8 @@ import DependencyPlugin
 let targets: [Target] = [
     .feature(
         interface: .Onboarding,
-        factory: .init(dependencies: [
+        factory: .init(
+            dependencies: [
             .domain
         ])
     ),
@@ -38,6 +39,21 @@ let targets: [Target] = [
             dependencies: [
                 .feature(testing: .Onboarding)
             ]
+        )
+    ),
+    .feature(
+        example: .Onboarding,
+        factory: .init(
+            infoPlist: Project.Environment.appInfoPlist(
+                deploymentTarget: .debug,
+                bundleID: "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(ModulePath.Feature.Onboarding.rawValue)"
+            ),
+            scripts: Project.Environment.appScripts,
+            dependencies: [
+                .feature(interface: .Onboarding),
+                .feature(implements: .Onboarding)
+            ],
+            settings: Project.Environment.exampleTargetSettings
         )
     )
 ]

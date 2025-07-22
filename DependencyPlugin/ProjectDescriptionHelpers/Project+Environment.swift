@@ -86,7 +86,21 @@ public extension Project {
                 .build(.release)
             ]
         )
-        public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
+        
+        public static let exampleTargetSettings: Settings = .settings(
+            base: [
+                "DEVELOPMENT_TEAM": "${DEVELOPMENT_TEAM_ID}",
+                "CODE_SIGN_STYLE": "Automatic",
+                "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+                "ENABLE_DEBUG_DYLIB": "YES",
+                "SWIFT_VERSION": "5.9"
+            ],
+            configurations: [
+                .build(.debug)
+            ]
+        )
+        
+        public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget, bundleID: String? = nil) -> InfoPlist {
             let kakaoNativeAppKey: String
             let baseServerURL: String
             
@@ -99,7 +113,7 @@ public extension Project {
                 baseServerURL = "${BASE_SERVER_URL_RELEASE}"
             }
             
-            return .extendingDefault(with: [
+            var plist: [String: Plist.Value] =  [
                 "CFBundleShortVersionString": "\(currentAppVersion)",
                 "CFBundleVersion": "1",
                 "UILaunchStoryboardName": "LaunchScreen",
@@ -129,8 +143,13 @@ public extension Project {
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
-                "ITSAppUsesNonExemptEncryption": false
-            ])
+                "ITSAppUsesNonExemptEncryption": false,
+            ]
+            if let bundleID {
+                plist["CFBundleIdentifier"] = Plist.Value(stringLiteral: bundleID)
+            }
+            
+            return .extendingDefault(with: plist)
         }
         
         
