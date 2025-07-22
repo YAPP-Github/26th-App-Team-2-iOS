@@ -9,6 +9,6 @@ import Foundation
 
 public struct EmptyData: Decodable, Equatable { }
 
-public protocol Responsable {
+public protocol HTTPResponseProtocol {
     associatedtype Item: Decodable
 }
