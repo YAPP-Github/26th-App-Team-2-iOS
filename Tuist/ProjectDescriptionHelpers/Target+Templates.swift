@@ -239,7 +239,7 @@ public extension Target {
         newFactory.name = ModulePath.Feature.name + module.rawValue + "Example"
         newFactory.sources = .exampleSources
         newFactory.product = .app
-        newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).\(module.rawValue)".lowercased()
+        newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(module.rawValue)"
         newFactory.settings = Project.Environment.exampleTargetSettings
         return make(factory: newFactory)
     }
