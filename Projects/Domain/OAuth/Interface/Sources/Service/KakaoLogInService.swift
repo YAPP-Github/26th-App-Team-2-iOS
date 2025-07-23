@@ -11,5 +11,7 @@ import KakaoSDKAuth
 import KakaoSDKCommon
 
 public final class KakaoLogInService {
-    
+    public static func make() -> KakaoLogInService {
+        KakaoLogInService()
+    }
 }

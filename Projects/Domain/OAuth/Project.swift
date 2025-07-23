@@ -10,7 +10,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: ModulePath.Domain.name+ModulePath.Domain.OAuth.rawValue,
+    name: ModulePath.Domain.name + ModulePath.Domain.OAuth.rawValue,
     targets: [
         .domain(
             interface: .OAuth,

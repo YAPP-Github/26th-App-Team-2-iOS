@@ -31,6 +31,8 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol {
         for await userIdentityResult in identityStream {
             switch userIdentityResult {
             case .success(let userIdentity):
+                
+                
                 return .apple
             case .failure(let failure): throw failure
             }

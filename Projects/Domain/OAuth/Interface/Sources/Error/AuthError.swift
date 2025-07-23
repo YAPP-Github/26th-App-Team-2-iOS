@@ -10,4 +10,6 @@ import Foundation
 public enum AuthError: Error {
     case invalidToken
     case appleOAuthError(AppleOAuthError)
+    case validAuthFailed
+    case unknownMemberType
 }

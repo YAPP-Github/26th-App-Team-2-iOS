@@ -27,7 +27,11 @@ extension UserVerifyProtocol {
         
         let response: BrakeResponse<AuthLogInResponse> = try await networkProvider.request(endPoint)
         
-        let state = response.data.memberState
+        let state: String = response.data.memberState
+        guard let stateType = MemberStateType(rawValue: state) else {
+            assertionFailure("멤버 타입 변환 오류 \(state)")
+            throw AuthError.unknownMemberType
+        }
         
         let accessToken = AccessToken(token: response.data.accessToken, expiration: .now)
         let refreshToken = RefreshToken(token: response.data.refreshToken, expiration: .now)
@@ -37,6 +41,7 @@ extension UserVerifyProtocol {
 
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
+        
         
 //        try userInfoStorage.save(userInformation: .init(userID: userID))
     }

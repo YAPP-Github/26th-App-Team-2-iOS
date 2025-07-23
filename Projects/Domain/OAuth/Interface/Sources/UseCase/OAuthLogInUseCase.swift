@@ -8,26 +8,12 @@
 import Foundation
 import CoreNetworkInterface
 import CoreLocalStorageInterface
+import Core
 
 public struct OAuthLogInUseCase {
     private let oAuthService: OAuthServiceProtocol
     
-    public static func make(authType: OAuthType) -> Self {
-        switch authType {
-        case .apple:
-            OAuthLogInUseCase(
-                oAuthService: AppleLogInService(
-                    networkProvider: NetworkProvider(networkSession: NetworkSession()) as! NetworkProviderProtocol
-                )  as! OAuthServiceProtocol
-            )
-        case .kakao:
-            OAuthLogInUseCase(
-                oAuthService: KakaoLogInService() as! OAuthServiceProtocol
-            )
-        }
-    }
-    
-    init(oAuthService: OAuthServiceProtocol) {
+    public init(oAuthService: OAuthServiceProtocol) {
         self.oAuthService = oAuthService
     }
     

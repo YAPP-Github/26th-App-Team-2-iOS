@@ -11,6 +11,7 @@ import KakaoSDKAuth
 import FeatureOnboardingInterface
 import DomainOAuthInterface
 import SharedUtil
+import Domain
 
 @main
 struct OnbardingExampleApp: App {
@@ -27,8 +28,8 @@ struct OnbardingExampleApp: App {
             LoginView()
                 .environment(
                     LogInViewModel(
-                        appleLogInUseCase: OAuthLogInUseCase.make(authType: .apple),
-                        kakaoLogInUseCase: OAuthLogInUseCase.make(authType: .kakao)
+                        appleLogInUseCase: OAuthLogInUseCase(oAuthService: AppleLogInService.make()),
+                        kakaoLogInUseCase: OAuthLogInUseCase(oAuthService: KakaoLogInService.make())
                     )
                 )
                 .onOpenURL { @MainActor url in

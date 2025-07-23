@@ -5,7 +5,7 @@
 //  Created by Greem on 7/22/25.
 //
 import SwiftUI
-import DomainOAuthInterface
+import Domain
 public struct LoginView: View {
     
     @Environment(LogInViewModel.self) var logInViewModel
@@ -33,8 +33,8 @@ public struct LoginView: View {
     LoginView()
         .environment(
             LogInViewModel(
-                appleLogInUseCase: OAuthLogInUseCase.make(authType: .apple),
-                kakaoLogInUseCase: OAuthLogInUseCase.make(authType: .kakao)
+                appleLogInUseCase: OAuthLogInUseCase(oAuthService: AppleLogInService.make()),
+                kakaoLogInUseCase: OAuthLogInUseCase(oAuthService: KakaoLogInService.make())
             )
         )
 }
