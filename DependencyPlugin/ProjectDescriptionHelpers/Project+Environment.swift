@@ -26,8 +26,8 @@ public extension Project {
         public static let bundlePrefix = "yapp.breake"
         public static func bundleId(deploymentTarget: ProjectDeploymentTarget) -> String {
             switch deploymentTarget {
-            case .debug:  "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
-            case .release: Project.Environment.bundlePrefix
+            case .debug:  "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)".lowercased()
+            case .release: Project.Environment.bundlePrefix.lowercased()
             }
         }
         

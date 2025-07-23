@@ -11,4 +11,14 @@ public struct AuthLogInRequest: Encodable {
     public let provider: String
     public let authorizationCode: String
     public let deviceId: String
+    
+    public init(
+        provider: String,
+        authorizationCode: String,
+        deviceId: String
+    ) {
+        self.provider = provider
+        self.authorizationCode = authorizationCode
+        self.deviceId = deviceId
+    }
 }

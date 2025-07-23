@@ -61,7 +61,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             let (data, response) = try await session.data(for: request)
             
             try response.validateResponse()
-            let serverResponseDTO: BrakeResponseDTO<AuthRefreshResponse> = try JSONDecoder().decode(BrakeResponseDTO<AuthRefreshResponse>.self, from: data)
+            let serverResponseDTO: BrakeResponse<AuthRefreshResponse> = try JSONDecoder().decode(BrakeResponse<AuthRefreshResponse>.self, from: data)
             
             let accessToken: AccessToken = try jwtDecoder.decode(serverResponseDTO.data.accessToken, as: AccessToken.self)
             let refreshToken: RefreshToken = try jwtDecoder.decode(serverResponseDTO.data.refreshToken, as: RefreshToken.self)

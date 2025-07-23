@@ -13,29 +13,33 @@ public extension BrakeRouter {
         public typealias Item = Response
         
         case refresh(AuthRefreshRequest)
+        case logIn(AuthLogInRequest)
         
         public var path: String {
             switch self {
             case .refresh:
                 return "/auth/refresh"
+            case .logIn:
+                return "/auth/login"
             }
         }
         
         public var httpMethod: HTTPMethod {
             switch self {
-            case .refresh: .post
+            case .refresh, .logIn: .post
             }
         }
         
         public var queryParameters: Encodable? {
             switch self {
-            case .refresh: nil
+            case .refresh, .logIn: nil
             }
         }
         
         public var bodyParameters: Encodable? {
             switch self {
             case .refresh(let requestDTO): requestDTO
+            case .logIn(let requestDTO): requestDTO
             }
         }
         

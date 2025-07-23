@@ -9,6 +9,7 @@ import Foundation
 
 public enum AppleOAuthError: Error {
     case tokenMissing
+    case authorizationCodeMissing
     case unknown
     case canceled
     case invalidResponse

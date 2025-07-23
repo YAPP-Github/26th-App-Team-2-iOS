@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct BrakeResponseDTO<ResponseItem: Decodable>: Decodable {
+public struct BrakeResponse<ResponseItem: Decodable>: Decodable {
     public let code: Int
     public let data: ResponseItem
     
@@ -15,4 +15,9 @@ public struct BrakeResponseDTO<ResponseItem: Decodable>: Decodable {
         self.code = code
         self.data = data
     }
+}
+
+public struct BrakeServerErrorResponse: Decodable {
+    public let code: Int
+    public let message: String
 }

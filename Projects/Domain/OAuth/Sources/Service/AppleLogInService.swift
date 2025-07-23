@@ -65,14 +65,20 @@ extension AppleLogInService: @retroactive ASAuthorizationControllerDelegate {
             return
         }
         
-        guard let identityTokenData: Data = appleIDCredential.identityToken else {
-            self.identityContinuation?.yield(.failure(.appleOAuthError(.tokenMissing)))
+        // guard let _ : Data = appleIDCredential.identityToken else {
+        //     self.identityContinuation?.yield(.failure(.appleOAuthError(.tokenMissing)))
+        //     identityContinuation?.finish()
+        //     return
+        // }
+        
+        guard let authorizationCodeData: Data = appleIDCredential.authorizationCode else {
+            self.identityContinuation?.yield(.failure(.appleOAuthError(.authorizationCodeMissing)))
             identityContinuation?.finish()
             return
         }
         
-        let identityToken: String = String(decoding: identityTokenData, as: UTF8.self)
-        identityContinuation?.yield(.success(identityToken))
+        let authorizationCode = String(decoding: authorizationCodeData, as: UTF8.self)
+        identityContinuation?.yield(.success(authorizationCode))
         identityContinuation?.finish()
     }
     
