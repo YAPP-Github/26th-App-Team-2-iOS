@@ -65,7 +65,7 @@ let project: Project = .makeModule(
 
 fileprivate extension InfoPlist {
     static func onboardingExampleAppInfoPlist(deploymentTarget: ProjectDeploymentTarget, bundleID: String? = nil) -> InfoPlist {
-        let kakaoNativeAppKey: String = "${KAKAO_NATIVE_APP_KEY_ONBOARDING_TEST}"
+        let kakaoNativeAppKey: String = "${KAKAO_NATIVE_APP_KEY_DEBUG}"
         let baseServerURL: String = "${BASE_SERVER_URL_DEBUG}"
         
         var plist: [String: Plist.Value] =  [

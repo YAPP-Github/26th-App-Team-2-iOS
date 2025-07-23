@@ -7,7 +7,7 @@
 import Testing
 
 struct OAuthTest {
-    init() async throws { ... }
+    init() async throws { }
 
     @Test func myTest() {
 
