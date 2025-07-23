@@ -18,7 +18,7 @@ public struct OAuthLogInUseCase {
             OAuthLogInUseCase(
                 oAuthService: AppleLogInService(
                     networkProvider: NetworkProvider(networkSession: NetworkSession()) as! NetworkProviderProtocol
-                ) as! OAuthServiceProtocol
+                )  as! OAuthServiceProtocol
             )
         case .kakao:
             OAuthLogInUseCase(

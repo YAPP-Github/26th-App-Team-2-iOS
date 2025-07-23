@@ -36,7 +36,7 @@ public final class LogInViewModel {
     }
     
     func kakaoLogInBtnTapped() {
-        Task { @MainActor in
+        Task {
             do {
                 let type = try await kakaoLogInUseCase.execute()
                 print("타입 반환 \(type)")
