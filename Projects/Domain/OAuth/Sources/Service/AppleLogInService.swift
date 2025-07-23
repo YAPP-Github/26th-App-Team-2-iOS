@@ -15,9 +15,9 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol {
         request.requestedScopes = [.fullName, .email]
         self.identityContinuation?.finish()
         self.identityContinuation = nil
-        let identityStream = AsyncStream<Result<String, Error>> { [weak self] continuation in
+        let identityStream = AsyncStream<Result<String, AuthError>> { [weak self] continuation in
             guard let self else {
-                assertionFailure("잘못된 유저를 부릅니다!!")
+                assertionFailure("잘못된 weak self 부릅니다!!")
                 return
             }
             self.identityContinuation = continuation
@@ -31,6 +31,7 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol {
         for await userIdentityResult in identityStream {
             switch userIdentityResult {
             case .success(let userIdentity):
+                print("user Identity: \(userIdentity)")
                 return .apple
             case .failure(let failure): throw failure
             }
@@ -43,19 +44,30 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol {
 extension AppleLogInService: @retroactive ASAuthorizationControllerDelegate {
     
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
-        self.identityContinuation?.yield(.failure(AuthError.invalidToken))
+        let appleOAuthError: AppleOAuthError = switch (error as NSError).code {
+        case 1000: .unknown
+        case 1001: .canceled
+        case 1002: .invalidResponse
+        case 1003: .notHandled
+        case 1004: .failed
+        case 1005: .notInteractive
+        default: .otherError(error)
+        }
+        self.identityContinuation?.yield(.failure(.appleOAuthError(appleOAuthError)))
         self.identityContinuation?.finish()
         return
     }
     
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         guard let appleIDCredential: ASAuthorizationAppleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            self.identityContinuation?.yield(.failure(AuthError.invalidToken))
+            self.identityContinuation?.yield(.failure(.appleOAuthError(.unknown)))
+            identityContinuation?.finish()
             return
         }
         
         guard let identityTokenData: Data = appleIDCredential.identityToken else {
-            self.identityContinuation?.yield(.failure(AuthError.invalidToken))
+            self.identityContinuation?.yield(.failure(.appleOAuthError(.tokenMissing)))
+            identityContinuation?.finish()
             return
         }
         

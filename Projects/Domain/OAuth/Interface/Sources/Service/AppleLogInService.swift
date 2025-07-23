@@ -12,7 +12,7 @@ import CoreNetworkInterface
 public final class AppleLogInService: NSObject {
     public let networkProvider: NetworkProviderProtocol
     
-    public var identityContinuation: AsyncStream<Result<String, Error>>.Continuation?
+    public var identityContinuation: AsyncStream<Result<String, AuthError>>.Continuation?
 
     public init(
         networkProvider: NetworkProviderProtocol

@@ -12,8 +12,3 @@ public enum OAuthType {
     case kakao
 }
 
-public enum OAuthResult: Equatable {
-    
-    case success(OAuthType)
-    case failure(AuthError)
-}
