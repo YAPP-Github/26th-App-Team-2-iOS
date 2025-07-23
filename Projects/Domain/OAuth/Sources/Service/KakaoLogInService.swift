@@ -10,11 +10,13 @@ import DomainOAuthInterface
 import KakaoSDKUser
 import KakaoSDKAuth
 
-extension KakaoLogInService: @retroactive OAuthServiceProtocol {
+extension KakaoLogInService: @retroactive OAuthServiceProtocol, @retroactive UserVerifyProtocol {
+    
     
     public func login() async throws -> OAuthType {
         let result: OAuthToken = try await accessFromKakaoLogIn()
         let accessToken = result.accessToken
+//        try await self.verify(oAuthType: .kakao, authorizationCode: accessToken)
         return .kakao
     }
     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum MemberStateType: String {
-    case active = "ACTIVE"
-    case hold = "HOLD"
+public enum MemberStateType {
+    case active
+    case hold
 }

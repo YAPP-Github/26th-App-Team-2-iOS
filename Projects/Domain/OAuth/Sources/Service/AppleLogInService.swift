@@ -9,13 +9,13 @@ import Foundation
 import AuthenticationServices
 import DomainOAuthInterface
 
-extension AppleLogInService: @retroactive OAuthServiceProtocol {
+extension AppleLogInService: @retroactive OAuthServiceProtocol, @retroactive UserVerifyProtocol {
     public func login() async throws -> OAuthType {
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
         self.identityContinuation?.finish()
         self.identityContinuation = nil
-        let identityStream = AsyncStream<Result<String, AuthError>> { [weak self] continuation in
+        let authorizationCodeStream = AsyncStream<Result<String, AuthError>> { [weak self] continuation in
             guard let self else {
                 assertionFailure("잘못된 weak self 부릅니다!!")
                 return
@@ -28,11 +28,10 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol {
         controller.presentationContextProvider = self
         controller.performRequests()
         
-        for await userIdentityResult in identityStream {
-            switch userIdentityResult {
-            case .success(let userIdentity):
-                
-                
+        for await authorizationCode in authorizationCodeStream {
+            switch authorizationCode {
+            case .success(let authorizationCode):
+//                try await self.verify(oAuthType: .apple, authorizationCode: authorizationCode)
                 return .apple
             case .failure(let failure): throw failure
             }

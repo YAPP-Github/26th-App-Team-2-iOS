@@ -11,8 +11,10 @@ import CoreNetworkInterface
 import CoreLocalStorageInterface
 import UIKit.UIDevice
 
+
+
 extension UserVerifyProtocol {
-    func verify(
+    public func verify(
         oAuthType: OAuthType,
         authorizationCode: String
     ) async throws {
@@ -33,8 +35,8 @@ extension UserVerifyProtocol {
             throw AuthError.unknownMemberType
         }
         
-        let accessToken = AccessToken(token: response.data.accessToken, expiration: .now)
-        let refreshToken = RefreshToken(token: response.data.refreshToken, expiration: .now)
+        let accessToken = AccessToken(token: response.data.accessToken)
+        let refreshToken = RefreshToken(token: response.data.refreshToken)
         
         let accessTokenKey = try self.tokenKeyHodler.fetchAccessTokenKey()
         let refreshTokenKey = try self.tokenKeyHodler.fetchRefreshTokenKey()
@@ -42,10 +44,22 @@ extension UserVerifyProtocol {
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
         
-        
-//        try userInfoStorage.save(userInformation: .init(userID: userID))
+        try self.memberStateStorage.save(memberState: stateType)
     }
 }
+
+fileprivate extension MemberStateType {
+    private static let activeRawValue = "ACTIVE"
+    private static let holdRawValue = "HOLD"
+    init?(rawValue: String) {
+        switch rawValue {
+        case Self.activeRawValue: self = .active
+        case Self.holdRawValue: self = .hold
+        default: return nil
+        }
+    }
+}
+
 
 fileprivate extension OAuthType {
     var provider: String {
