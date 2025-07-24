@@ -26,8 +26,9 @@ public class StartUpViewModel {
         self.onboardingStateUseCase = OnboardingStateUseCase(onboardingStateProtocol: OnboardingStateService.make())
     }
     
-    public func startUpOnAappear() {
+    public func startUpOnAppear() {
         if isCompleted { return }
+        isCompleted = true
         Task {
             let autoLogInResult = await autoLogInUseCase.execute()
             print("자동 로그인 결과: ", autoLogInResult)
@@ -49,7 +50,7 @@ public class StartUpViewModel {
                 }
             }
         }
-        isCompleted = true
+        
     }
     
     @MainActor public func userLogInCompleted() {

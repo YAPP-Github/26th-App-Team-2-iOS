@@ -19,14 +19,16 @@ public final class UserValidityService {
     
     
     static public func make() -> UserValidityService {
-        UserValidityService(
-            tokenStorage: KeyChainTokenStorage(),
-            tokenKeyHolder: BundleTokenKeyHolder(),
+        let tokenStorage = KeyChainTokenStorage()
+        let tokenKeyHolder = BundleTokenKeyHolder()
+        return UserValidityService(
+            tokenStorage: tokenStorage,
+            tokenKeyHolder: tokenKeyHolder,
             networkProviderProtocol: NetworkProvider(
                 networkSession: NetworkSession(
                     requestInterceptor: TokenInterceptor(
-                        tokenStorage: KeyChainTokenStorage(),
-                        tokenKeyHolder: BundleTokenKeyHolder()
+                        tokenStorage: tokenStorage,
+                        tokenKeyHolder: tokenKeyHolder
                     )
                 ),
                 urlComponentConfig: .default

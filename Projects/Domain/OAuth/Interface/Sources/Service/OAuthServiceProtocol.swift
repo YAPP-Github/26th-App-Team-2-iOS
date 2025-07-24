@@ -14,7 +14,7 @@ public protocol OAuthServiceProtocol {
 public final class OAuthLogInService {
     public let networkProvider: NetworkProviderProtocol
     public let tokenStorage: TokenStorageProtocol
-    public let tokenKeyHodler: TokenKeyHolderProtocol
+    public let tokenKeyHolder: TokenKeyHolderProtocol
     public let memberStateStorage: MemberStateStorageProtocol
     
     public static func make() -> OAuthLogInService {
@@ -26,7 +26,7 @@ public final class OAuthLogInService {
         )
     }
 
-    init(
+    public init(
         networkProvider: NetworkProviderProtocol,
         tokenStorage: TokenStorageProtocol,
         tokenKeyHodler: TokenKeyHolderProtocol,
@@ -34,7 +34,7 @@ public final class OAuthLogInService {
     ) {
         self.networkProvider = networkProvider
         self.tokenStorage = tokenStorage
-        self.tokenKeyHodler = tokenKeyHodler
+        self.tokenKeyHolder = tokenKeyHodler
         self.memberStateStorage = memberStateStorage
     }
     

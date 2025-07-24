@@ -43,7 +43,7 @@ struct OnbardingExampleApp: App {
                 }
             }
             .onAppear() {
-                startUpViewModel.startUpOnAappear()
+                startUpViewModel.startUpOnAppear()
             }
         }
     }

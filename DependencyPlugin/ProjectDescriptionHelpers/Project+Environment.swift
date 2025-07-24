@@ -133,12 +133,13 @@ public extension Project {
                 ],
                 "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
                 "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
-                "BASE_SERVER_URL": "\(baseServerURL)",
                 "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
+                
                 "LSApplicationQueriesSchemes": [
                     "kakaokompassauth",
                     "kakaolink"
                 ],
+                "BASE_SERVER_URL": "\(baseServerURL)",
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
@@ -169,10 +170,13 @@ public extension Project {
                     "kakaokompassauth",
                     "kakaolink"
                 ],
+                
                 "KAKAO_JS_KEY_DEBUG" : "${KAKAO_JS_KEY_DEBUG}",
                 "KAKAO_REST_API_KEY_DEBUG" : "${KAKAO_REST_API_KEY_DEBUG}",
                 "KAKAO_JS_KEY_RELEASE" : "${KAKAO_JS_KEY_RELEASE}",
                 "KAKAO_REST_API_KEY_RELEASE" : "${KAKAO_REST_API_KEY_RELEASE}",
+                "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
+                
                 "BASE_SERVER_URL_RELEASE" : "${BASE_SERVER_URL_RELEASE}",
                 "BASE_SERVER_URL_DEBUG" : "${BASE_SERVER_URL_DEBUG}",
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",

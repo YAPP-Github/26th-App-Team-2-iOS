@@ -39,7 +39,6 @@ public struct JWTDecoder {
             throw JWTError.decodePayloadSegmentError
         }
         
-        /// Swift Data 타입으로 변환한 payload 값에서 expriation 값을 추출한 후, 프로젝트에서 정의한 Token 타입으로 변환한다.
         guard let json = try? JSONSerialization.jsonObject(with: payloadData, options: []),
               let payload = json as? [String: Any] else {
             throw JWTError.parsePayloadJSONError

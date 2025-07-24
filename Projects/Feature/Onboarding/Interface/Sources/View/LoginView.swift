@@ -54,10 +54,10 @@ public struct LoginView: View {
             content: {
                 NavigationView {
                     KakaoWebView { onSuccess in
-                        print("✅ Authorization code: \(onSuccess)")
                         self.logInViewModel.kakaoCodeFetchSuccess(authorizationCode: onSuccess)
                         kakaoLogInShow.toggle()
                     } onAuthError: { error in
+                        self.loading = false
                         kakaoLogInShow.toggle()
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

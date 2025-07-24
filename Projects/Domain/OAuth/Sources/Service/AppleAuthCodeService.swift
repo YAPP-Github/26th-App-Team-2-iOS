@@ -18,6 +18,8 @@ extension AppleAuthCodeService: @retroactive AppleAuthCodeProtocol {
         let authorizationCodeStream = AsyncStream<Result<String, AuthError>> { [weak self] continuation in
             guard let self else {
                 assertionFailure("잘못된 weak self 부릅니다!!")
+                continuation.yield(.failure(.invalidToken))
+                continuation.finish()
                 return
             }
             self.identityContinuation = continuation
@@ -30,9 +32,7 @@ extension AppleAuthCodeService: @retroactive AppleAuthCodeProtocol {
         
         for await authorizationCode in authorizationCodeStream {
             switch authorizationCode {
-            case .success(let authorizationCode):
-                print("apple 인가 코드 \(authorizationCode)")
-                return authorizationCode
+            case .success(let authorizationCode): return authorizationCode
             case .failure(let failure): throw failure
             }
         }
@@ -65,13 +65,14 @@ extension AppleAuthCodeService: @retroactive ASAuthorizationControllerDelegate {
             return
         }
         
-        guard let authorizationCodeData: Data = appleIDCredential.authorizationCode else {
+        guard let authorizationCodeData: Data = appleIDCredential.authorizationCode,
+            let authorizationCode = String(data: authorizationCodeData, encoding: .utf8) else {
             self.identityContinuation?.yield(.failure(.appleOAuthError(.authorizationCodeMissing)))
             identityContinuation?.finish()
             return
         }
         
-        let authorizationCode = String(decoding: authorizationCodeData, as: UTF8.self)
+        
         identityContinuation?.yield(.success(authorizationCode))
         identityContinuation?.finish()
     }

@@ -47,4 +47,9 @@ struct XCConfigValueUsableTest {
         let kakaoRESTAPIKeyRelease = testBundle?.infoDictionary?["KAKAO_REST_API_KEY_RELEASE"] as? String
         #expect(kakaoRESTAPIKeyRelease != nil, .init(rawValue: "kakaoRESTAPIKey - Release가 없습니다!!"))
     }
+    
+    @Test func kakaoRedirectURLUsable() {
+           let kakaoRedirectURL = testBundle?.infoDictionary?["KAKAO_REDIRECT_URL"] as? String
+           #expect(kakaoRedirectURL != nil, .init(rawValue: "kakaoRedirectURL이 없습니다!!"))
+       }
 }

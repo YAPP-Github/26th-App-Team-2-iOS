@@ -85,9 +85,11 @@ fileprivate extension InfoPlist {
                     ]]
                 ]
             ],
+            
             "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
             "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
             "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
+            
             "BASE_SERVER_URL": "\(baseServerURL)",
             "LSApplicationQueriesSchemes": [
                 "kakaokompassauth",

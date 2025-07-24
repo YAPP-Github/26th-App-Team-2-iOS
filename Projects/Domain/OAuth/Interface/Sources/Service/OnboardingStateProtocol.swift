@@ -9,8 +9,8 @@ import Foundation
 import Core
 
 public protocol OnboardingStateProtocol {
-    func getMemeberState() -> MemberStateType
-    func setMembserState(_ memberState: MemberStateType)
+    func getMemberState() -> MemberStateType
+    func setMemberState(_ memberState: MemberStateType)
 }
 
 public final class OnboardingStateService {
@@ -21,7 +21,7 @@ public final class OnboardingStateService {
         OnboardingStateService(memberStateStorage: UserDefaultsMemberStateStorage())
     }
     
-    init(memberStateStorage: MemberStateStorageProtocol) {
+    public init(memberStateStorage: MemberStateStorageProtocol) {
         self.memberStateStorage = memberStateStorage
     }
 }

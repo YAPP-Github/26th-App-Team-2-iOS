@@ -24,7 +24,7 @@ public struct AutoLogInUseCase {
         do {
             let isUserValid = try await userValidityProtocol.isValid()
             guard isUserValid else { return .logInRequired }
-            switch onboardingStateProtocol.getMemeberState() {
+            switch onboardingStateProtocol.getMemberState() {
             case .active: return .brakeAvailable
             case .hold: return .onboardingRequired
             }

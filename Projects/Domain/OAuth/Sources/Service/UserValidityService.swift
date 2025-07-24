@@ -14,15 +14,12 @@ extension UserValidityService: @retroactive UserValidityProtocol {
     
     public func isValid() async throws -> Bool {
         do {
-            return false
             let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
             let refreshTokenKey = try tokenKeyHolder.fetchRefreshTokenKey()
             let accessToken: AccessToken? = try await tokenStorage.read(key: accessTokenKey)
             let refreshToken: RefreshToken? = try await tokenStorage.read(key: refreshTokenKey)
             
-            guard let accessToken, let refreshToken else {
-                return false
-            }
+            guard let accessToken, let refreshToken else { return false }
             
             let authRefreshRequest = AuthRefreshRequest(refreshToken: refreshToken.token)
             let refreshEndPoint = BrakeRouter.AuthEndPoint<BrakeResponse<AuthRefreshResponse>>.refresh(authRefreshRequest)

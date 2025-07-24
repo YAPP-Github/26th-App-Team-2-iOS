@@ -12,7 +12,7 @@ import CoreLocalStorageInterface
 public protocol UserVerifyProtocol {
     var networkProvider: NetworkProviderProtocol { get }
     var tokenStorage: TokenStorageProtocol { get }
-    var tokenKeyHodler: TokenKeyHolderProtocol { get }
+    var tokenKeyHolder: TokenKeyHolderProtocol { get }
     var memberStateStorage: MemberStateStorageProtocol { get }
     
     func verify(oAuthType: OAuthType, authorizationCode: String) async throws

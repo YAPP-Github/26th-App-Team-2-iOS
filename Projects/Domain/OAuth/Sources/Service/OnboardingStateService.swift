@@ -11,11 +11,11 @@ import Core
 
 extension OnboardingStateService: @retroactive OnboardingStateProtocol {
     
-    public func getMemeberState() -> MemberStateType {
+    public func getMemberState() -> MemberStateType {
         self.memberStateStorage.get() ?? .hold
     }
     
-    public func setMembserState(_ memberState: MemberStateType) {
+    public func setMemberState(_ memberState: MemberStateType) {
         self.memberStateStorage.save(memberState: memberState)
     }
 }

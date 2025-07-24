@@ -17,7 +17,7 @@ public struct OnboardingStateUseCase {
     }
     
     public func execute() -> UserLogInStateType {
-        switch onboardingStateProtocol.getMemeberState() {
+        switch onboardingStateProtocol.getMemberState() {
         case .active: return .brakeAvailable
         case .hold: return .onboardingRequired
         }

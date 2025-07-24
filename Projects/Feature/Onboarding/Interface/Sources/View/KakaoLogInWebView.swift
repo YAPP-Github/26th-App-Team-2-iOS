@@ -46,12 +46,9 @@ struct KakaoWebView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
-        config.websiteDataStore = WKWebsiteDataStore.default()
+        config.websiteDataStore = .nonPersistent()
         config.defaultWebpagePreferences = WKWebpagePreferences()
         config.defaultWebpagePreferences.allowsContentJavaScript = true
-        print("jsKey: \(KakaoConstants.jsKey)")
-        print("restKey: \(KakaoConstants.restAPIKey)")
-        print("redirectURL: \(KakaoConstants.redirectURL)")
         
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.navigationDelegate = context.coordinator

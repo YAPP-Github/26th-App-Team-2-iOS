@@ -18,10 +18,10 @@ extension UserVerifyProtocol {
         oAuthType: OAuthType,
         authorizationCode: String
     ) async throws {
-        let loginRequest = AuthLogInRequest(
+        let loginRequest = await AuthLogInRequest(
             provider: oAuthType.provider,
             authorizationCode: authorizationCode,
-            deviceId: UUID().uuidString
+            deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
         )
         let endPoint = BrakeRouter.AuthEndPoint<BrakeResponse<AuthLogInResponse>>.logIn(loginRequest)
         
@@ -35,8 +35,8 @@ extension UserVerifyProtocol {
         
         let accessToken = AccessToken(token: response.data.accessToken)
         let refreshToken = RefreshToken(token: response.data.refreshToken)
-        let accessTokenKey = try self.tokenKeyHodler.fetchAccessTokenKey()
-        let refreshTokenKey = try self.tokenKeyHodler.fetchRefreshTokenKey()
+        let accessTokenKey = try self.tokenKeyHolder.fetchAccessTokenKey()
+        let refreshTokenKey = try self.tokenKeyHolder.fetchRefreshTokenKey()
 
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
