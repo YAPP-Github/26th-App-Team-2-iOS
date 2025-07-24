@@ -14,7 +14,7 @@ final class BlockingViewModel: ObservableObject {
 
     init() {}
 
-    @Published  var newSelection: FamilyActivitySelection = .init()
+    @Published var newSelection: FamilyActivitySelection = .init()
 
     var selectedAppsTokens: Set<ApplicationToken> {
         newSelection.applicationTokens

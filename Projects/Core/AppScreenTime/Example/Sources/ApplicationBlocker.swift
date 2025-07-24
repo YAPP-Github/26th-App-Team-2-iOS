@@ -8,6 +8,7 @@
 import Foundation
 import ManagedSettings
 import DeviceActivity
+import CoreAppScreenTimeInterface
 
 struct ApplicationBlocker {
 
