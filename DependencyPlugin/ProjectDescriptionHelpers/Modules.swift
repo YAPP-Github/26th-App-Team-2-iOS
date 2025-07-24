@@ -23,6 +23,9 @@ public extension ModulePath {
         public static let name: String = "App"
         case iOS
         case NotificationExtension
+        case DeviceActivityMonitorExtension
+        case ShieldConfigurationExtension
+        case ShieldActionConfigurationExtension
     }
 }
 
@@ -55,6 +58,7 @@ public extension ModulePath {
         
         case Network
         case LocalStorage
+        case AppScreenTime
     }
 }
 

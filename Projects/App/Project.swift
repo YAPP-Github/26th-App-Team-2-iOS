@@ -25,6 +25,9 @@ let appTargets: [Target] = [
             scripts: Project.Environment.appScripts,
             dependencies: [
                 .target(name: "Brake-Debug-NotificationExtension"),
+                .target(name: "BrakeDeviceActivityMonitorExtension"),
+                .target(name: "BrakeShieldConfigurationExtension"),
+                .target(name: "BrakeShieldActionConfigurationExtension"),
                 .feature
             ],
             
@@ -41,6 +44,9 @@ let appTargets: [Target] = [
             scripts: Project.Environment.appScripts,
             dependencies: [
                 .target(name: "Brake-Release-NotificationExtension"),
+                .target(name: "BrakeDeviceActivityMonitorExtension"),
+                .target(name: "BrakeShieldConfigurationExtension"),
+                .target(name: "BrakeShieldActionConfigurationExtension"),
                 .feature
             ],
             settings: Project.Environment.releaseTargetSettings
@@ -75,10 +81,52 @@ let appTargets: [Target] = [
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
                 ]
             ]),
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
             settings: Project.Environment.releaseTargetSettings
         )
     ),
-    
+    .app(
+        implements: .ShieldConfigurationExtension,
+        factory: .init(
+            name: "BrakeShieldConfigurationExtension",
+            infoPlist: "Extensions/ShieldConfigurationExtension/Info.plist",
+            entitlements: "Extensions/ShieldConfigurationExtension/BrakeShieldConfigurationExtension.entitlements",
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
+            settings: Project.Environment.projectSettings
+        )
+    ),
+    .app( 
+        implements: .ShieldActionConfigurationExtension,
+        factory: .init(
+            name: "BrakeShieldActionConfigurationExtension",
+            infoPlist: "Extensions/ShieldActionConfigurationExtension/Info.plist",
+            entitlements: "Extensions/ShieldActionConfigurationExtension/BrakeShieldActionConfigurationExtension.entitlements",
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
+            settings: Project.Environment.projectSettings
+        )
+    ),
+    .app(
+        implements: .DeviceActivityMonitorExtension,
+        factory: .init(
+            name: "BrakeDeviceActivityMonitorExtension",
+            infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
+            entitlements: "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements",
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
+            settings: Project.Environment.projectSettings
+        )
+    ),
     .app(
         tests: .iOS,
         factory: .init(
@@ -90,7 +138,7 @@ let appTargets: [Target] = [
             ],
             settings: Project.Environment.debugTargetSettings
         )
-    ),
+    )
 ]
 
 let project: Project = .makeModule(
@@ -99,6 +147,6 @@ let project: Project = .makeModule(
     schemes: appSchemes,
     additionalFiles: [
         "./xcconfigs/Shared.xcconfig",
-        "./xcconfigs/TokenKeys.xcconfig",
+        "./xcconfigs/TokenKeys.xcconfig"
     ]
 )
