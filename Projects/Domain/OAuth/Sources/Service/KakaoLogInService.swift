@@ -16,33 +16,25 @@ extension KakaoLogInService: @retroactive OAuthServiceProtocol, @retroactive Use
     public func login() async throws -> OAuthType {
         let result: OAuthToken = try await accessFromKakaoLogIn()
         let accessToken = result.accessToken
-        try await self.verify(oAuthType: .kakao, authorizationCode: accessToken)
+        //        try await self.verify(oAuthType: .kakao, authorizationCode: accessToken)
         return .kakao
     }
     
     @MainActor private func accessFromKakaoLogIn() async throws -> OAuthToken {
         try await withCheckedThrowingContinuation { continuation in
-            if UserApi.isKakaoTalkLoginAvailable() {
-                UserApi.shared.loginWithKakaoTalk { oauthToken, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else if let oauthToken {
-                        continuation.resume(returning: oauthToken)
-                    } else {
-                        continuation.resume(throwing: AuthError.invalidToken)
-                    }
-                }
-            } else {
-                UserApi.shared.loginWithKakaoAccount { oauthToken, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else if let oauthToken {
-                        continuation.resume(returning: oauthToken)
-                    } else {
-                        continuation.resume(throwing: AuthError.invalidToken)
-                    }
+            UserApi.shared.loginWithKakaoAccount() { oauthToken, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else if let oauthToken {
+                    let idToken = oauthToken.idToken
+                    print("카카오 idToken \(idToken) oauthToken.scope \(oauthToken.scope) \(oauthToken.scopes)")
+                    continuation.resume(returning: oauthToken)
+                } else {
+                    continuation.resume(throwing: AuthError.invalidToken)
                 }
             }
+
+            
         }
     }
 }

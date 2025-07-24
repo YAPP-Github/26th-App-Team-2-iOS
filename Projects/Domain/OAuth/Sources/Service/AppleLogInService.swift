@@ -31,6 +31,7 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol, @retroactive Use
         for await authorizationCode in authorizationCodeStream {
             switch authorizationCode {
             case .success(let authorizationCode):
+                print("apple 인가 코드 \(authorizationCode)")
 //                try await self.verify(oAuthType: .apple, authorizationCode: authorizationCode)
                 return .apple
             case .failure(let failure): throw failure
