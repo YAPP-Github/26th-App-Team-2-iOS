@@ -1,0 +1,15 @@
+//
+//  Shared.xcconfig
+//  CoreAppScreenTime
+//
+//  Created by Derrick kim on 7/11/25.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+// Debug 환경 설정
+OTHER_SWIFT_FLAGS[config=Debug][sdk=*] = $(inherited) -DDEBUG
+
+// Release 환경 설정
+OTHER_SWIFT_FLAGS[config=Release][sdk=*] = $(inherited) -DRELEASE 
