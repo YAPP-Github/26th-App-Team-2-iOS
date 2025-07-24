@@ -13,7 +13,7 @@ public protocol OnboardingStateProtocol {
     func setMembserState(_ memberState: MemberStateType)
 }
 
-public final class OnboardingStateService: OnboardingStateProtocol {
+public final class OnboardingStateService {
     
     public let memberStateStorage: MemberStateStorageProtocol
     
@@ -23,13 +23,5 @@ public final class OnboardingStateService: OnboardingStateProtocol {
     
     init(memberStateStorage: MemberStateStorageProtocol) {
         self.memberStateStorage = memberStateStorage
-    }
-    
-    public func getMemeberState() -> MemberStateType {
-        self.memberStateStorage.get() ?? .hold
-    }
-    
-    public func setMembserState(_ memberState: MemberStateType) {
-        self.memberStateStorage.save(memberState: memberState)
     }
 }
