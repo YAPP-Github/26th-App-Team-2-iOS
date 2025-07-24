@@ -10,7 +10,6 @@ import DomainOAuthInterface
 
 @Observable
 public final class LogInViewModel {
-public final class LogInViewModel {
     
     var kakaoLogInShow: Bool = false
     var loading: Bool = false 
