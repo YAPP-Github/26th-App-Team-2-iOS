@@ -29,6 +29,9 @@ public struct Keychain {
         var option = Option()
         if let bundleIdentifier = Bundle.main.bundleIdentifier {
             option.service = bundleIdentifier
+        } else {
+            // 서비스 이름이 없을 경우 기본값 설정
+            option.service = "com.yapp.brake"
         }
 
         self.init(option: option)
