@@ -14,7 +14,7 @@ public struct OnboardingView: View {
     }
     
     public var body: some View {
-        Text("Hello, world!")
+        Text("온보딩 화면")
     }
     
 }

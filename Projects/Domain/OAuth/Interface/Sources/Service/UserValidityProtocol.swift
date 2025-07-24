@@ -22,7 +22,15 @@ public final class UserValidityService {
         UserValidityService(
             tokenStorage: KeyChainTokenStorage(),
             tokenKeyHolder: BundleTokenKeyHolder(),
-            networkProviderProtocol: NetworkProvider(networkSession: NetworkSession())
+            networkProviderProtocol: NetworkProvider(
+                networkSession: NetworkSession(
+                    requestInterceptor: TokenInterceptor(
+                        tokenStorage: KeyChainTokenStorage(),
+                        tokenKeyHolder: BundleTokenKeyHolder()
+                    )
+                ),
+                urlComponentConfig: .default
+            )
         )
     }
     

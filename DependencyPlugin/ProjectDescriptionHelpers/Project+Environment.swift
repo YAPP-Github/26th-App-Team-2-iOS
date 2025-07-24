@@ -101,15 +101,18 @@ public extension Project {
         )
         
         public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
-            let kakaoNativeAppKey: String
+            let kakaoJSAppKey: String
+            let kakaoRESTAPIKey: String
             let baseServerURL: String
             
             switch deploymentTarget {
             case .debug:
-                kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEBUG}"
+                kakaoJSAppKey = "${KAKAO_JS_KEY_DEBUG}"
+                kakaoRESTAPIKey = "${KAKAO_REST_API_KEY_DEBUG}"
                 baseServerURL = "${BASE_SERVER_URL_DEBUG}"
             case .release:
-                kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_RELEASE}"
+                kakaoJSAppKey = "${KAKAO_JS_KEY_RELEASE}"
+                kakaoRESTAPIKey = "${KAKAO_REST_API_KEY_RELEASE}"
                 baseServerURL = "${BASE_SERVER_URL_RELEASE}"
             }
             
@@ -128,14 +131,10 @@ public extension Project {
                         ]]
                     ]
                 ],
-                "CFBundleURLTypes": [
-                    [
-                        "CFBundleURLName": "",
-                        "CFBundleURLSchemes": ["kakao\(kakaoNativeAppKey)"]
-                    ]
-                ],
-                "KAKAO_NATIVE_APP_KEY": "\(kakaoNativeAppKey)",
+                "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
+                "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
                 "BASE_SERVER_URL": "\(baseServerURL)",
+                "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
                 "LSApplicationQueriesSchemes": [
                     "kakaokompassauth",
                     "kakaolink"

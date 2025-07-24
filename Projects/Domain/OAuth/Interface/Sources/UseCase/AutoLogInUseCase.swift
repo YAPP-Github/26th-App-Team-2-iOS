@@ -23,9 +23,7 @@ public struct AutoLogInUseCase {
     public func execute() async -> UserLogInStateType {
         do {
             let isUserValid = try await userValidityProtocol.isValid()
-            guard isUserValid else {
-                return .logInRequired
-            }
+            guard isUserValid else { return .logInRequired }
             switch onboardingStateProtocol.getMemeberState() {
             case .active: return .brakeAvailable
             case .hold: return .onboardingRequired
@@ -35,3 +33,4 @@ public struct AutoLogInUseCase {
         }
     }
 }
+

@@ -11,38 +11,62 @@ import DomainOAuthInterface
 @Observable
 public final class LogInViewModel {
     
-    let appleLogInUseCase: OAuthLogInUseCase
-    let kakaoLogInUseCase: OAuthLogInUseCase
+    var kakaoLogInShow: Bool = false
+    var loading: Bool = false 
+    
+    private let appleLogInUseCase: AppleLogInUseCase
+    private let kakaoLogInUseCase: KakaoLogInUseCase
+    private let logInCompleted: () -> ()
     
     public init(
-        appleLogInUseCase: OAuthLogInUseCase,
-        kakaoLogInUseCase: OAuthLogInUseCase
+        appleLogInUseCase: AppleLogInUseCase,
+        kakaoLogInUseCase: KakaoLogInUseCase,
+        logInCompleted: @escaping () ->()
     ) {
         self.appleLogInUseCase = appleLogInUseCase
         self.kakaoLogInUseCase = kakaoLogInUseCase
+        self.logInCompleted = logInCompleted
     }
     
+    @MainActor
     func appleLogInBtnTapped() {
-        
+        self.loading = true
         Task {
             do {
-                let type = try await appleLogInUseCase.execute()
-                print("타입 반환 \(type)")
+                try await self.appleLogInUseCase.execute()
+                await MainActor.run {
+                    self.loading = false
+                    logInCompleted()
+                }
             } catch {
-                print("에러 발생 \(error)")
+                await MainActor.run { self.loading = false }
             }
         }
-        
     }
     
+    @MainActor
     func kakaoLogInBtnTapped() {
+        self.kakaoLogInShow.toggle()
+    }
+    
+    @MainActor
+    func kakaoCodeFetchSuccess(authorizationCode: String) {
+        self.loading = true
         Task {
             do {
-                let type = try await kakaoLogInUseCase.execute()
-                print("타입 반환 \(type)")
+                try await self.kakaoLogInUseCase.execute(authorizationCode: authorizationCode)
+                await MainActor.run {
+                    self.loading = false
+                    logInCompleted()
+                }
             } catch {
-                print("에러 발생 \(error)")
+                await MainActor.run {
+                    self.loading = false
+                }
             }
         }
+    }
+    
+    func kakaoLogInFailed() {
     }
 }

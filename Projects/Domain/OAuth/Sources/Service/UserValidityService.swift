@@ -14,9 +14,9 @@ extension UserValidityService: @retroactive UserValidityProtocol {
     
     public func isValid() async throws -> Bool {
         do {
-            
+            return false
             let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
-            let refreshTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
+            let refreshTokenKey = try tokenKeyHolder.fetchRefreshTokenKey()
             let accessToken: AccessToken? = try await tokenStorage.read(key: accessTokenKey)
             let refreshToken: RefreshToken? = try await tokenStorage.read(key: refreshTokenKey)
             
@@ -36,8 +36,13 @@ extension UserValidityService: @retroactive UserValidityProtocol {
             assertionFailure("잘못된 키 홀더 에러")
             throw AuthError.validAuthFailed
         } catch let error as KeychainError {
+            print("KeychainError 에러: \(error)")
             throw AuthError.validAuthFailed
         } catch let error as NetworkError {
+            print("NetworkError 에러: \(error)")
+            throw AuthError.validAuthFailed
+        } catch {
+            print("잘 못 밝혀진 에러: \(error.localizedDescription)")
             throw AuthError.validAuthFailed
         }
     }

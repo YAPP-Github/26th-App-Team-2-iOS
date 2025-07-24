@@ -1,5 +1,5 @@
 //
-//  AppleLogInService.swift
+//  AppleAuthCodeService.swift
 //  DomainOAuth
 //
 //  Created by Greem on 7/22/25.
@@ -9,8 +9,8 @@ import Foundation
 import AuthenticationServices
 import DomainOAuthInterface
 
-extension AppleLogInService: @retroactive OAuthServiceProtocol, @retroactive UserVerifyProtocol {
-    public func login() async throws -> OAuthType {
+extension AppleAuthCodeService: @retroactive AppleAuthCodeProtocol {
+    public func fetchAuthCode() async throws -> String {
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
         self.identityContinuation?.finish()
@@ -32,8 +32,7 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol, @retroactive Use
             switch authorizationCode {
             case .success(let authorizationCode):
                 print("apple 인가 코드 \(authorizationCode)")
-//                try await self.verify(oAuthType: .apple, authorizationCode: authorizationCode)
-                return .apple
+                return authorizationCode
             case .failure(let failure): throw failure
             }
         }
@@ -42,7 +41,7 @@ extension AppleLogInService: @retroactive OAuthServiceProtocol, @retroactive Use
     }
 }
 
-extension AppleLogInService: @retroactive ASAuthorizationControllerDelegate {
+extension AppleAuthCodeService: @retroactive ASAuthorizationControllerDelegate {
     
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: any Error) {
         let appleOAuthError: AppleOAuthError = switch (error as NSError).code {
@@ -66,12 +65,6 @@ extension AppleLogInService: @retroactive ASAuthorizationControllerDelegate {
             return
         }
         
-        // guard let _ : Data = appleIDCredential.identityToken else {
-        //     self.identityContinuation?.yield(.failure(.appleOAuthError(.tokenMissing)))
-        //     identityContinuation?.finish()
-        //     return
-        // }
-        
         guard let authorizationCodeData: Data = appleIDCredential.authorizationCode else {
             self.identityContinuation?.yield(.failure(.appleOAuthError(.authorizationCodeMissing)))
             identityContinuation?.finish()
@@ -85,7 +78,7 @@ extension AppleLogInService: @retroactive ASAuthorizationControllerDelegate {
     
 }
 
-extension AppleLogInService: @retroactive ASAuthorizationControllerPresentationContextProviding {
+extension AppleAuthCodeService: @retroactive ASAuthorizationControllerPresentationContextProviding {
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first(where: { $0.isKeyWindow }) else {

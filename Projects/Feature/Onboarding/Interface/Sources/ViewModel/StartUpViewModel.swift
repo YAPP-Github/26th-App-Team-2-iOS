@@ -14,6 +14,7 @@ public class StartUpViewModel {
     public var isOnboardingCompleted: Bool = false
     
     private let autoLogInUseCase: AutoLogInUseCase
+    private let onboardingStateUseCase: OnboardingStateUseCase
     
     @ObservationIgnored private var isCompleted: Bool = false
     
@@ -22,6 +23,7 @@ public class StartUpViewModel {
             userValidityProtocol: UserValidityService.make(),
             onboardingStateProtocol: OnboardingStateService.make()
         )
+        self.onboardingStateUseCase = OnboardingStateUseCase(onboardingStateProtocol: OnboardingStateService.make())
     }
     
     public func startUpOnAappear() {
@@ -48,5 +50,21 @@ public class StartUpViewModel {
             }
         }
         isCompleted = true
+    }
+    
+    @MainActor public func userLogInCompleted() {
+        print(#function)
+        let result: UserLogInStateType = onboardingStateUseCase.execute()
+        print("UserLogInStateType", result)
+        switch result {
+        case .brakeAvailable:
+            self.isLogInCompleted = true
+            self.isOnboardingCompleted = true
+        case .onboardingRequired:
+            self.isLogInCompleted = true
+            self.isOnboardingCompleted = false
+        default: break
+            /// 에러 Alert 띄우기!!
+        }
     }
 }

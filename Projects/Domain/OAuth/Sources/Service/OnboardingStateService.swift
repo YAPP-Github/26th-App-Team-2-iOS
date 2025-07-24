@@ -9,7 +9,7 @@ import Foundation
 import DomainOAuthInterface
 import Core
 
-extension OnboardingStateService: OnboardingStateProtocol {
+extension OnboardingStateService: @retroactive OnboardingStateProtocol {
     
     public func getMemeberState() -> MemberStateType {
         self.memberStateStorage.get() ?? .hold

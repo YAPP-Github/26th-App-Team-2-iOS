@@ -19,7 +19,6 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             
             var request = urlRequest
             request.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
-            
             return request
         } catch TokenKeyHolderError.accessTokenKeyMissing {
             throw NetworkError.interceptorError("액세스 토큰 키가 없습니다.")

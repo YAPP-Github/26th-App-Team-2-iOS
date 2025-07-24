@@ -18,9 +18,6 @@ let project = Project.makeModule(
                 dependencies: [
                     .external(name: "FirebaseAnalytics"),
                     .external(name: "FirebaseCrashlytics"),
-                    .external(name: "KakaoSDK"),
-                    .external(name: "KakaoSDKAuth"),
-                    .external(name: "KakaoSDKCommon")
                 ],
                 settings: .settings(configurations: [
                     .build(.debug),

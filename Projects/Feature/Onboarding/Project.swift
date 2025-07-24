@@ -51,7 +51,8 @@ let targets: [Target] = [
             entitlements: "\(Project.Environment.appName).entitlements",
             dependencies: [
                 .feature(interface: .Onboarding),
-                .feature(implements: .Onboarding)
+                .feature(implements: .Onboarding),
+                .sdk(name: "WebKit", type: .framework, status: .required)
             ],
             settings: Project.Environment.exampleTargetSettings
         )
@@ -65,7 +66,8 @@ let project: Project = .makeModule(
 
 fileprivate extension InfoPlist {
     static func onboardingExampleAppInfoPlist(deploymentTarget: ProjectDeploymentTarget, bundleID: String? = nil) -> InfoPlist {
-        let kakaoNativeAppKey: String = "${KAKAO_NATIVE_APP_KEY_DEBUG}"
+        let kakaoJSAppKey: String = "${KAKAO_JS_KEY_DEBUG}"
+        let kakaoRESTAPIKey: String = "${KAKAO_REST_API_KEY_DEBUG}"
         let baseServerURL: String = "${BASE_SERVER_URL_DEBUG}"
         
         var plist: [String: Plist.Value] =  [
@@ -83,13 +85,9 @@ fileprivate extension InfoPlist {
                     ]]
                 ]
             ],
-            "CFBundleURLTypes": [
-                [
-                    "CFBundleURLName": "",
-                    "CFBundleURLSchemes": ["kakao\(kakaoNativeAppKey)"]
-                ]
-            ],
-            "KAKAO_NATIVE_APP_KEY": "\(kakaoNativeAppKey)",
+            "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
+            "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
+            "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
             "BASE_SERVER_URL": "\(baseServerURL)",
             "LSApplicationQueriesSchemes": [
                 "kakaokompassauth",
