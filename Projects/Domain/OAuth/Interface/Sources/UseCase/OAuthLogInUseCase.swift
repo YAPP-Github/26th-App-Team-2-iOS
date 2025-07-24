@@ -6,9 +6,6 @@
 //
 
 import Foundation
-import CoreNetworkInterface
-import CoreLocalStorageInterface
-import Core
 
 public struct OAuthLogInUseCase {
     private let oAuthService: OAuthServiceProtocol

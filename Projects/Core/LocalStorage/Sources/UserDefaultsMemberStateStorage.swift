@@ -9,7 +9,7 @@ import Foundation
 import CoreLocalStorageInterface
 
 
-extension UserDefaultsMemberStateStorage: MemberStateStorageProtocol {
+extension UserDefaultsMemberStateStorage: @retroactive MemberStateStorageProtocol {
     private var MEMBER_STATE: String { "MEMBER_STATE" }
     public func get() -> MemberStateType? {
         guard let memberStateString: String = UserDefaults.standard.string(forKey: MEMBER_STATE) else {
@@ -22,7 +22,7 @@ extension UserDefaultsMemberStateStorage: MemberStateStorageProtocol {
         return memberState
     }
     
-    public func save(memberState: MemberStateType) throws {
+    public func save(memberState: MemberStateType) {
         UserDefaults.standard.set(memberState.value, forKey: MEMBER_STATE)
     }
 }

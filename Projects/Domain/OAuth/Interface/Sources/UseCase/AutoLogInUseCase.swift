@@ -8,14 +8,30 @@
 import Foundation
 
 public struct AutoLogInUseCase {
-    private let userValidityService: OAuthServiceProtocol
     
-    public init(userValidityService: OAuthServiceProtocol) {
-        self.userValidityService = userValidityService
+    private let userValidityProtocol: UserValidityProtocol
+    private let onboardingStateProtocol: OnboardingStateProtocol
+    
+    public init(
+        userValidityProtocol: UserValidityProtocol,
+        onboardingStateProtocol: OnboardingStateProtocol
+    ) {
+        self.userValidityProtocol = userValidityProtocol
+        self.onboardingStateProtocol = onboardingStateProtocol
     }
     
-    public func execute() async throws {
-//        return try await userValidityService.login(isAutoLogin: true)
-        
+    public func execute() async -> UserLogInStateType {
+        do {
+            let isUserValid = try await userValidityProtocol.isValid()
+            guard isUserValid else {
+                return .logInRequired
+            }
+            switch onboardingStateProtocol.getMemeberState() {
+            case .active: return .brakeAvailable
+            case .hold: return .onboardingRequired
+            }
+        } catch {
+            return .logInRequired
+        }
     }
 }

@@ -10,12 +10,8 @@ import Foundation
 
 public protocol MemberStateStorageProtocol {
     func get() -> MemberStateType?
-    func save(memberState: MemberStateType) throws
-    
+    func save(memberState: MemberStateType)
 }
-
-
 public final class UserDefaultsMemberStateStorage {
     public init() { }
-   
 }

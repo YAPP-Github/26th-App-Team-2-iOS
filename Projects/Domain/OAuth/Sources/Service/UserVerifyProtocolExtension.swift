@@ -44,7 +44,7 @@ extension UserVerifyProtocol {
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
         
-        try self.memberStateStorage.save(memberState: stateType)
+        self.memberStateStorage.save(memberState: stateType)
     }
 }
 
