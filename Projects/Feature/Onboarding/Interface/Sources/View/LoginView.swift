@@ -6,11 +6,13 @@
 //
 import SwiftUI
 
-struct LoginView: View {
+public struct LoginView: View {
     
     @Environment(LogInViewModel.self) var logInViewModel
     
-    var body: some View {
+    public init() { }
+    
+    public var body: some View {
         VStack {
             Button {
                 logInViewModel.appleLogInBtnTapped()
