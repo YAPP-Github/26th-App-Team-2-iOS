@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import FeatureOnboarding
+import FeatureOnboardingInterface
 
 @main
 struct OnbardingExampleApp: App {

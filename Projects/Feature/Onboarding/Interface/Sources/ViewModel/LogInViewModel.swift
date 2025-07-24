@@ -8,15 +8,17 @@
 import Foundation
 
 @Observable
-final class LogInViewModel {
+public final class LogInViewModel {
     
-    
-    
-    func appleLogInBtnTapped() {
+    public init() {
         
     }
     
-    func kakaoLogInBtnTapped() {
+    public func appleLogInBtnTapped() {
+        
+    }
+    
+    public func kakaoLogInBtnTapped() {
         
     }
 }
