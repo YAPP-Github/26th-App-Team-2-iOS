@@ -19,12 +19,12 @@ extension UserVerifyProtocol {
         authorizationCode: String
     ) async throws {
         
-        let loginRequest = await AuthLogInRequest(
+        let loginRequest = AuthLogInRequest(
             provider: oAuthType.provider,
             authorizationCode: authorizationCode,
-            deviceId: UIDevice.current.identifierForVendor?.uuidString ?? ""
+            deviceId: UUID().uuidString
         )
-        
+        print("request Value: \(loginRequest)")
         let endPoint = BrakeRouter.AuthEndPoint<BrakeResponse<AuthLogInResponse>>.logIn(loginRequest)
         
         let response: BrakeResponse<AuthLogInResponse> = try await networkProvider.request(endPoint)
@@ -37,14 +37,14 @@ extension UserVerifyProtocol {
         
         let accessToken = AccessToken(token: response.data.accessToken)
         let refreshToken = RefreshToken(token: response.data.refreshToken)
-        
-        let accessTokenKey = try self.tokenKeyHodler.fetchAccessTokenKey()
-        let refreshTokenKey = try self.tokenKeyHodler.fetchRefreshTokenKey()
-
-        try await tokenStorage.save(token: accessToken, for: accessTokenKey)
-        try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
-        
-        self.memberStateStorage.save(memberState: stateType)
+        print("로그인 쌉 가능 accessToken: \(accessToken) refreshToken: \(refreshToken)")
+//        let accessTokenKey = try self.tokenKeyHodler.fetchAccessTokenKey()
+//        let refreshTokenKey = try self.tokenKeyHodler.fetchRefreshTokenKey()
+//
+//        try await tokenStorage.save(token: accessToken, for: accessTokenKey)
+//        try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
+//        
+//        self.memberStateStorage.save(memberState: stateType)
     }
 }
 

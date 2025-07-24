@@ -192,7 +192,6 @@ extension Project.Environment {
     enum AppTargetScript {
         
         static let firebaseCrashlytics: TargetScript = .post(
-//            path: .path("./Scripts/run_crashlytics.sh"),
             script: """
 ROOT_DIR=${TUIST_ROOT_DIR}
 "${ROOT_DIR}/Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"

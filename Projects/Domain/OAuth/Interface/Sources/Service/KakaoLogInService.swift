@@ -18,7 +18,10 @@ public final class KakaoLogInService {
     
     public static func make() -> KakaoLogInService {
         KakaoLogInService(
-            networkProvider: NetworkProvider(networkSession: NetworkSession()),
+            networkProvider: NetworkProvider(
+                networkSession: NetworkSession(),
+                urlComponentConfig: .default
+            ),
             tokenStorage: KeyChainTokenStorage(),
             tokenKeyHodler: BundleTokenKeyHolder(),
             memberStateStorage: UserDefaultsMemberStateStorage()

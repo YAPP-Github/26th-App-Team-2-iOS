@@ -22,7 +22,15 @@ public struct NetworkSession {
     
     public func dataTask(for request: URLRequest) async throws -> (Data, URLResponse) {
         guard let requestInterceptor = requestInterceptor else {
-            return try await urlSession.data(for: request)
+            print("interceptor 없이 요청")
+            do {
+                let res = try await urlSession.data(for: request)
+                let httpResponse = res.1 as? HTTPURLResponse
+                print(httpResponse?.statusCode)
+                return res
+            } catch {
+                fatalError(error.localizedDescription)
+            }
         }
         let interceptorURLRequest: URLRequest = try await requestInterceptor.adapt(request)
         return try await urlSession.data(for: interceptorURLRequest)

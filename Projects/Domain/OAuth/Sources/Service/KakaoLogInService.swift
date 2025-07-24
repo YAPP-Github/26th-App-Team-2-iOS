@@ -16,7 +16,7 @@ extension KakaoLogInService: @retroactive OAuthServiceProtocol, @retroactive Use
     public func login() async throws -> OAuthType {
         let result: OAuthToken = try await accessFromKakaoLogIn()
         let accessToken = result.accessToken
-//        try await self.verify(oAuthType: .kakao, authorizationCode: accessToken)
+        try await self.verify(oAuthType: .kakao, authorizationCode: accessToken)
         return .kakao
     }
     
