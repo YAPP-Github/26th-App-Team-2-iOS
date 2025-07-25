@@ -8,6 +8,11 @@
 import Foundation
 import Core
 public protocol OAuthServiceProtocol {
+    var networkProvider: NetworkProviderProtocol { get }
+    var tokenStorage: TokenStorageProtocol { get }
+    var tokenKeyHolder: TokenKeyHolderProtocol { get }
+    var memberStateStorage: MemberStateStorageProtocol { get }
+    
     func login(oAuthType: OAuthType, authorizationCode: String) async throws
 }
 

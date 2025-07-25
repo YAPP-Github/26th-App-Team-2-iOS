@@ -25,8 +25,7 @@ let appTargets: [Target] = [
             scripts: Project.Environment.appScripts,
             dependencies: [
                 .target(name: "Brake-Debug-NotificationExtension"),
-                .feature,
-                .sdk(name: "WebKit", type: .framework, status: .required)
+                .feature
             ],
             
             settings: Project.Environment.debugTargetSettings
@@ -42,8 +41,7 @@ let appTargets: [Target] = [
             scripts: Project.Environment.appScripts,
             dependencies: [
                 .target(name: "Brake-Release-NotificationExtension"),
-                .feature,
-                .sdk(name: "WebKit", type: .framework, status: .required)
+                .feature
             ],
             settings: Project.Environment.releaseTargetSettings
         )

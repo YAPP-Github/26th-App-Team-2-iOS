@@ -37,7 +37,7 @@ struct OnbardingExampleApp: App {
                                 kakaoLogInUseCase: KakaoLogInUseCase(
                                     oAuthService: OAuthLogInService.make()
                                 ),
-                                logInCompleted: startUpViewModel.userLogInCompleted
+                                delegate: startUpViewModel
                             )
                         )
                 }

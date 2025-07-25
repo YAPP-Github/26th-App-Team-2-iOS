@@ -9,7 +9,7 @@ import Foundation
 import Testing
 
 struct XCConfigValueUsableTest {
-    let testBundle = Bundle(identifier: "yapp.breake.debug.tests")
+    let testBundle = Bundle(identifier: "yapp.breake.Debug.tests")
     
     @Test func teamIDUsable() {
         let developTeamID = testBundle?.infoDictionary?["DEVELOPMENT_TEAM_ID"] as? String

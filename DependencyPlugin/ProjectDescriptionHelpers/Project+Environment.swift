@@ -27,7 +27,7 @@ public extension Project {
         public static func bundleId(deploymentTarget: ProjectDeploymentTarget) -> String {
             switch deploymentTarget {
             case .debug:  "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
-            case .release: Project.Environment.bundlePrefix.lowercased()
+            case .release: Project.Environment.bundlePrefix
             }
         }
         

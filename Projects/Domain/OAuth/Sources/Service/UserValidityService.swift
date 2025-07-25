@@ -30,16 +30,12 @@ extension UserValidityService: @retroactive UserValidityProtocol {
             
             return true
         } catch let error as TokenKeyHolderError {
-            assertionFailure("잘못된 키 홀더 에러")
             throw AuthError.validAuthFailed
         } catch let error as KeychainError {
-            print("KeychainError 에러: \(error)")
             throw AuthError.validAuthFailed
         } catch let error as NetworkError {
-            print("NetworkError 에러: \(error)")
             throw AuthError.validAuthFailed
         } catch {
-            print("잘 못 밝혀진 에러: \(error.localizedDescription)")
             throw AuthError.validAuthFailed
         }
     }

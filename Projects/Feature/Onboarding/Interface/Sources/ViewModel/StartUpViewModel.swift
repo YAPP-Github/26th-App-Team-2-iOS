@@ -52,20 +52,23 @@ public class StartUpViewModel {
         }
         
     }
-    
-    @MainActor public func userLogInCompleted() {
-        print(#function)
-        let result: UserLogInStateType = onboardingStateUseCase.execute()
-        print("UserLogInStateType", result)
-        switch result {
-        case .brakeAvailable:
-            self.isLogInCompleted = true
-            self.isOnboardingCompleted = true
-        case .onboardingRequired:
-            self.isLogInCompleted = true
-            self.isOnboardingCompleted = false
-        default: break
-            /// 에러 Alert 띄우기!!
+}
+
+extension StartUpViewModel: LogInViewModelDelegate {
+    public func logInCompleted() {
+        Task { @MainActor in
+            let result: UserLogInStateType = onboardingStateUseCase.execute()
+            print("UserLogInStateType", result)
+            switch result {
+            case .brakeAvailable:
+                self.isLogInCompleted = true
+                self.isOnboardingCompleted = true
+            case .onboardingRequired:
+                self.isLogInCompleted = true
+                self.isOnboardingCompleted = false
+            default: break
+                /// 에러 Alert 띄우기!!
+            }
         }
     }
 }

@@ -169,7 +169,7 @@ public extension Target {
         newFactory.productName = nil  // 단위 테스트는 productName이 필요 없음
         
         let bundleId: String = if deploymentTarget == .debug {
-            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)".lowercased()
+            "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue)"
         } else {
             Project.Environment.bundlePrefix
         }

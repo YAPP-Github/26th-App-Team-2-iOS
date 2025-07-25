@@ -8,6 +8,11 @@
 import Foundation
 import DomainOAuthInterface
 
+public protocol LogInViewModelDelegate {
+    func logInCompleted()
+}
+
+
 @Observable
 public final class LogInViewModel {
     
@@ -16,16 +21,16 @@ public final class LogInViewModel {
     
     private let appleLogInUseCase: AppleLogInUseCase
     private let kakaoLogInUseCase: KakaoLogInUseCase
-    private let logInCompleted: () -> ()
+    private let delegate: LogInViewModelDelegate
     
     public init(
         appleLogInUseCase: AppleLogInUseCase,
         kakaoLogInUseCase: KakaoLogInUseCase,
-        logInCompleted: @escaping () ->()
+        delegate: LogInViewModelDelegate
     ) {
         self.appleLogInUseCase = appleLogInUseCase
         self.kakaoLogInUseCase = kakaoLogInUseCase
-        self.logInCompleted = logInCompleted
+        self.delegate = delegate
     }
     
     @MainActor
@@ -36,7 +41,7 @@ public final class LogInViewModel {
                 try await self.appleLogInUseCase.execute()
                 await MainActor.run {
                     self.loading = false
-                    logInCompleted()
+                    delegate.logInCompleted()
                 }
             } catch {
                 await MainActor.run { self.loading = false }
@@ -57,7 +62,7 @@ public final class LogInViewModel {
                 try await self.kakaoLogInUseCase.execute(authorizationCode: authorizationCode)
                 await MainActor.run {
                     self.loading = false
-                    logInCompleted()
+                    delegate.logInCompleted()
                 }
             } catch {
                 await MainActor.run {
