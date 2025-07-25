@@ -43,7 +43,6 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
             let retryResult = try await networkSession.retryInterceptor()
             switch retryResult {
             case .retry:
-                try await Task.sleep(for: .seconds(0.1))
                 return try await self.requestWithLimitCount(endpoint, limitCount: limitCount + 1)
             case .doNotRetry: throw NetworkError.interceptorError("기간이 만료되었습니다!!")
             case .doNotRetryWithError(let error):

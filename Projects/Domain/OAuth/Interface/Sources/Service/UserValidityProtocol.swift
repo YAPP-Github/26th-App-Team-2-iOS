@@ -15,7 +15,7 @@ public protocol UserValidityProtocol {
 public final class UserValidityService {
     public let tokenStorage: TokenStorageProtocol
     public let tokenKeyHolder: TokenKeyHolderProtocol
-    public let networkProviderProtocol: NetworkProviderProtocol
+    public let networkProvider: NetworkProviderProtocol
     
     
     static public func make() -> UserValidityService {
@@ -43,6 +43,6 @@ public final class UserValidityService {
     ) {
         self.tokenStorage = tokenStorage
         self.tokenKeyHolder = tokenKeyHolder
-        self.networkProviderProtocol = networkProviderProtocol
+        self.networkProvider = networkProviderProtocol
     }
 }

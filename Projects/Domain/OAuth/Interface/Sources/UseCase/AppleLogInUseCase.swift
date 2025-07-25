@@ -9,18 +9,18 @@ import Foundation
 
 public struct AppleLogInUseCase {
     private let oAuthService: OAuthServiceProtocol
-    private let appleAuthCodeProtocol: AppleAuthCodeProtocol
+    private let appleAuthCode: AppleAuthCodeProtocol
     
     public init(
         oAuthService: OAuthServiceProtocol,
-        appleAuthCodeProtocol: AppleAuthCodeProtocol
+        appleAuthCode: AppleAuthCodeProtocol
     ) {
         self.oAuthService = oAuthService
-        self.appleAuthCodeProtocol = appleAuthCodeProtocol
+        self.appleAuthCode = appleAuthCode
     }
     
     public func execute() async throws {
-        let authorizationCode = try await appleAuthCodeProtocol.fetchAuthCode()
+        let authorizationCode = try await appleAuthCode.fetchAuthCode()
         try await oAuthService.login(oAuthType: .apple, authorizationCode: authorizationCode)
     }
 }

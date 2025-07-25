@@ -44,23 +44,3 @@ extension OAuthServiceProtocol {
     }
 }
 
-fileprivate extension MemberStateType {
-    private static let activeRawValue = "ACTIVE"
-    private static let holdRawValue = "HOLD"
-    init?(rawValue: String) {
-        switch rawValue {
-        case Self.activeRawValue: self = .active
-        case Self.holdRawValue: self = .hold
-        default: return nil
-        }
-    }
-}
-
-fileprivate extension OAuthType {
-    var provider: String {
-        switch self {
-        case .apple: "APPLE"
-        case .kakao: "KAKAO"
-        }
-    }
-}

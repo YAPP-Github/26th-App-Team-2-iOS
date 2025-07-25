@@ -8,7 +8,7 @@
 import Foundation
 import DomainOAuthInterface
 
-public protocol LogInViewModelDelegate {
+public protocol LogInViewModelDelegate: AnyObject {
     func logInCompleted()
 }
 
@@ -21,7 +21,8 @@ public final class LogInViewModel {
     
     private let appleLogInUseCase: AppleLogInUseCase
     private let kakaoLogInUseCase: KakaoLogInUseCase
-    private let delegate: LogInViewModelDelegate
+    
+    private weak var delegate: LogInViewModelDelegate!
     
     public init(
         appleLogInUseCase: AppleLogInUseCase,
@@ -39,12 +40,16 @@ public final class LogInViewModel {
         Task {
             do {
                 try await self.appleLogInUseCase.execute()
-                await MainActor.run {
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
                     self.loading = false
                     delegate.logInCompleted()
                 }
             } catch {
-                await MainActor.run { self.loading = false }
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    self.loading = false
+                }
             }
         }
     }
@@ -60,12 +65,14 @@ public final class LogInViewModel {
         Task {
             do {
                 try await self.kakaoLogInUseCase.execute(authorizationCode: authorizationCode)
-                await MainActor.run {
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
                     self.loading = false
                     delegate.logInCompleted()
                 }
             } catch {
-                await MainActor.run {
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
                     self.loading = false
                 }
             }
@@ -73,5 +80,6 @@ public final class LogInViewModel {
     }
     
     func kakaoLogInFailed() {
+        
     }
 }

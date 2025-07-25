@@ -8,7 +8,6 @@
 import Foundation
 import Core
 
-
 public protocol AppleAuthCodeProtocol {
     func fetchAuthCode() async throws -> String
 }

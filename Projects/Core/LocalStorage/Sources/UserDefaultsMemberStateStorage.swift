@@ -26,22 +26,3 @@ extension UserDefaultsMemberStateStorage: @retroactive MemberStateStorageProtoco
         UserDefaults.standard.set(memberState.value, forKey: MEMBER_STATE)
     }
 }
-
-
-fileprivate extension MemberStateType {
-    private static let activeRawValue: String = "ACTIVE"
-    private static let holdRawValue: String = "HOLD"
-    init?(rawValue: String) {
-        switch rawValue {
-        case Self.activeRawValue: self = .active
-        case Self.holdRawValue: self = .hold
-        default: return nil
-        }
-    }
-    var value: String {
-        switch self {
-        case .active: Self.activeRawValue
-        case .hold: Self.holdRawValue
-        }
-    }
-}

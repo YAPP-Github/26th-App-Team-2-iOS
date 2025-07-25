@@ -8,16 +8,16 @@
 import Foundation
 
 public struct OnboardingStateUseCase {
-    private let onboardingStateProtocol: OnboardingStateProtocol
+    private let onboardingState: OnboardingStateProtocol
     
     public init(
-        onboardingStateProtocol: OnboardingStateProtocol
+        onboardingState: OnboardingStateProtocol
     ) {
-        self.onboardingStateProtocol = onboardingStateProtocol
+        self.onboardingState = onboardingState
     }
     
     public func execute() -> UserLogInStateType {
-        switch onboardingStateProtocol.getMemberState() {
+        switch onboardingState.getMemberState() {
         case .active: return .brakeAvailable
         case .hold: return .onboardingRequired
         }

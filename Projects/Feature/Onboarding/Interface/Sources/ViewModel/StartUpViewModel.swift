@@ -16,14 +16,15 @@ public class StartUpViewModel {
     private let autoLogInUseCase: AutoLogInUseCase
     private let onboardingStateUseCase: OnboardingStateUseCase
     
-    @ObservationIgnored private var isCompleted: Bool = false
+    @ObservationIgnored
+    private var isCompleted: Bool = false
     
     public init() {
         self.autoLogInUseCase = AutoLogInUseCase(
-            userValidityProtocol: UserValidityService.make(),
-            onboardingStateProtocol: OnboardingStateService.make()
+            userValidity: UserValidityService.make(),
+            onboardingState: OnboardingStateService.make()
         )
-        self.onboardingStateUseCase = OnboardingStateUseCase(onboardingStateProtocol: OnboardingStateService.make())
+        self.onboardingStateUseCase = OnboardingStateUseCase(onboardingState: OnboardingStateService.make())
     }
     
     public func startUpOnAppear() {
@@ -31,8 +32,8 @@ public class StartUpViewModel {
         isCompleted = true
         Task {
             let autoLogInResult = await autoLogInUseCase.execute()
-            print("자동 로그인 결과: ", autoLogInResult)
-            await MainActor.run {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
                 switch autoLogInResult {
                 case .logInRequired:
                     self.isLogInCompleted = false
@@ -58,7 +59,6 @@ extension StartUpViewModel: LogInViewModelDelegate {
     public func logInCompleted() {
         Task { @MainActor in
             let result: UserLogInStateType = onboardingStateUseCase.execute()
-            print("UserLogInStateType", result)
             switch result {
             case .brakeAvailable:
                 self.isLogInCompleted = true

@@ -9,22 +9,22 @@ import Foundation
 
 public struct AutoLogInUseCase {
     
-    private let userValidityProtocol: UserValidityProtocol
-    private let onboardingStateProtocol: OnboardingStateProtocol
+    private let userValidity: UserValidityProtocol
+    private let onboardingState: OnboardingStateProtocol
     
     public init(
-        userValidityProtocol: UserValidityProtocol,
-        onboardingStateProtocol: OnboardingStateProtocol
+        userValidity: UserValidityProtocol,
+        onboardingState: OnboardingStateProtocol
     ) {
-        self.userValidityProtocol = userValidityProtocol
-        self.onboardingStateProtocol = onboardingStateProtocol
+        self.userValidity = userValidity
+        self.onboardingState = onboardingState
     }
     
     public func execute() async -> UserLogInStateType {
         do {
-            let isUserValid = try await userValidityProtocol.isValid()
+            let isUserValid = try await userValidity.isValid()
             guard isUserValid else { return .logInRequired }
-            switch onboardingStateProtocol.getMemberState() {
+            switch onboardingState.getMemberState() {
             case .active: return .brakeAvailable
             case .hold: return .onboardingRequired
             }

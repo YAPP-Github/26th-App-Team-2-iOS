@@ -32,7 +32,7 @@ struct OnbardingExampleApp: App {
                             LogInViewModel(
                                 appleLogInUseCase: AppleLogInUseCase(
                                     oAuthService: OAuthLogInService.make(),
-                                    appleAuthCodeProtocol: AppleAuthCodeService.make()
+                                    appleAuthCode: AppleAuthCodeService.make()
                                 ),
                                 kakaoLogInUseCase: KakaoLogInUseCase(
                                     oAuthService: OAuthLogInService.make()
