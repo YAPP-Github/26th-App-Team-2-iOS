@@ -12,13 +12,12 @@ import FeatureOnboardingInterface
 struct OnbardingExampleApp: App {
     var body: some Scene {
         WindowGroup {
-            VStack {
+            NavigationStack {
                 ScreenTimeAuthView()
-                    .environment(ScreenTimeAuthViewModel())
-                UserNotificationAuthView()
-                    .environment(UserNotificationAuthViewModel())
+                    .environment(ScreenTimeAuthViewModel(
+                        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase()
+                    ))
             }
-            
         }
     }
 }

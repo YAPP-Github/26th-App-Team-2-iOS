@@ -10,6 +10,14 @@ import SwiftUI
 public struct ScreenTimeAuthView: View {
     @Environment(ScreenTimeAuthViewModel.self) var screenTimeAuthViewModel
     @State private var sheet: Bool = false
+    let screenTimeTypes: [ScreenTimeAuthorizationResult] = [
+        .denied,
+        .unknownError,
+        .authenticationMethodUnavailable ,
+        .networkError,
+        .restricted,
+        .unavailableDevice
+    ]
     public init() { }
     
     public var body: some View {
@@ -20,13 +28,30 @@ public struct ScreenTimeAuthView: View {
                 } label: {
                     Text("스크린 타임 권한").font(.title)
                 }
-                
-                Button {
-                    self.screenTimeAuthViewModel.cancelScreenTimeGrantPresented = true
-                } label: {
-                    Text("Cancel 결과 테스트").font(.title)
+                VStack(spacing: 8) {
+                    Text("임시 확인차 생성 뷰")
+                    ForEach(screenTimeTypes.indices, id: \.self) { idx in
+                        Button(screenTimeTypes[idx].alertTitle) {
+                            self.screenTimeAuthViewModel.screenTimeAuthFailedResult = screenTimeTypes[idx]
+                            self.screenTimeAuthViewModel.screenTimeAuthFailedPresent = true
+                        }
+                    }
+                    
+                    Button("authorizationCanceled") {
+                        self.screenTimeAuthViewModel.cancelScreenTimeGrantPresented = true
+                    }
                 }
             }
+        }
+        .navigationDestination(isPresented: .init(get: {
+            screenTimeAuthViewModel.screenTimeApproved
+        }, set: {
+            screenTimeAuthViewModel.screenTimeApproved = $0
+        })) {
+            UserNotificationAuthView()
+                .environment(UserNotificationAuthViewModel(
+                    requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase()
+                ))
         }
         .alert(isPresented: .init(get: {
             screenTimeAuthViewModel.cancelScreenTimeGrantPresented
@@ -52,13 +77,13 @@ public struct ScreenTimeAuthView: View {
             Rectangle().fill(.primary.opacity(0.35))
         })
         .alert(
-            screenTimeAuthViewModel.screenTimeAuthorizationResult?.alertTitle ?? "",
+            screenTimeAuthViewModel.screenTimeAuthFailedResult?.alertTitle ?? "",
             isPresented: .init(get: {
-                screenTimeAuthViewModel.screenTimeGrantPresented
+                screenTimeAuthViewModel.screenTimeAuthFailedPresent
             }, set: {
-                screenTimeAuthViewModel.screenTimeGrantPresented = $0
+                screenTimeAuthViewModel.screenTimeAuthFailedPresent = $0
             }),
-            presenting: screenTimeAuthViewModel.screenTimeAuthorizationResult,
+            presenting: screenTimeAuthViewModel.screenTimeAuthFailedResult,
             actions: { result in
                 Button("확인", role: .cancel, action: {})
             },
