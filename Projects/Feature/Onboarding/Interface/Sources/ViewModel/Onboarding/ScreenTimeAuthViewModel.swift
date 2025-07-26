@@ -7,7 +7,7 @@
 
 import Foundation
 import FamilyControls
-public extension ScreenTimeAuthorizationResult {
+extension ScreenTimeAuthorizationResult {
     var alertTitle: String {
         switch self {
         case .denied: "스크린 타임 권한 요청을 거부했습니다."
@@ -41,14 +41,17 @@ public final class ScreenTimeAuthViewModel {
     public var screenTimeAuthFailedPresent: Bool = false
     public var screenTimeAuthFailedResult: ScreenTimeAuthorizationResult?
     public var cancelScreenTimeGrantPresented: Bool = false
-    public var screenTimeApproved: Bool = false
+    
     
     private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
+    private let screenTimeApproved: () -> ()
     
     public init(
-        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
+        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
+        screenTimeApproved: @escaping () -> ()
     ) {
         self.requestScreenTimeAuthUseCase = requestScreenTimeAuthUseCase
+        self.screenTimeApproved = screenTimeApproved
     }
     
     public func authorizationButtonTapped() {
@@ -63,7 +66,7 @@ public final class ScreenTimeAuthViewModel {
                 case .userCancel:
                     self.cancelScreenTimeGrantPresented = true
                 case .approved:
-                    self.screenTimeApproved = true
+                    screenTimeApproved()
                 }
             }
         }

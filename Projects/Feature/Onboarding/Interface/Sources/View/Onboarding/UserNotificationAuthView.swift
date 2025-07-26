@@ -36,22 +36,6 @@ public struct UserNotificationAuthView: View {
                 }
             }
         }
-        .navigationDestination(
-            isPresented: .init(get: {
-                self.userNotificationAuthViewModel.notificationApproved
-            }, set: {
-                self.userNotificationAuthViewModel.notificationApproved = $0
-            }),
-            destination: {
-                OnboardingCompletedView()
-                    .environment(
-                        OnboardingCompletedViewModel(
-                            userOnboardingFinishedUseCase: UserOnboardingFinishedUseCase(),
-                            onboardingCompleted: startUpViewModel.onboardingCompleted
-                        )
-                    )
-                    .environment(startUpViewModel)
-        })
         .alert(
             userNotificationAuthViewModel.notoficationAuthFailedResult?.alertTitle ?? "",
             isPresented: .init(get: {

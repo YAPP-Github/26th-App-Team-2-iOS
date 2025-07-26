@@ -7,13 +7,9 @@
 
 import SwiftUI
 
-
-
 public struct SetNickNameView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
-    @State private var nickName: String = ""
-    @State private var isValid: Bool = false
-    @State private var nickNameCompleted: Bool = false
+    @Environment(SetNickNameViewModel.self) var setNickNameViewModel
     
     @FocusState var nickNmaeFocusState: Bool
     
@@ -28,43 +24,34 @@ public struct SetNickNameView: View {
             VStack {
                 Spacer()
                 VStack {
-                    TextField("닉네임을 입력해 주세요", text: $nickName)
-                        .focused($nickNmaeFocusState)
-                        .onChange(of: nickName) { oldValue, newValue in
-                            // 10자 초과 시 잘라내기
-                            if newValue.count > 10 {
-                                nickName = String(newValue.prefix(10))
-                            }
-                            // 모든 언어의 문자, 숫자만 허용 (공백, 특수문자 불가)
-                            let regex = "^[\\p{L}\\p{N}]{2,10}$"
-                            if let _ = newValue.range(of: regex, options: [.regularExpression]) {
-                                isValid = true
-                            } else {
-                                isValid = false
-                            }
-                        }
+                    TextField(
+                        "닉네임을 입력해 주세요",
+                        text: Binding(
+                            get: { setNickNameViewModel.nickName },
+                            set: { setNickNameViewModel.nickName = $0 }
+                        )
+                    )
+                    .focused($nickNmaeFocusState)
+                    .onChange(of: setNickNameViewModel.nickName) { oldValue, newValue in
+                        setNickNameViewModel.validNickName(newValue)
+                    }
                     HStack {
-                        if !isValid && !nickName.isEmpty {
+                        if !setNickNameViewModel.isValid && !setNickNameViewModel.nickName.isEmpty {
                             Text("공백, 특수문자 없이 2~10자를 입력해 주세요.")
                         }
                         Spacer()
-                        Text("\(nickName.count)/10")
+                        Text("\(setNickNameViewModel.nickName)/10")
                     }
                 }
                 
                 Spacer()
-                
                 Button {
-                    nickNameCompleted = true
+                    self.setNickNameViewModel.nickNameCompletedBtnTapped()
                 } label: {
                     Text("다음")
                 }
-                .disabled(!isValid)
+                .disabled(!setNickNameViewModel.isValid)
             }
-        }
-        .navigationDestination(isPresented: $nickNameCompleted) {
-            OnboardingInfoView()
-                .environment(startUpViewModel)
         }
     }
 }

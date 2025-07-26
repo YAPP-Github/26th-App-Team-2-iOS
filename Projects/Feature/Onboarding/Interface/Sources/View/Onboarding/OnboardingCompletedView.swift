@@ -11,7 +11,7 @@ import SwiftUI
 public struct OnboardingCompletedView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(OnboardingCompletedViewModel.self) var viewModel
-    
+    public init() { }
     public var body: some View {
         VStack {
             Spacer()

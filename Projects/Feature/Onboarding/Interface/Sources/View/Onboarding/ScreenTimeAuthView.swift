@@ -10,7 +10,7 @@ import SwiftUI
 public struct ScreenTimeAuthView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(ScreenTimeAuthViewModel.self) var screenTimeAuthViewModel
-    @State private var sheet: Bool = false
+    
     private let screenTimeTypes: [ScreenTimeAuthorizationResult] = [
         .denied,
         .unknownError,
@@ -43,19 +43,6 @@ public struct ScreenTimeAuthView: View {
                     }
                 }
             }
-        }
-        .navigationDestination(isPresented: .init(get: {
-            screenTimeAuthViewModel.screenTimeApproved
-        }, set: {
-            screenTimeAuthViewModel.screenTimeApproved = $0
-        })) {
-            UserNotificationAuthView()
-                .environment(
-                    UserNotificationAuthViewModel(
-                        requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase()
-                    )
-                )
-                .environment(startUpViewModel)
         }
         .alert(isPresented: .init(get: {
             screenTimeAuthViewModel.cancelScreenTimeGrantPresented

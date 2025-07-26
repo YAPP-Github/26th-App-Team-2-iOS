@@ -21,16 +21,23 @@ public enum OnboardingInfoType: String, Hashable, Identifiable, CaseIterable {
     }
 }
 
+
+
+
 public struct OnboardingInfoView: View {
-    
     @Environment(StartUpViewModel.self) var startUpViewModel
+    @Environment(OnboardingManager.self) var onboardingManager
     
     private let onboardinInfoTypes: [OnboardingInfoType] = OnboardingInfoType.allCases
     
     @State private var selectedInfoType: OnboardingInfoType = .intro
-    @State private var onboardingInfoCompleted: Bool = false
+    private let infoCompleted: ()->()
     
-    public init() { }
+    public init(
+        infoCompleted: @escaping () -> ()
+    ) {
+        self.infoCompleted = infoCompleted
+    }
     
     public var body: some View {
         VStack {
@@ -49,18 +56,12 @@ public struct OnboardingInfoView: View {
                     switch selectedInfoType {
                     case .intro: self.selectedInfoType = .extensionInfo
                     case .extensionInfo: self.selectedInfoType = .restrictionInfo
-                    case .restrictionInfo: self.onboardingInfoCompleted = true
+                    case .restrictionInfo: infoCompleted()
                     }
                 }
             } label: {
                 Text("확인")
             }
-        }.navigationDestination(isPresented: $onboardingInfoCompleted) {
-            ScreenTimeAuthView()
-                .environment(
-                    ScreenTimeAuthViewModel(requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase())
-                )
-                .environment(startUpViewModel)
         }
     }
 }
