@@ -13,13 +13,9 @@ struct OnbardingExampleApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ScreenTimeAuthView()
-                    .environment(ScreenTimeAuthViewModel(
-                        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase()
-                    ))
+                SetNickNameView()
             }
         }
     }
 }
-
 
