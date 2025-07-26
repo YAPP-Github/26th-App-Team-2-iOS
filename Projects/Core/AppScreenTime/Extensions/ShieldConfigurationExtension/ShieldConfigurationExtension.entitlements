@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.yapp.breake.brake</string>
+		<string>group.com.screen.time.brake</string>
 	</array>
 </dict>
 </plist>

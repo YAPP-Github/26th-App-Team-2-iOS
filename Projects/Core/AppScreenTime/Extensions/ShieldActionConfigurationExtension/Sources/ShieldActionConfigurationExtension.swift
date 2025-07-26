@@ -14,6 +14,7 @@ import CoreLocalStorage
 
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let managedSettingsManager = ManagedSettingsStoreManager()
 
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
@@ -39,6 +40,20 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             // 차단 상태가 true라면 차단 해제
             if appScheduleStorage.getBlockingStatus() {
                 appScheduleStorage.saveBlockingStatus(false)
+                
+                // 모든 Shield 설정을 강제로 해제
+                managedSettingsManager.clearAllBlockListsForRest(schedules: [])
+                
+                // 추가적인 강제 해제 시도
+                DispatchQueue.main.async {
+                    self.managedSettingsManager.clearAllBlockListsForRest(schedules: [])
+                }
+                
+                // 지연 후 한 번 더 시도
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.managedSettingsManager.clearAllBlockListsForRest(schedules: [])
+                }
+                
                 completionHandler(.defer)
             } else {
                 completionHandler(.close)
@@ -53,7 +68,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
-                center.add(self.makeNotification())
+                center.add(self.makeNotification()) 
             } else {
                 // Permission denied.
             }
