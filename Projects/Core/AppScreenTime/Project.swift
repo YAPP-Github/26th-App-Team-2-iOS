@@ -17,7 +17,9 @@ let targets: [Target] = [
         factory: .init(
             dependencies: [
                 .shared,
-                .core(interface: .LocalStorage)
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .shared(implements: .Util)
             ]
         )
     ),
@@ -26,7 +28,8 @@ let targets: [Target] = [
         factory: .init(
             dependencies: [
                 .core(interface: .AppScreenTime),
-                .core(interface: .LocalStorage)
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
             ]
         )
     ),
@@ -42,7 +45,8 @@ let targets: [Target] = [
         tests: .AppScreenTime,
         factory: .init(
             dependencies: [
-                .core(testing: .AppScreenTime)
+                .core(testing: .AppScreenTime),
+                .core(implements: .AppScreenTime)
             ]
         )
     ),
@@ -57,6 +61,8 @@ let targets: [Target] = [
             dependencies: [
                 .core(interface: .AppScreenTime),
                 .core(implements: .AppScreenTime),
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
                 .target(name: "CoreAppScreenTimeDeviceActivityMonitorExtension"),
                 .target(name: "CoreAppScreenTimeShieldConfigurationExtension"),
                 .target(name: "CoreAppScreenTimeShieldActionConfigurationExtension")
@@ -70,13 +76,14 @@ let targets: [Target] = [
         factory: .init(
             name: "CoreAppScreenTimeDeviceActivityMonitorExtension",
             bundleId: "\(Project.Environment.bundlePrefix).appscreentime.example.DeviceActivityMonitorExtension",
-            infoPlist: Project.Environment.appScreenTimeDeviceActivityMonitorExtensionInfoPlist(),
+            infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
             entitlements: "Extensions/DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements",
             dependencies: [
                 .core(interface: .AppScreenTime),
                 .core(implements: .AppScreenTime),
                 .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .shared(implements: .Util)
             ],
             settings: Project.Environment.projectSettings
         )
@@ -86,13 +93,14 @@ let targets: [Target] = [
         factory: .init(
             name: "CoreAppScreenTimeShieldConfigurationExtension",
             bundleId: "\(Project.Environment.bundlePrefix).appscreentime.example.ShieldConfigurationExtension",
-            infoPlist: Project.Environment.appScreenTimeShieldConfigurationExtensionInfoPlist(),
+            infoPlist: "Extensions/ShieldConfigurationExtension/Info.plist",
             entitlements: "Extensions/ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements",
             dependencies: [
                 .core(interface: .AppScreenTime),
                 .core(implements: .AppScreenTime),
                 .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .shared(implements: .Util)
             ],
             settings: Project.Environment.projectSettings
         )
@@ -102,13 +110,14 @@ let targets: [Target] = [
         factory: .init(
             name: "CoreAppScreenTimeShieldActionConfigurationExtension",
             bundleId: "\(Project.Environment.bundlePrefix).appscreentime.example.ShieldActionConfigurationExtension",
-            infoPlist: Project.Environment.appScreenTimeShieldActionConfigurationExtensionInfoPlist(),
+            infoPlist: "Extensions/ShieldActionConfigurationExtension/Info.plist",
             entitlements: "Extensions/ShieldActionConfigurationExtension/ShieldActionConfigurationExtension.entitlements",
             dependencies: [
                 .core(interface: .AppScreenTime),
                 .core(implements: .AppScreenTime),
                 .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .shared(implements: .Util)
             ],
             settings: Project.Environment.projectSettings
         )
