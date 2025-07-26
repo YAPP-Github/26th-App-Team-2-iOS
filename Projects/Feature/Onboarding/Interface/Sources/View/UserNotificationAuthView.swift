@@ -8,6 +8,7 @@
 import SwiftUI
 
 public struct UserNotificationAuthView: View {
+    @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(UserNotificationAuthViewModel.self) var userNotificationAuthViewModel
     public init() { }
     
@@ -34,12 +35,21 @@ public struct UserNotificationAuthView: View {
                 }
             }
         }
-        .navigationDestination(isPresented: .init(get: {
-            self.userNotificationAuthViewModel.notificationApproved
-        }, set: {
-            self.userNotificationAuthViewModel.notificationApproved = $0
-        }), destination: {
-            OnboardingCompletedView()
+        .navigationDestination(
+            isPresented: .init(get: {
+                self.userNotificationAuthViewModel.notificationApproved
+            }, set: {
+                self.userNotificationAuthViewModel.notificationApproved = $0
+            }),
+            destination: {
+                OnboardingCompletedView()
+                    .environment(
+                        OnboardingCompletedViewModel(
+                            userOnboardingFinishedUseCase: UserOnboardingFinishedUseCase(),
+                            onboardingCompleted: startUpViewModel.onboardingCompleted
+                        )
+                    )
+                    .environment(startUpViewModel)
         })
         .alert(
             userNotificationAuthViewModel.notoficationAuthFailedResult?.alertTitle ?? "",

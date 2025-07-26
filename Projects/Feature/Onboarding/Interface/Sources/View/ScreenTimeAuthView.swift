@@ -8,9 +8,10 @@
 import SwiftUI
 
 public struct ScreenTimeAuthView: View {
+    @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(ScreenTimeAuthViewModel.self) var screenTimeAuthViewModel
     @State private var sheet: Bool = false
-    let screenTimeTypes: [ScreenTimeAuthorizationResult] = [
+    private let screenTimeTypes: [ScreenTimeAuthorizationResult] = [
         .denied,
         .unknownError,
         .authenticationMethodUnavailable ,
@@ -49,9 +50,12 @@ public struct ScreenTimeAuthView: View {
             screenTimeAuthViewModel.screenTimeApproved = $0
         })) {
             UserNotificationAuthView()
-                .environment(UserNotificationAuthViewModel(
-                    requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase()
-                ))
+                .environment(
+                    UserNotificationAuthViewModel(
+                        requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase()
+                    )
+                )
+                .environment(startUpViewModel)
         }
         .alert(isPresented: .init(get: {
             screenTimeAuthViewModel.cancelScreenTimeGrantPresented

@@ -24,24 +24,25 @@ struct OnbardingExampleApp: App {
                             Text("홈 화면")
                         }
                     } else {
-                        OnboardingView()
+                        NavigationStack {
+                            SetNickNameView()
+                                .environment(startUpViewModel)
+                        }
                     }
                 } else {
-                    NavigationStack {
-                SetNickNameView()
-            }
+                    LoginView()
                         .environment(
-                            LogInViewModel(
-                                appleLogInUseCase: AppleLogInUseCase(
-                                    oAuthService: OAuthLogInService.make(),
-                                    appleAuthCode: AppleAuthCodeService.make()
-                                ),
-                                kakaoLogInUseCase: KakaoLogInUseCase(
-                                    oAuthService: OAuthLogInService.make()
-                                ),
-                                delegate: startUpViewModel
-                            )
+                        LogInViewModel(
+                            appleLogInUseCase: AppleLogInUseCase(
+                                oAuthService: OAuthLogInService.make(),
+                                appleAuthCode: AppleAuthCodeService.make()
+                            ),
+                            kakaoLogInUseCase: KakaoLogInUseCase(
+                                oAuthService: OAuthLogInService.make()
+                            ),
+                            delegate: startUpViewModel
                         )
+                    )
                 }
             }
             .onAppear() {

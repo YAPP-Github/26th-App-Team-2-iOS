@@ -20,8 +20,13 @@ public enum OnboardingInfoType: String, Hashable, Identifiable, CaseIterable {
         }
     }
 }
+
 public struct OnboardingInfoView: View {
-    let onboardinInfoTypes: [OnboardingInfoType] = OnboardingInfoType.allCases
+    
+    @Environment(StartUpViewModel.self) var startUpViewModel
+    
+    private let onboardinInfoTypes: [OnboardingInfoType] = OnboardingInfoType.allCases
+    
     @State private var selectedInfoType: OnboardingInfoType = .intro
     @State private var onboardingInfoCompleted: Bool = false
     
@@ -55,6 +60,7 @@ public struct OnboardingInfoView: View {
                 .environment(
                     ScreenTimeAuthViewModel(requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase())
                 )
+                .environment(startUpViewModel)
         }
     }
 }

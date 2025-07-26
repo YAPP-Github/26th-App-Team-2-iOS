@@ -10,14 +10,14 @@ import SwiftUI
 
 
 public struct SetNickNameView: View {
+    @Environment(StartUpViewModel.self) var startUpViewModel
     @State private var nickName: String = ""
     @State private var isValid: Bool = false
     @State private var nickNameCompleted: Bool = false
     
     @FocusState var nickNmaeFocusState: Bool
     
-    public init() {
-    }
+    public init() { }
     public var body: some View {
         ZStack {
             Color.clear
@@ -64,6 +64,7 @@ public struct SetNickNameView: View {
         }
         .navigationDestination(isPresented: $nickNameCompleted) {
             OnboardingInfoView()
+                .environment(startUpViewModel)
         }
     }
 }

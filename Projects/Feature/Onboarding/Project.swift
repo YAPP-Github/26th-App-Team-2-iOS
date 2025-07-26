@@ -45,8 +45,7 @@ let targets: [Target] = [
         example: .Onboarding,
         factory: .init(
             infoPlist: Project.Environment.appInfoPlist(
-                deploymentTarget: .debug,
-                bundleID: "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(ModulePath.Feature.Onboarding.rawValue)"
+                deploymentTarget: .debug
             ),
             entitlements: "\(Project.Environment.appName).entitlements",
             scripts: Project.Environment.appScripts,

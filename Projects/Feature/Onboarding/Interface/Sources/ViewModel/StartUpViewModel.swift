@@ -27,6 +27,10 @@ public class StartUpViewModel {
         self.onboardingStateUseCase = OnboardingStateUseCase(onboardingState: OnboardingStateService.make())
     }
     
+    public func onboardingCompleted() {
+        isOnboardingCompleted = true
+    }
+    
     public func startUpOnAppear() {
         if isCompleted { return }
         isCompleted = true
@@ -51,7 +55,6 @@ public class StartUpViewModel {
                 }
             }
         }
-        
     }
 }
 
