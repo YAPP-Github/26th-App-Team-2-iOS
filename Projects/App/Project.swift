@@ -27,7 +27,9 @@ let appTargets: [Target] = [
                 .target(name: "Brake-Debug-NotificationExtension"),
                 .feature
             ],
+            
             settings: Project.Environment.debugTargetSettings
+            
         )
     ),
     .app(

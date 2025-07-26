@@ -14,12 +14,12 @@ public struct URLComponentConfiguration {
     
     /// Brake 서버 URL을 사용하는 URLComponent 생성자
     public static let `default` = URLComponentConfiguration(
-        baseURL: Bundle.main.baseServerURLString,
+        baseURL: Bundle.main.baseServerString,
         prefix: "/v1"
     )
     
     public init(
-        baseURL: String? = Bundle.main.baseServerURLString,
+        baseURL: String? = Bundle.main.baseServerString,
         prefix: String? = nil
     ) {
         self.baseURL = baseURL

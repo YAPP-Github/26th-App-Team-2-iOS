@@ -26,7 +26,7 @@ struct RequestInterceptTests {
         let storage: TokenStorageProtocol = fakeTokenStorage
         let tokenInterceptor = MockTokenInterceptor(tokenStorage: storage)
         try fakeTokenStorage.save(
-            token: AccessToken(token: FakeTokenStorage.fakeAccessToken, expiration: .now),
+            token: AccessToken(token: FakeTokenStorage.fakeAccessToken),
             for: tokenInterceptor.dummyAccessTokenKey
         )
         

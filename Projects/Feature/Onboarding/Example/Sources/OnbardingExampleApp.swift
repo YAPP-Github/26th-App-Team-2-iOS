@@ -7,14 +7,44 @@
 
 import SwiftUI
 import FeatureOnboardingInterface
+import SharedUtil
+import Domain
 
 @main
 struct OnbardingExampleApp: App {
+    @State private var startUpViewModel = StartUpViewModel()
+    
+    init() { }
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            ZStack {
+                if startUpViewModel.isLogInCompleted {
+                    if startUpViewModel.isOnboardingCompleted {
+                        VStack {
+                            Text("홈 화면")
+                        }
+                    } else {
+                        OnboardingView()
+                    }
+                } else {
+                    LoginView()
+                        .environment(
+                            LogInViewModel(
+                                appleLogInUseCase: AppleLogInUseCase(
+                                    oAuthService: OAuthLogInService.make(),
+                                    appleAuthCode: AppleAuthCodeService.make()
+                                ),
+                                kakaoLogInUseCase: KakaoLogInUseCase(
+                                    oAuthService: OAuthLogInService.make()
+                                ),
+                                delegate: startUpViewModel
+                            )
+                        )
+                }
+            }
+            .onAppear() {
+                startUpViewModel.startUpOnAppear()
+            }
         }
     }
 }
-
-

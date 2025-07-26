@@ -44,11 +44,9 @@ let targets: [Target] = [
     .feature(
         example: .Onboarding,
         factory: .init(
-            infoPlist: Project.Environment.appInfoPlist(
-                deploymentTarget: .debug,
-                bundleID: "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(ModulePath.Feature.Onboarding.rawValue)"
-            ),
-            scripts: Project.Environment.appScripts,
+            infoPlist:
+                Project.Environment.appInfoPlist(deploymentTarget: .debug),
+            entitlements: "\(Project.Environment.appName).entitlements",
             dependencies: [
                 .feature(interface: .Onboarding),
                 .feature(implements: .Onboarding)
@@ -61,4 +59,6 @@ let targets: [Target] = [
 let project: Project = .makeModule(
     name: ModulePath.Feature.name + ModulePath.Feature.Onboarding.rawValue,
     targets: targets
-) 
+)
+
+

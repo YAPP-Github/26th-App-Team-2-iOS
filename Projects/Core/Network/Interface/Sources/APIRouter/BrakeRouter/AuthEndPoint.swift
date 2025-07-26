@@ -13,29 +13,37 @@ public extension BrakeRouter {
         public typealias Item = Response
         
         case refresh(AuthRefreshRequest)
+        case logIn(AuthLogInRequest)
+        case logOut(accessToken: String)
         
         public var path: String {
             switch self {
             case .refresh:
                 return "/auth/refresh"
+            case .logIn:
+                return "/auth/login"
+            case .logOut:
+                return "/auth/logout"
             }
         }
         
         public var httpMethod: HTTPMethod {
             switch self {
-            case .refresh: .post
+            case .refresh, .logIn, .logOut: .post
             }
         }
         
         public var queryParameters: Encodable? {
             switch self {
-            case .refresh: nil
+            case .refresh, .logIn, .logOut: nil
             }
         }
         
         public var bodyParameters: Encodable? {
             switch self {
             case .refresh(let requestDTO): requestDTO
+            case .logIn(let requestDTO): requestDTO
+            case .logOut(accessToken: let accessToken): ["accessToken": accessToken]
             }
         }
         

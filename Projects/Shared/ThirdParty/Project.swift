@@ -17,7 +17,8 @@ let project = Project.makeModule(
             factory: .init(
                 dependencies: [
                     .external(name: "FirebaseAnalytics"),
-                    .external(name: "FirebaseCrashlytics")
+                    .external(name: "FirebaseCrashlytics"),
+                    .sdk(name: "WebKit", type: .framework, status: .required)
                 ],
                 settings: .settings(configurations: [
                     .build(.debug),

@@ -14,6 +14,7 @@ let targets: [Target] = [
     .domain(factory: .init(
         dependencies: [
             .domain(implements: .User),
+            .domain(implements: .OAuth),
             .core
         ],
         settings: .settings(configurations: [
