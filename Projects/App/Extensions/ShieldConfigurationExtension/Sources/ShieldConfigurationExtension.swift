@@ -8,6 +8,7 @@
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
+import CoreAppScreenTimeInterface
 import CoreLocalStorageInterface
 import CoreLocalStorage
 
@@ -16,33 +17,33 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
-        return setupShieldConfiguration(displayName)
+        return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
         // Customize the shield as needed for applications shielded because of their category.
         guard let displayName = application.localizedDisplayName,
               let categoryName = category.localizedDisplayName else {
-            return setupShieldConfiguration("알 수 없는 앱")
+            return setShieldConfig("알 수 없는 앱")
         }
-        return setupShieldConfiguration("\(categoryName) - \(displayName)")
+        return setShieldConfig("\(categoryName) - \(displayName)")
     }
 
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
         // Customize the shield as needed for web domains.
         guard let displayName = webDomain.domain else {
-            return setupShieldConfiguration("알 수 없는 웹사이트")
+            return setShieldConfig("알 수 없는 웹사이트")
         }
-        return setupShieldConfiguration(displayName)
+        return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
         // Customize the shield as needed for web domains shielded because of their category.
         guard let displayName = webDomain.domain,
               let categoryName = category.localizedDisplayName else {
-            return setupShieldConfiguration("알 수 없는 웹사이트")
+            return setShieldConfig("알 수 없는 웹사이트")
         }
-        return setupShieldConfiguration("\(categoryName) - \(displayName)")
+        return setShieldConfig("\(categoryName) - \(displayName)")
     }
 
     private func isNotificationArrived() -> Bool {
@@ -50,16 +51,16 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return appScheduleStorage.getBlockingStatus()
     }
 
-    private func setupShieldConfiguration(_ tokenName: String) -> ShieldConfiguration {
-        let isNotificationArrived = isNotificationArrived()
+    private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
+        let isNotiArrived = isNotificationArrived()
 
-        let customIcon = UIImage(resource: isNotificationArrived ? .iconArrow : .iconWarning)
+        let customIcon = UIImage(resource: isNotiArrived ? .iconArrow : .iconWarning)
         let customTitle = ShieldConfiguration.Label(
-            text: isNotificationArrived ? "알림을 눌러 사용 시간을 설정해주세요" : "\(tokenName)을 꼭 사용하실건가요?",
+            text: isNotiArrived ? "알림을 눌러 사용 시간을 설정해주세요" : "\(tokenName)을 꼭 사용하실건가요?",
             color: .white
         )
         let customSecondaryButtonLabel = ShieldConfiguration.Label(
-            text: isNotificationArrived ? "다시 알림 보내기" : "안하기",
+            text: isNotiArrived ? "다시 알림 보내기" : "안하기",
             color: .lightGray
         )
 
@@ -67,7 +68,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             text: "사용하기",
             color: .black
         )
-        let customPrimaryButtonLabel: ShieldConfiguration.Label? = isNotificationArrived ? nil :topButton
+        let customPrimaryButtonLabel: ShieldConfiguration.Label? = isNotiArrived ? nil :topButton
 
         let shieldConfiguration = ShieldConfiguration(
             backgroundBlurStyle: .dark,
@@ -82,3 +83,5 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return shieldConfiguration
     }
 }
+
+

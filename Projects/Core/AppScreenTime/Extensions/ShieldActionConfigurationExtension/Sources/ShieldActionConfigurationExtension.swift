@@ -37,29 +37,14 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             appScheduleStorage.saveBlockingStatus(true)
             completionHandler(.defer)
         case .secondaryButtonPressed:
-            // 차단 상태가 true라면 차단 해제
             if appScheduleStorage.getBlockingStatus() {
                 appScheduleStorage.saveBlockingStatus(false)
-                
-                // 모든 Shield 설정을 강제로 해제
-                managedSettingsManager.clearAllBlockListsForRest(schedules: [])
-                
-                // 추가적인 강제 해제 시도
-                DispatchQueue.main.async {
-                    self.managedSettingsManager.clearAllBlockListsForRest(schedules: [])
-                }
-                
-                // 지연 후 한 번 더 시도
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.managedSettingsManager.clearAllBlockListsForRest(schedules: [])
-                }
-                
                 completionHandler(.defer)
             } else {
                 completionHandler(.close)
             }
-        @unknown default:
-            fatalError()
+        default:
+            completionHandler(.close)
         }
     }
 
@@ -82,7 +67,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         content.sound = UNNotificationSound.default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let request = UNNotificationRequest(identifier: "MyNotification", content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "BrakeNotification", content: content, trigger: trigger)
 
         return request
     }

@@ -8,42 +8,76 @@
 import DeviceActivity
 import Foundation
 import ManagedSettings
+import CoreAppScreenTimeInterface
+import CoreAppScreenTime
 import CoreLocalStorageInterface
 import CoreLocalStorage
 
-// DeviceActivityName extension을 import
-extension DeviceActivityName {
-    static let daily = Self("daily")
-}
-
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
+
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let blockScheduleManager = BlockScheduleManager()
+    private let managedSettingsManager = ManagedSettingsStoreManager()
 
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
 
-        // Handle the start of the interval.
-        // 세션 시작 시 앱 차단 시작
-        if activity == .daily {
-            // AppScheduleStorage를 통해 차단 상태 저장
-            appScheduleStorage.saveBlockingStatus(true)
-            appScheduleStorage.saveLastBlockTime(Date())
+        if activity == .brake {
+            // 휴식 시간 시작 - 모든 차단 해제
+            appScheduleStorage.saveBlockingStatus(false)
+            appScheduleStorage.saveSelectNotificationTrigger(true)
+
+            // 저장된 모든 스케줄을 가져와서 차단 해제
+            let allSchedules = blockScheduleManager.readAll()
+            managedSettingsManager.clearAllBlockListsForRest(schedules: allSchedules)
+            return
         }
+
+        // DeviceActivityName과 매칭되는 BlockSchedule의 블록리스트를 적용
+        guard let schedule = BlockSchedule(from: activity) else {
+            // BlockSchedule을 찾을 수 없는 경우에도 차단 상태를 활성화
+            appScheduleStorage.saveBlockingStatus(true)
+            return
+        }
+        appScheduleStorage.saveSelectNotificationTrigger(true)
+        blockScheduleManager.startBlockSchedule(schedule)
     }
 
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
-        // Handle the end of the interval.
-        // 세션 종료 시 앱 차단 해제
-        if activity == .daily {
-            // AppScheduleStorage를 통해 차단 상태 해제
-            appScheduleStorage.saveBlockingStatus(false)
-        }
-    }
+        if activity == .brake {
+            // 휴식 시간 종료 - 차단 재설정
+            appScheduleStorage.saveBlockingStatus(true)
+            appScheduleStorage.saveSelectNotificationTrigger(true)
 
-    private func extractSessionKey(from activity: DeviceActivityName) -> String? {
-        // DeviceActivityName에서 세션 키를 추출하는 로직
-        // 실제 구현에서는 activity.rawValue를 파싱하여 세션 정보를 추출
-        return activity.rawValue
+            // 저장된 모든 스케줄에 대해 차단 재설정
+            let allSchedules = blockScheduleManager.readAll()
+            allSchedules.forEach { schedule in
+                blockScheduleManager.startBlockSchedule(schedule)
+            }
+            return
+        }
+
+        guard let schedule = BlockSchedule(from: activity) else {
+            // BlockSchedule을 찾을 수 없는 경우에도 차단 상태를 해제
+            appScheduleStorage.saveBlockingStatus(false)
+            // 모든 Shield 설정을 강제로 해제
+            managedSettingsManager.clearAllBlockListsForRest(schedules: [])
+            return
+        }
+        blockScheduleManager.endBlockSchedule(schedule)
     }
-} 
+}
+
+// BlockSchedule extension for DeviceActivityName conversion
+private extension BlockSchedule {
+    init?(from deviceActivityName: DeviceActivityName) {
+        // DeviceActivityName.rawValue가 BlockSchedule의 id와 매칭되는지 확인
+        // 실제 구현에서는 저장된 BlockSchedule에서 찾기
+        guard let schedule = BlockScheduleManager().read(deviceActivityName.rawValue) else {
+            return nil
+        }
+
+        self = schedule
+    }
+}

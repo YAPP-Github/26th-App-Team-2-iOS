@@ -7,11 +7,14 @@
 
 import ManagedSettings
 import UserNotifications
+import CoreAppScreenTime
+import CoreAppScreenTimeInterface
 import CoreLocalStorageInterface
 import CoreLocalStorage
 
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let managedSettingsManager = ManagedSettingsStoreManager()
 
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
@@ -28,7 +31,9 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private func handleApplications(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         switch action {
         case .primaryButtonPressed:
+            // 노티피케이션 요청
             scheduleNotification(with: "Notification")
+            // AppScheduleStorage를 통해 차단 상태 저장
             appScheduleStorage.saveBlockingStatus(true)
             completionHandler(.defer)
         case .secondaryButtonPressed:

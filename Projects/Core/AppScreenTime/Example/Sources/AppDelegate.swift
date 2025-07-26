@@ -40,7 +40,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
     // Notification ID에 따른 처리
         switch response.notification.request.identifier {
-        case "MyNotification":
+        case "BrakeNotification":
             handleAppUnblockNotification()
         default:
             break
