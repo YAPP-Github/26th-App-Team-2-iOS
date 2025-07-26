@@ -7,126 +7,123 @@
 
 import SwiftUI
 import FamilyControls
-import CoreAppScreenTimeInterface
 import ManagedSettings
+import CoreAppScreenTimeInterface
+import CoreAppScreenTime
+import CoreLocalStorageInterface
+import CoreLocalStorage
+import Observation
+import DeviceActivity
 
 struct ContentView: View {
-    @State private var model = BlockingViewModel.shared
-    @State private var isPresented = false
-    @State private var showingAlert = false
-    @State private var alertMessage = ""
 
-    private let blocker = ApplicationBlocker()
+    @Environment(BlockingViewModel.self) var viewModel
+    @State private var currentSchedule: BlockSchedule?
+
+    @Environment(\.scenePhase) var phase
 
     var body: some View {
-        ZStack {
-            Color.white
-                .ignoresSafeArea()
+        NavigationView {
+            ZStack {
+                Color.white
+                    .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Spacer()
-                appSelectionButton
-                Spacer()
-                selectedAppsList
-                Spacer()
-                buttonStack
+                ScrollView {
+                    VStack(spacing: 20) {
+                        Spacer()
+                        appSelectionButton
+                        Spacer()
+                        
+                        // 액션 버튼들
+                        VStack(spacing: 10) {
+                            Button(action: blockApps) {
+                                Text("앱 차단")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.red)
+                                    .cornerRadius(8)
+                            }
+                            
+                            Button(action: unblockApps) {
+                                Text("앱 차단 해제")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.green)
+                                    .cornerRadius(8)
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
             }
-        }
-        .onAppear {
-            requestAuthorization()
-        }
-        .alert("알림", isPresented: $showingAlert) {
-            Button("확인", role: .cancel) { }
-        } message: {
-            Text(alertMessage)
+            .onAppear {
+                requestAuthorization()
+            }
+            .sheet(isPresented: .init(get: {
+                viewModel.isPresentedTimerSettingView
+            }, set: { newValue in
+                viewModel.isPresentedTimerSettingView = newValue
+            })) {
+                TimerSettingView { selectedTime in
+                    do {
+                        try viewModel.breakTimeManager.createBreakTime(minutes: selectedTime)
+                        viewModel.appScheduleStorage.saveSelectNotificationTrigger(false)
+                    } catch DeviceActivityCenterError.intervalTooShort {
+                        print("휴식 시간이 너무 짧습니다. 최소 15분 이상 설정해주세요.")
+                    } catch {
+                        print("휴식 시간 설정 실패: \(error)")
+                    }
+                }
+            }
+            .onChange(of: phase, { oldValue, newValue in
+                switch newValue {
+                case .active:
+                    viewModel.blockViewOnAppeared()
+                case .inactive:
+                    break
+                case .background:
+                    break
+                default:
+                    break
+                }
+            })
+            .navigationTitle("앱 차단 관리")
+            .navigationBarTitleDisplayMode(.large)
         }
     }
 
     // MARK: - UI Components
 
     private var appSelectionButton: some View {
-        Button(action: { isPresented.toggle() }) {
-            Text("차단할 앱 목록 확인하기 🤗")
-                .font(.system(size: 18, weight: .bold))
-                .foregroundColor(.white)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 24)
-                .background(Color.blue)
-                .cornerRadius(8)
-        }
-        .familyActivityPicker(isPresented: $isPresented, selection: $model.newSelection)
-    }
-
-    private var selectedAppsList: some View {
-        let selectedAppsTokens = Array(model.selectedAppsTokens)
-        let selectedCategoryTokens = Array(model.newSelection.categoryTokens)
-
-        return Group {
-            if !selectedAppsTokens.isEmpty || !selectedCategoryTokens.isEmpty {
-                SelectedAppsListView(selectedAppsTokens: selectedAppsTokens, selectedCategoryTokens: selectedCategoryTokens)
-            } else {
-                // 빈 상태일 때도 공간을 차지하도록
-                VStack {
-                    Text("선택된 앱이 없습니다")
-                        .foregroundColor(.gray)
-                        .padding()
-                }
-                .frame(height: 100)
-            }
-        }
-    }
-
-    private struct SelectedAppsListView: View {
-        let selectedAppsTokens: [ApplicationToken]
-        let selectedCategoryTokens: [ActivityCategoryToken]
-
-        var body: some View {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("선택된 앱:")
-                    .font(.headline)
-                    .foregroundColor(.black)
-
-                ForEach(selectedAppsTokens.indices) { index in
-                    Text("selectedCategoryTokens - \(index)")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                }
-
-                ForEach(selectedCategoryTokens.indices) { index in
-                    Text("selectedCategoryTokens - \(index)")
-                        .font(.headline)
-                        .foregroundColor(.black)
-                }
+        Button(action: {
+            viewModel.isPresented = true
+        }) {
+            HStack {
+                Image(systemName: "plus.circle.fill")
+                    .foregroundColor(.blue)
+                Text("앱 선택")
+                    .foregroundColor(.blue)
             }
             .padding()
-            .background(Color.gray.opacity(0.1))
+            .background(Color.blue.opacity(0.1))
             .cornerRadius(8)
         }
-    }
-
-    private var buttonStack: some View {
-        VStack(spacing: 10) {
-            Button(action: blockApps) {
-                Text("차단하기")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Color.red)
-                    .cornerRadius(8)
-            }
-
-            Button(action: unblockApps) {
-                Text("해제하기")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .background(Color.blue)
-                    .cornerRadius(8)
-            }
-        }
-        .padding(.horizontal, 60)
+        .familyActivityPicker(
+            isPresented: .init(get: {
+                viewModel.isPresented
+            }, set: { newValue in
+                viewModel.isPresented = newValue
+            }),
+            selection: .init(get: {
+                viewModel.newSelection
+            }, set: { newValue in
+                viewModel.newSelection = newValue
+            })
+        )
     }
 
     // MARK: - Actions
@@ -136,36 +133,37 @@ struct ContentView: View {
             do {
                 try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
             } catch {
-                await MainActor.run {
-                    alertMessage = "권한 요청 실패: \(error.localizedDescription)"
-                    showingAlert = true
-                }
+        
             }
         }
     }
 
     private func blockApps() {
-        blocker.block { result in
-            Task { @MainActor in
-                switch result {
-                case .success():
-                    alertMessage = "차단 성공"
-                    showingAlert = true
-                case .failure(let error):
-                    alertMessage = "차단 실패: \(error.localizedDescription)"
-                    showingAlert = true
-                }
-            }
+        do {
+            let schedule = BlockSchedule(
+                id: UUID().uuidString,
+                title: "차단된 앱",
+                blockList: viewModel.newSelection,
+                startTime: BlockTime(hour: 00, minute: 00),
+                endTime: BlockTime(hour: 23, minute: 59)
+            )
+            self.currentSchedule = schedule
+
+            try viewModel.blockScheduleManager.create(schedule)
+        } catch {
+            
         }
     }
 
     private func unblockApps() {
-        blocker.clearShield()
-        alertMessage = "차단 해제 완료"
-        showingAlert = true
+        guard let currentSchedule = currentSchedule else { return }
+        viewModel.blockScheduleManager.delete(currentSchedule)
     }
-}
 
-#Preview {
-    ContentView()
+    private func formatTime(_ timeInterval: TimeInterval) -> String {
+        let minutes = Int(timeInterval) / 60
+        let seconds = Int(timeInterval) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
 }
