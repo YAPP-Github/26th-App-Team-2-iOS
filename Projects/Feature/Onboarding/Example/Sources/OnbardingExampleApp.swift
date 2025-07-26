@@ -28,10 +28,7 @@ struct OnbardingExampleApp: App {
                     }
                 } else {
                     NavigationStack {
-                ScreenTimeAuthView()
-                    .environment(ScreenTimeAuthViewModel(
-                        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase()
-                    ))
+                SetNickNameView()
             }
                         .environment(
                             LogInViewModel(

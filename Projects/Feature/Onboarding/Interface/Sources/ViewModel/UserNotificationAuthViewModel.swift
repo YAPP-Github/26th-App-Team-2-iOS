@@ -56,6 +56,10 @@ public final class UserNotificationAuthViewModel {
             }
         }
     }
+    
+    public func userDeniedCancelTapped() {
+        self.notificationApproved = true
+    }
 }
 
 

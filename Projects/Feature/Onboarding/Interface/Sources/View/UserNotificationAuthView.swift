@@ -58,9 +58,11 @@ public struct UserNotificationAuthView: View {
                             UIApplication.shared.open(url, options: [:], completionHandler: nil)
                         }
                     }
-                    Button("취소", role: .cancel) { }
+                    Button("취소", role: .cancel) {
+                    }
                 case .unknownError, .userRestricted, .approved:
-                    Button("확인", role: .cancel) { }
+                    Button("확인", role: .cancel) {
+                    }
                 }
             },
             message: { result in
