@@ -40,7 +40,7 @@ extension OAuthServiceProtocol {
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
         
-        self.memberStateStorage.save(memberState: stateType)
+        self.onboardingState.setMemberState(stateType)
     }
 }
 

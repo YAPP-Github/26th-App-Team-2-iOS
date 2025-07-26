@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import DomainOAuthInterface
+import Domain
 
 public protocol LogInViewModelDelegate: AnyObject {
     func logInCompleted()

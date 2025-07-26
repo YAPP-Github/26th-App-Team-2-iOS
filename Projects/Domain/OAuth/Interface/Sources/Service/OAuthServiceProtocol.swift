@@ -6,12 +6,15 @@
 //
 
 import Foundation
+import DomainUserInterface
 import Core
+
+
 public protocol OAuthServiceProtocol {
     var networkProvider: NetworkProviderProtocol { get }
     var tokenStorage: TokenStorageProtocol { get }
     var tokenKeyHolder: TokenKeyHolderProtocol { get }
-    var memberStateStorage: MemberStateStorageProtocol { get }
+    var onboardingState: OnboardingStateProtocol { get }
     
     func login(oAuthType: OAuthType, authorizationCode: String) async throws
 }
@@ -20,14 +23,16 @@ public final class OAuthLogInService {
     public let networkProvider: NetworkProviderProtocol
     public let tokenStorage: TokenStorageProtocol
     public let tokenKeyHolder: TokenKeyHolderProtocol
-    public let memberStateStorage: MemberStateStorageProtocol
+    public let onboardingState: OnboardingStateProtocol
     
     public static func make() -> OAuthLogInService {
         OAuthLogInService(
             networkProvider: NetworkProvider(networkSession: NetworkSession()),
             tokenStorage: KeyChainTokenStorage(),
             tokenKeyHodler: BundleTokenKeyHolder(),
-            memberStateStorage: UserDefaultsMemberStateStorage()
+            onboardingState: OnboardingStateService(
+                memberStateStorage: UserDefaultsMemberStateStorage()
+            ) as! OnboardingStateProtocol
         )
     }
 
@@ -35,12 +40,12 @@ public final class OAuthLogInService {
         networkProvider: NetworkProviderProtocol,
         tokenStorage: TokenStorageProtocol,
         tokenKeyHodler: TokenKeyHolderProtocol,
-        memberStateStorage: MemberStateStorageProtocol
+        onboardingState: OnboardingStateProtocol
     ) {
         self.networkProvider = networkProvider
         self.tokenStorage = tokenStorage
         self.tokenKeyHolder = tokenKeyHodler
-        self.memberStateStorage = memberStateStorage
+        self.onboardingState = onboardingState
     }
     
 }

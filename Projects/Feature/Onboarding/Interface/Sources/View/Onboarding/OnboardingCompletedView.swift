@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 public struct OnboardingCompletedView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(OnboardingCompletedViewModel.self) var viewModel

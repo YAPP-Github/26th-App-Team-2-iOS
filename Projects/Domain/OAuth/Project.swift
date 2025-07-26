@@ -16,6 +16,8 @@ let project = Project.makeModule(
             interface: .OAuth,
             factory: .init(
                 dependencies: [
+                    .domain(interface: .User),
+                    .domain(implements: .User),
                     .core
                 ]
             )

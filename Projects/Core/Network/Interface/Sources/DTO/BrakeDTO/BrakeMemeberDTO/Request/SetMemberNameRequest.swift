@@ -9,4 +9,8 @@ import Foundation
 
 public struct SetMemberNameRequest: Encodable {
     public let nickname: String
+    
+    public init(nickname: String) {
+        self.nickname = nickname
+    }
 }

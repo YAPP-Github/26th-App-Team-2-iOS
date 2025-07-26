@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Domain
 
 @Observable
 public final class OnboardingCompletedViewModel {
@@ -29,17 +30,6 @@ public final class OnboardingCompletedViewModel {
                 onboardingCompleted()
             }
         }
-        
-    }
-}
-
-
-
-public struct UserOnboardingFinishedUseCase {
-    
-    public init() { }
-    
-    func execute(userName: String) async {
         
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Domain
 
 public struct UserNotificationAuthView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel

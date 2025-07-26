@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct MemberInfoResponse: Decodable {
-    let nickname: String
-    let state: String
+public struct MemberInfoResponse: Decodable {
+    public let nickname: String
+    public let state: String
+    
+    public init(nickname: String, state: String) {
+        self.nickname = nickname
+        self.state = state
+    }
 }
