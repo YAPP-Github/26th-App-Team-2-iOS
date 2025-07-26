@@ -8,6 +8,6 @@
 import Foundation
 
 public protocol BreakTimeProtocol {
-    func createBreakTime(endDate: Date?) throws
+    func createBreakTime(minutes: Int) throws
     func deleteBreakTime()
 }

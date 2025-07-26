@@ -13,6 +13,11 @@ public struct BlockTime: Codable {
     // 분
     public let minute: Int
 
+    public init(hour: Int, minute: Int) {
+        self.hour = hour
+        self.minute = minute
+    }
+
     // 스타 생성 및 수정 모달을 통한 입력을 고려한 생성자
     public init(date: Date) {
         let starTime = TimeParser.extractTime(from: date)
@@ -32,6 +37,25 @@ public struct BlockTime: Codable {
         let hour = String(format: "%02d", self.hour)
         let minute = String(format: "%02d", self.minute)
         return String(format: "%@:%@", hour, minute)
+    }
+    
+    // 표시용 시간 문자열 (예: "오전 9:00", "오후 2:30")
+    public var displayTime: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "ko_KR")
+        formatter.dateFormat = "a h:mm"
+        
+        // 현재 날짜를 기준으로 시간만 설정
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+        
+        if let date = Calendar.current.date(from: components) {
+            return formatter.string(from: date)
+        }
+        
+        // 폴백: 기본 형식
+        return time()
     }
 
 }

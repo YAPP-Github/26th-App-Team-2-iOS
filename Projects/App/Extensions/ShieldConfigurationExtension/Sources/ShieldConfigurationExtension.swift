@@ -8,7 +8,6 @@
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
-import CoreAppScreenTimeInterface
 import CoreLocalStorageInterface
 import CoreLocalStorage
 

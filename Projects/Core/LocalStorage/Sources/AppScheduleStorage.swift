@@ -7,6 +7,7 @@
 
 import Foundation
 import ManagedSettings
+import FamilyControls
 import CoreLocalStorageInterface
 
 public struct AppScheduleStorage: AppScheduleStorageProtocol {
@@ -19,25 +20,12 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
         self.userDefaults = UserDefaults(suiteName: appGroupName)
     }
 
-    public func saveSelectedApps(_ tokens: [Application]) {
-        // ApplicationToken을 Data로 변환하여 저장
-        let tokenData = tokens.map { token in
-            return [
-                "tokenString": token.token.debugDescription,
-                "localizedDisplayName": token.localizedDisplayName ?? "알 수 없는 앱"
-            ]
-        }
-        userDefaults?.set(tokenData, forKey: "selectedApps")
+    public func saveSelectNotificationTrigger(_ isSelected: Bool) {
+        userDefaults?.set(isSelected, forKey: "isSelectedNotification")
     }
 
-    public func getSelectedApps() -> [Application] {
-        guard let tokenData = userDefaults?.array(forKey: "selectedApps") as? [[String: Any]] else {
-            return []
-        }
-
-        return tokenData.compactMap { data in
-            return nil
-        }
+    public func getSelectedNotification() -> Bool {
+        return userDefaults?.bool(forKey: "isSelectedNotification") ?? false
     }
 
     public func saveBlockingStatus(_ isBlocked: Bool) {
@@ -60,8 +48,46 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
     }
 
     public func clearAllData() {
-        userDefaults?.removeObject(forKey: "selectedApps")
         userDefaults?.removeObject(forKey: "isBlocked")
         userDefaults?.removeObject(forKey: "lastBlockTime")
+        clearAllBlockSchedules()
+    }
+    
+    // MARK: - BlockSchedule 저장/로드 (Data 기반)
+    
+    public func saveBlockScheduleData(_ data: Data, forId id: String) {
+        userDefaults?.set(data, forKey: "blockSchedule_\(id)")
+        
+        // 모든 BlockSchedule ID 목록도 저장
+        var allIds = getAllBlockScheduleIds()
+        if !allIds.contains(id) {
+            allIds.append(id)
+            userDefaults?.set(allIds, forKey: "allBlockScheduleIds")
+        }
+    }
+    
+    public func getBlockScheduleData(forId id: String) -> Data? {
+        return userDefaults?.data(forKey: "blockSchedule_\(id)")
+    }
+    
+    public func getAllBlockScheduleIds() -> [String] {
+        return userDefaults?.array(forKey: "allBlockScheduleIds") as? [String] ?? []
+    }
+    
+    public func deleteBlockSchedule(id: String) {
+        userDefaults?.removeObject(forKey: "blockSchedule_\(id)")
+        
+        // ID 목록에서도 제거
+        var allIds = getAllBlockScheduleIds()
+        allIds.removeAll { $0 == id }
+        userDefaults?.set(allIds, forKey: "allBlockScheduleIds")
+    }
+    
+    public func clearAllBlockSchedules() {
+        let allIds = getAllBlockScheduleIds()
+        allIds.forEach { id in
+            userDefaults?.removeObject(forKey: "blockSchedule_\(id)")
+        }
+        userDefaults?.removeObject(forKey: "allBlockScheduleIds")
     }
 }

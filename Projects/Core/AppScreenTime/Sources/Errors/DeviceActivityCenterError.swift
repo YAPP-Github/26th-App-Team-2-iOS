@@ -10,4 +10,5 @@ import Foundation
 public enum DeviceActivityCenterError: Error {
     case monitoringFailed
     case createScheduleFailed
+    case intervalTooShort
 }

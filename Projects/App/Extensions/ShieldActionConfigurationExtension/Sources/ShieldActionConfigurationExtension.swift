@@ -62,7 +62,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         content.sound = UNNotificationSound.default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let request = UNNotificationRequest(identifier: "MyNotification", content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "BrakeNotification", content: content, trigger: trigger)
 
         return request
     }

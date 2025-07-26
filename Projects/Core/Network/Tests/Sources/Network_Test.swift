@@ -26,7 +26,7 @@ final class Network_Test: XCTestCase {
     }
     
     func test_request_네트워크_실제_통신() async {
-        print(#function)
+        #function)
         
         let networkProvider: NetworkProviderProtocol = NetworkProvider(
             networkSession: NetworkSession(),
@@ -47,11 +47,11 @@ final class Network_Test: XCTestCase {
                 /// base path가
                 /// guard let baseURL = Bundle.main.infoDictionary?["BASE_URL"] as? 로 강제되는것 같은데...
                 let val: TempTestResponse = try await networkProvider.request(endpoint)
-                print("테스트 결과 response: ", val)
+                "테스트 결과 response: ", val)
             } catch let error as NetworkError {
-                print("테스트 결과 network 에러: ", error.description)
+                "테스트 결과 network 에러: ", error.description)
             } catch {
-                print("테스트 결과 unknwon 에러: ", error.localizedDescription)
+                "테스트 결과 unknwon 에러: ", error.localizedDescription)
             }
     }
     

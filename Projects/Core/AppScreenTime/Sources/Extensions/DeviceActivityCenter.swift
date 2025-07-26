@@ -9,9 +9,9 @@ import Foundation
 import DeviceActivity
 import CoreAppScreenTimeInterface
 
-public extension DeviceActivityCenter {
+extension DeviceActivityCenter {
     // star 모니터링 시작
-    func startMonitoring(_ model: BlockSchedule) throws {
+    public func startMonitoring(_ model: BlockSchedule) throws {
         let scheduleName = DeviceActivityName(from: model)
         let start = DateComponents(
             hour: model.startTime.hour,
@@ -28,24 +28,28 @@ public extension DeviceActivityCenter {
             repeats: true
         )
 
-        do {
-            try startMonitoring(
-                scheduleName,
-                during: schedule
-            )
-        } catch {
-            throw DeviceActivityCenterError.monitoringFailed
-        }
+        try setMonitoring(scheduleName, during: schedule)
     }
+
     // 휴식 스케줄 등록
-    func createBreakTime(_ schedule: DeviceActivitySchedule) throws {
+    func createBrakeTime(_ schedule: DeviceActivitySchedule) throws {
+        try setMonitoring(.brake, during: schedule)
+    }
+
+    // 휴식 스케줄 종료
+    func stopBrakeTime() {
+        stopMonitoring([.brake])
+    }
+
+    // 휴식 스케줄 등록
+    private func setMonitoring(_ name: DeviceActivityName, during schedule: DeviceActivitySchedule) throws {
         do {
             try startMonitoring(
-                DeviceActivityName.daily,
+                name,
                 during: schedule
             )
         } catch {
-            throw DeviceActivityCenterError.createScheduleFailed
+            throw error
         }
     }
 }

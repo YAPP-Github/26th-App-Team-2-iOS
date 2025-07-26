@@ -7,8 +7,6 @@
 
 import Foundation
 
-// MARK: - TimeParser
-
 struct TimeParser {
     // "HH:mm" 문자열 -> (hour: Int, minute: Int) : 시간 문자열을 받아서 시와 분을 반환
     static func parseTime(from timeString: String) -> (hour: Int, minute: Int) {

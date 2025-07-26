@@ -9,8 +9,7 @@ import DeviceActivity
 import CoreAppScreenTimeInterface
 
 extension DeviceActivityName {
-    public static let daily = Self("daily")
-
+    public static let brake = Self("brake")
     public init(from model: BlockSchedule) {
         self = .init(model.id)
     }
