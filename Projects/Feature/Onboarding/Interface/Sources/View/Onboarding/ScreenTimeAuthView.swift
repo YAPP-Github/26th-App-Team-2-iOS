@@ -76,7 +76,6 @@ public struct ScreenTimeAuthView: View {
             .padding(15)
             .background(.background, in: .rect(cornerRadius: 10))
             .transition(.blurReplace)
-            
         }, background: {
             Rectangle().fill(.primary.opacity(0.35))
         })
