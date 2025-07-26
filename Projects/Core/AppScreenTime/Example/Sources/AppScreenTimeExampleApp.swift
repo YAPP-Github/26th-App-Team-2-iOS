@@ -12,9 +12,13 @@ import ManagedSettings
 
 @main
 struct AppScreenTimeExampleApp: App {
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(BlockingViewModel())
         }
     }
 }
