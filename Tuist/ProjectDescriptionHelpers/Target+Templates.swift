@@ -250,7 +250,7 @@ public extension Target {
     static func domain(factory: TargetFactory) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Domain.name
-
+        
         return make(factory: newFactory)
     }
 

@@ -23,8 +23,7 @@ struct TokenStorageTest {
 
         // 3. 저장
         let testAccessToken = AccessToken(
-            token: "test-access-token",
-            expiration: Date()
+            token: "test-access-token"
         )
         try await tokenStorage.save(token: testAccessToken, for: "testingAccessTokenKey")
 
@@ -47,8 +46,7 @@ struct TokenStorageTest {
         #expect(deleteEmptyResult == false)
 
         let testRefreshToken = RefreshToken(
-            token: "test-refresh-token",
-            expiration: Date()
+            token: "test-refresh-token"
         )
         try await tokenStorage.save(token: testRefreshToken, for: "testingRefreshTokenKey")
 

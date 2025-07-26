@@ -100,16 +100,19 @@ public extension Project {
             ]
         )
         
-        public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget, bundleID: String? = nil) -> InfoPlist {
-            let kakaoNativeAppKey: String
+        public static func appInfoPlist(deploymentTarget: ProjectDeploymentTarget) -> InfoPlist {
+            let kakaoJSAppKey: String
+            let kakaoRESTAPIKey: String
             let baseServerURL: String
             
             switch deploymentTarget {
             case .debug:
-                kakaoNativeAppKey = "${KAKAO_NATIVE_APP_KEY_DEBUG}"
+                kakaoJSAppKey = "${KAKAO_JS_KEY_DEBUG}"
+                kakaoRESTAPIKey = "${KAKAO_REST_API_KEY_DEBUG}"
                 baseServerURL = "${BASE_SERVER_URL_DEBUG}"
             case .release:
-                kakaoNativeAppKey =  "${KAKAO_NATIVE_APP_KEY_RELEASE}"
+                kakaoJSAppKey = "${KAKAO_JS_KEY_RELEASE}"
+                kakaoRESTAPIKey = "${KAKAO_REST_API_KEY_RELEASE}"
                 baseServerURL = "${BASE_SERVER_URL_RELEASE}"
             }
             
@@ -128,27 +131,20 @@ public extension Project {
                         ]]
                     ]
                 ],
-                "CFBundleURLTypes": [
-                    [
-                        "CFBundleURLName": "",
-                        "CFBundleURLSchemes": ["kakao\(kakaoNativeAppKey)"]
-                    ]
-                ],
-                "KAKAO_NATIVE_APP_KEY": "\(kakaoNativeAppKey)",
-                "BASE_SERVER_URL": "\(baseServerURL)",
+                "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
+                "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
+                "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
+                
                 "LSApplicationQueriesSchemes": [
                     "kakaokompassauth",
                     "kakaolink"
                 ],
+                "BASE_SERVER_URL": "\(baseServerURL)",
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
                 "ITSAppUsesNonExemptEncryption": false,
             ]
-            if let bundleID {
-                plist["CFBundleIdentifier"] = Plist.Value(stringLiteral: bundleID)
-            }
-            
             return .extendingDefault(with: plist)
         }
         
@@ -174,10 +170,15 @@ public extension Project {
                     "kakaokompassauth",
                     "kakaolink"
                 ],
-                "KAKAO_NATIVE_APP_KEY_DEBUG": "${KAKAO_NATIVE_APP_KEY_DEBUG}",
-                "KAKAO_NATIVE_APP_KEY_RELEASE" :  "${KAKAO_NATIVE_APP_KEY_RELEASE}",
-                "BASE_SERVER_URL_DEBUG" : "${BASE_SERVER_URL_DEBUG}",
+                
+                "KAKAO_JS_KEY_DEBUG" : "${KAKAO_JS_KEY_DEBUG}",
+                "KAKAO_REST_API_KEY_DEBUG" : "${KAKAO_REST_API_KEY_DEBUG}",
+                "KAKAO_JS_KEY_RELEASE" : "${KAKAO_JS_KEY_RELEASE}",
+                "KAKAO_REST_API_KEY_RELEASE" : "${KAKAO_REST_API_KEY_RELEASE}",
+                "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
+                
                 "BASE_SERVER_URL_RELEASE" : "${BASE_SERVER_URL_RELEASE}",
+                "BASE_SERVER_URL_DEBUG" : "${BASE_SERVER_URL_DEBUG}",
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
@@ -196,7 +197,6 @@ extension Project.Environment {
     enum AppTargetScript {
         
         static let firebaseCrashlytics: TargetScript = .post(
-//            path: .path("./Scripts/run_crashlytics.sh"),
             script: """
 ROOT_DIR=${TUIST_ROOT_DIR}
 "${ROOT_DIR}/Tuist/Dependencies/SwiftPackageManager/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
