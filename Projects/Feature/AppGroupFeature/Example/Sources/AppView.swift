@@ -6,18 +6,16 @@
 //
 
 import SwiftUI
+import FeatureAppGroupFeatureInterface
 
-struct AppGroupFeatureView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, Brake!")
+@main
+struct FeatureAppGroupFeatureApp: App {
+    
+    var body: some Scene {
+        WindowGroup {
+            AppGroupMainView()
+                .environment(AppGroupMainViewModel())
         }
     }
-}
-
-#Preview {
-    AppGroupFeatureView()
+    
 }
