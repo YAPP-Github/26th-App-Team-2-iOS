@@ -32,13 +32,13 @@ extension UserProfileService: @retroactive UserProfileProtocol {
     public func getUserNickname() async throws -> String {
         if let nickname = self.userStorage.getNickname() { return nickname }
         
-        let memberInfoEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.getInfo
-        let userMemberInfoResponse: MemberInfoResponse = try await networkProvider.request(memberInfoEndPoint)
+        let memberInfoEndPoint = BrakeRouter.MemberEndPoint<BrakeResponse<MemberInfoResponse>>.getInfo
+        let userMemberInfoResponse: BrakeResponse<MemberInfoResponse> = try await networkProvider.request(memberInfoEndPoint)
         
-        let nickname = userMemberInfoResponse.nickname
+        let nickname = userMemberInfoResponse.data.nickname
         
         guard let memberStateType: MemberStateType = MemberStateType(
-            rawValue: userMemberInfoResponse.state
+            rawValue: userMemberInfoResponse.data.state
         ) else {
             assertionFailure("알 수 없는 멤버 상태")
             throw MemberStateError.unknownType
