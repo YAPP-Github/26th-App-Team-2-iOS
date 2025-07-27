@@ -16,16 +16,17 @@ extension UserProfileService: @retroactive UserProfileProtocol {
     public func setUserNickname(_ nickname: String) async throws {
         
         let setMemberNameRequest = SetMemberNameRequest(nickname: nickname)
-        let userNameEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.setName(setMemberNameRequest)
-        let userMemberInfoResponse: MemberInfoResponse = try await networkProvider.request(userNameEndPoint)
+        
+        let userNameEndPoint = BrakeRouter.MemberEndPoint<BrakeResponse<MemberInfoResponse>>.setName(setMemberNameRequest)
+        let userMemberInfoResponse: BrakeResponse<MemberInfoResponse> = try await networkProvider.request(userNameEndPoint)
         guard let memberStateType: MemberStateType = MemberStateType(
-            rawValue: userMemberInfoResponse.state
+            rawValue: userMemberInfoResponse.data.state
         ) else {
             assertionFailure("알 수 없는 멤버 상태")
             throw MemberStateError.unknownType
         }
         
-        userStorage.saveNickname(userMemberInfoResponse.nickname)
+        userStorage.saveNickname(userMemberInfoResponse.data.nickname)
         onboardingState.setMemberState(memberStateType)
     }
     
