@@ -1,5 +1,6 @@
+ 
 //
-//  UserSetNickNameUseCase.swift
+//  UserSetNicknameUseCase.swift
 //  DomainUser
 //
 //  Created by Greem on 7/26/25.
@@ -8,7 +9,7 @@
 import Foundation
 import Core
 
-public struct UserSetNickNameUseCase {
+public struct UserSetNicknameUseCase {
     
     private let userProfileService: UserProfileProtocol
     
@@ -21,5 +22,4 @@ public struct UserSetNickNameUseCase {
     public func execute(nickname: String) async throws {
         try await userProfileService.setUserNickname(nickname)
     }
-}
-
+} 

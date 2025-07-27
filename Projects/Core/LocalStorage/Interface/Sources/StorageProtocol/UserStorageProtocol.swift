@@ -8,8 +8,8 @@
 import Foundation
 
 public protocol UserStorageProtocol {
-    func saveNickName(_ nickName: String)
-    func getNickName() -> String?
+    func saveNickname(_ nickname: String)
+    func getNickname() -> String?
 }
 
 public final class UserDefaultsUserStorage {
@@ -20,11 +20,11 @@ public final class UserDefaultsUserStorage {
 extension UserDefaultsUserStorage: UserStorageProtocol {
     private var NICKNAME: String { "NICKNAME" }
     
-    public func saveNickName(_ nickName: String) {
-        UserDefaults.standard.set(nickName, forKey: self.NICKNAME)
+    public func saveNickname(_ nickname: String) {
+        UserDefaults.standard.set(nickname, forKey: self.NICKNAME)
     }
     
-    public func getNickName() -> String? {
+    public func getNickname() -> String? {
         return UserDefaults.standard.string(forKey: self.NICKNAME)
     }
 }

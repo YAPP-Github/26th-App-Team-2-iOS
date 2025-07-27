@@ -25,12 +25,12 @@ extension UserProfileService: @retroactive UserProfileProtocol {
             throw MemberStateError.unknownType
         }
         
-        userStorage.saveNickName(userMemberInfoResponse.nickname)
+        userStorage.saveNickname(userMemberInfoResponse.nickname)
         onboardingState.setMemberState(memberStateType)
     }
     
     public func getUserNickname() async throws -> String {
-        if let nickName = self.userStorage.getNickName() { return nickName }
+        if let nickname = self.userStorage.getNickname() { return nickname }
         
         let memberInfoEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.getInfo
         let userMemberInfoResponse: MemberInfoResponse = try await networkProvider.request(memberInfoEndPoint)
@@ -45,7 +45,7 @@ extension UserProfileService: @retroactive UserProfileProtocol {
         }
         
         
-        self.userStorage.saveNickName(nickname)
+        self.userStorage.saveNickname(nickname)
         self.onboardingState.setMemberState(memberStateType)
         
         return nickname

@@ -33,7 +33,7 @@ public protocol DIContainerProtocol {
     var onboardingStateUseCase: OnboardingStateUseCase { get }
     var appleLogInUseCase: AppleLogInUseCase { get }
     var kakaoLogInUseCase: KakaoLogInUseCase  { get }
-    var userSetNickNameUseCase: UserSetNickNameUseCase { get }
+    var userSetNicknameUseCase: UserSetNicknameUseCase { get }
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
     var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase { get }
 }
@@ -99,7 +99,7 @@ public final class ProductionDIContainer: DIContainerProtocol {
         onboardingState: onboardingStateService
     )
     
-    public lazy var userSetNickNameUseCase: UserSetNickNameUseCase = UserSetNickNameUseCase(
+    public lazy var userSetNicknameUseCase: UserSetNicknameUseCase = UserSetNicknameUseCase(
         userProfileService: userProfileService
     )
     

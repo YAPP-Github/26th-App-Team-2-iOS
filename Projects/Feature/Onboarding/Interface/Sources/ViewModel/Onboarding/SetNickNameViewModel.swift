@@ -1,5 +1,5 @@
 //
-//  SetNickNameViewModel.swift
+//  SetNicknameViewModel.swift
 //  FeatureOnboardingInterface
 //
 //  Created by Greem on 7/26/25.
@@ -8,32 +8,32 @@
 import Foundation
 
 @Observable
-public final class SetNickNameViewModel {
-    public var nickName: String = ""
+public final class SetNicknameViewModel {
+    public var nickname: String = ""
     public var isValid: Bool = false
     
     @ObservationIgnored
-    public var userNickNameCreated: (String) -> ()
+    public var userNicknameCreated: (String) -> ()
     
-    public init(userNickNameCreated: @escaping (String) -> ()) {
-        self.userNickNameCreated = userNickNameCreated
+    public init(userNicknameCreated: @escaping (String) -> ()) {
+        self.userNicknameCreated = userNicknameCreated
     }
     
-    func validNickName(_ nickName: String) {
+    func validNickname(_ nickname: String) {
         // 10자 초과 시 잘라내기
-        var nickName = nickName
-        if nickName.count > 10 {
-            nickName = String(nickName.prefix(10))
+        var nickname = nickname
+        if nickname.count > 10 {
+            nickname = String(nickname.prefix(10))
         }
         // 모든 언어의 문자, 숫자만 허용 (공백, 특수문자 불가)
         let regex = "^[\\p{L}\\p{N}]{2,10}$"
-        if let _ = nickName.range(of: regex, options: [.regularExpression]) {
+        if let _ = nickname.range(of: regex, options: [.regularExpression]) {
             isValid = true
         } else {
             isValid = false
         }
     }
-    public func nickNameCompletedBtnTapped() {
-        userNickNameCreated(nickName)
+    public func nicknameCompletedBtnTapped() {
+        userNicknameCreated(nickname)
     }
 }

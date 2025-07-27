@@ -1,5 +1,5 @@
 //
-//  SetNickNameView.swift
+//  SetNicknameView.swift
 //  FeatureOnboardingInterface
 //
 //  Created by Greem on 7/26/25.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-public struct SetNickNameView: View {
+public struct SetNicknameView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
-    @Environment(SetNickNameViewModel.self) var setNickNameViewModel
+    @Environment(SetNicknameViewModel.self) var setNicknameViewModel
     
     @FocusState var nickNmaeFocusState: Bool
     
@@ -27,30 +27,30 @@ public struct SetNickNameView: View {
                     TextField(
                         "닉네임을 입력해 주세요",
                         text: Binding(
-                            get: { setNickNameViewModel.nickName },
-                            set: { setNickNameViewModel.nickName = $0 }
+                            get: { setNicknameViewModel.nickname },
+                            set: { setNicknameViewModel.nickname = $0 }
                         )
                     )
                     .focused($nickNmaeFocusState)
-                    .onChange(of: setNickNameViewModel.nickName) { oldValue, newValue in
-                        setNickNameViewModel.validNickName(newValue)
+                    .onChange(of: setNicknameViewModel.nickname) { oldValue, newValue in
+                        setNicknameViewModel.validNickname(newValue)
                     }
                     HStack {
-                        if !setNickNameViewModel.isValid && !setNickNameViewModel.nickName.isEmpty {
+                        if !setNicknameViewModel.isValid && !setNicknameViewModel.nickname.isEmpty {
                             Text("공백, 특수문자 없이 2~10자를 입력해 주세요.")
                         }
                         Spacer()
-                        Text("\(setNickNameViewModel.nickName.count)/10")
+                        Text("\(setNicknameViewModel.nickname.count)/10")
                     }
                 }
                 
                 Spacer()
                 Button {
-                    self.setNickNameViewModel.nickNameCompletedBtnTapped()
+                    self.setNicknameViewModel.nicknameCompletedBtnTapped()
                 } label: {
                     Text("다음")
                 }
-                .disabled(!setNickNameViewModel.isValid)
+                .disabled(!setNicknameViewModel.isValid)
             }
         }
     }
@@ -58,5 +58,5 @@ public struct SetNickNameView: View {
 
 
 #Preview {
-    SetNickNameView()
+    SetNicknameView()
 }

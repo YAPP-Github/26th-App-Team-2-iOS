@@ -17,23 +17,23 @@ public struct OnboardingView: View {
     
     public var body: some View {
         NavigationStack(path: $onboardingManager.path) {
-            SetNickNameView()
+            SetNicknameView()
                 .environment(
-                    SetNickNameViewModel(
-                        userNickNameCreated: { nickName in
-                            onboardingManager.nickName = nickName
+                    SetNicknameViewModel(
+                        userNicknameCreated: { nickname in
+                            onboardingManager.nickname = nickname
                             onboardingManager.goToOnboardingInfo()
                         }
                     )
                 )
                 .navigationDestination(for: OnboardingViewType.self) { onboardingViewType in
                     switch onboardingViewType {
-                    case .setNickName:
-                        SetNickNameView()
+                    case .setNickname:
+                        SetNicknameView()
                             .environment(
-                                SetNickNameViewModel(
-                                    userNickNameCreated: { nickName in
-                                        onboardingManager.nickName = nickName
+                                SetNicknameViewModel(
+                                    userNicknameCreated: { nickname in
+                                        onboardingManager.nickname = nickname
                                         onboardingManager.goToOnboardingInfo()
                                     }
                                 )
@@ -62,12 +62,12 @@ public struct OnboardingView: View {
                                     }
                                 )
                         )
-                    case .onboardingCompleted(let nickName):
+                    case .onboardingCompleted(let nickname):
                         OnboardingCompletedView()
                             .environment(
                                 OnboardingCompletedViewModel(
-                                    userName: nickName,
-                                    userSetNickNameUseCase: diContainer.userSetNickNameUseCase,
+                                    userName: nickname,
+                                    userSetNicknameUseCase: diContainer.userSetNicknameUseCase,
                                     onboardingCompleted: {
                                         startUpViewModel.onboardingCompleted()
                                     }
@@ -84,16 +84,16 @@ public struct OnboardingView: View {
 
 
 enum OnboardingViewType: Hashable {
-    case setNickName
+    case setNickname
     case onboardingInfo
     case screenTimeAuth
     case userNotificationAuth
-    case onboardingCompleted(nickName: String)
+    case onboardingCompleted(nickname: String)
 }
 
 @Observable
 public final class OnboardingManager {
-    @ObservationIgnored var nickName: String = ""
+    @ObservationIgnored var nickname: String = ""
     var path: [OnboardingViewType] = []
     
     public init() {
@@ -113,6 +113,6 @@ public final class OnboardingManager {
     }
     
     public func goToOnboardingCompleted() {
-        path.append(.onboardingCompleted(nickName: self.nickName))
+        path.append(.onboardingCompleted(nickname: self.nickname))
     }
 }

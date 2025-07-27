@@ -13,17 +13,17 @@ public final class OnboardingCompletedViewModel {
     
     var errorOccuredPresented: Bool = false
     
-    private let userSetNickNameUseCase: UserSetNickNameUseCase
+    private let userSetNicknameUseCase: UserSetNicknameUseCase
     private let onboardingCompleted: (() -> ())
     private let userName: String
     
     public init(
         userName: String,
-        userSetNickNameUseCase: UserSetNickNameUseCase,
+        userSetNicknameUseCase: UserSetNicknameUseCase,
         onboardingCompleted: @escaping (() -> ())
     ) {
         self.userName = userName
-        self.userSetNickNameUseCase = userSetNickNameUseCase
+        self.userSetNicknameUseCase = userSetNicknameUseCase
         self.onboardingCompleted = onboardingCompleted
     }
     
@@ -31,7 +31,7 @@ public final class OnboardingCompletedViewModel {
         print("시작 버튼 탭탭탭!!")
         Task {
             do {
-                try await userSetNickNameUseCase.execute(nickname: userName)
+                try await userSetNicknameUseCase.execute(nickname: userName)
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     onboardingCompleted()
