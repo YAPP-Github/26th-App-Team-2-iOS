@@ -44,9 +44,11 @@ let targets: [Target] = [
     .feature(
         example: .Onboarding,
         factory: .init(
-            infoPlist:
-                Project.Environment.appInfoPlist(deploymentTarget: .debug),
+            infoPlist: Project.Environment.appInfoPlist(
+                deploymentTarget: .debug
+            ),
             entitlements: "\(Project.Environment.appName).entitlements",
+            scripts: Project.Environment.appScripts,
             dependencies: [
                 .feature(interface: .Onboarding),
                 .feature(implements: .Onboarding)

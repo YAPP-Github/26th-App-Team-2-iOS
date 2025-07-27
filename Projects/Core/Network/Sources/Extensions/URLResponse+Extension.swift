@@ -13,6 +13,7 @@ extension URLResponse {
         guard let response = self as? HTTPURLResponse else {
             throw NetworkError.noResponse
         }
+
         switch response.statusCode {
         case 200...299: return
         case 401: throw NetworkError.authorization

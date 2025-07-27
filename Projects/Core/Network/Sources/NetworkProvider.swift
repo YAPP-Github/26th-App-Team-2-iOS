@@ -31,6 +31,7 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
         do {
             let urlRequest: URLRequest = try endpoint.makeURLRequest(config: self.urlComponentConfig)
             let (data, response) = try await self.networkSession.dataTask(for: urlRequest)
+            
             try response.validateResponse()
             
             guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
@@ -49,8 +50,14 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
                 throw error
             }
         }
-        catch URLError.Code.notConnectedToInternet {
-            throw NetworkError.internetConnection
+        catch let error as URLError {
+            switch error.code {
+            case .notConnectedToInternet:
+                throw NetworkError.internetConnection
+            case .timedOut:
+                throw NetworkError.timeOut
+            default: throw NetworkError.unknown
+            }
         } catch {
             throw error
         }

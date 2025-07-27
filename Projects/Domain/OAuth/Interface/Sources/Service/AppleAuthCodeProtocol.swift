@@ -16,11 +16,8 @@ public final class AppleAuthCodeService: NSObject {
 
     public var identityContinuation: AsyncStream<Result<String, AuthError>>.Continuation?
     
-    public static func make() -> AppleAuthCodeService {
-        AppleAuthCodeService()
-    }
 
-    override init() {
+    public override init() {
         super.init()
     }
 }

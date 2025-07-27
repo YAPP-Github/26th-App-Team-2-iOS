@@ -48,7 +48,7 @@ public extension BrakeRouter {
         }
         
         public var headers: [String : String]? {
-            var defaultHeader = ["Content-Type": "application/json"]
+            let defaultHeader = ["Content-Type": "application/json"]
             switch self {
             default: return defaultHeader
             }

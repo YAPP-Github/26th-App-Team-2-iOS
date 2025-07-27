@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import DomainOAuthInterface
+import Domain
 
 public protocol LogInViewModelDelegate: AnyObject {
     func logInCompleted()
@@ -22,16 +22,16 @@ public final class LogInViewModel {
     private let appleLogInUseCase: AppleLogInUseCase
     private let kakaoLogInUseCase: KakaoLogInUseCase
     
-    private weak var delegate: LogInViewModelDelegate!
+    private let logInCompleted: () -> ()
     
     public init(
         appleLogInUseCase: AppleLogInUseCase,
         kakaoLogInUseCase: KakaoLogInUseCase,
-        delegate: LogInViewModelDelegate
+        logInCompleted: @escaping () -> ()
     ) {
         self.appleLogInUseCase = appleLogInUseCase
         self.kakaoLogInUseCase = kakaoLogInUseCase
-        self.delegate = delegate
+        self.logInCompleted = logInCompleted
     }
     
     @MainActor
@@ -43,7 +43,7 @@ public final class LogInViewModel {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.loading = false
-                    delegate.logInCompleted()
+                    logInCompleted()
                 }
             } catch {
                 await MainActor.run { [weak self] in
@@ -68,7 +68,7 @@ public final class LogInViewModel {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.loading = false
-                    delegate.logInCompleted()
+                    logInCompleted()
                 }
             } catch {
                 await MainActor.run { [weak self] in

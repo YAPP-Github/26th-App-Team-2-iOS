@@ -17,10 +17,6 @@ public final class OnboardingStateService {
     
     public let memberStateStorage: MemberStateStorageProtocol
     
-    public static func make() -> OnboardingStateService {
-        OnboardingStateService(memberStateStorage: UserDefaultsMemberStateStorage())
-    }
-    
     public init(memberStateStorage: MemberStateStorageProtocol) {
         self.memberStateStorage = memberStateStorage
     }

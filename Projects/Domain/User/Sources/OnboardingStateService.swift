@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import DomainOAuthInterface
 import Core
+import DomainUserInterface
 
 extension OnboardingStateService: @retroactive OnboardingStateProtocol {
     

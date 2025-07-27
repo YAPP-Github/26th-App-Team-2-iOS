@@ -8,6 +8,7 @@
 import Foundation
 
 public enum UserLogInStateType {
+    case unknown
     case logInRequired /// 로그인이 요구됨
     case onboardingRequired /// 온보딩이 요구됨
     case brakeAvailable /// 앱을 사용할 수 있음

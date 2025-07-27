@@ -15,6 +15,7 @@ public enum NetworkError: Error {
     case authorization // 토큰 만료 에러입니다.
     case server
     case internetConnection
+    case timeOut
     case noResponse
     case urlRequest(URLRequestError)
     case interceptorError(String)
@@ -31,6 +32,7 @@ public enum NetworkError: Error {
         case .noResponse: "No Response"
         case .urlRequest(let urlRequestError): urlRequestError.description
         case .interceptorError(let errorString): errorString
+        case .timeOut: "Time out"
         }
     }
     

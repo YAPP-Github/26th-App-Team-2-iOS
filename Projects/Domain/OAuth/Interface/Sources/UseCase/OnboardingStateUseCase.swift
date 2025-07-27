@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainUserInterface
 
 public struct OnboardingStateUseCase {
     private let onboardingState: OnboardingStateProtocol
