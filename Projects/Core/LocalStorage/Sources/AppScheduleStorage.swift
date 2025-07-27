@@ -11,14 +11,9 @@ import FamilyControls
 import CoreLocalStorageInterface
 
 public struct AppScheduleStorage: AppScheduleStorageProtocol {
-    public var userDefaults: UserDefaults?
+    public let userDefaults: UserDefaults? = UserDefaults(suiteName: Bundle.main.appGroupName)
 
-    public init() {
-        guard let appGroupName = Bundle.main.object(forInfoDictionaryKey: "APP_GROUP_NAME") as? String else {
-            return
-        }
-        self.userDefaults = UserDefaults(suiteName: appGroupName)
-    }
+    public init() { }
 
     public func saveSelectNotificationTrigger(_ isSelected: Bool) {
         userDefaults?.set(isSelected, forKey: "isSelectedNotification")
