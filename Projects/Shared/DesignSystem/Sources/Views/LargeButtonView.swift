@@ -37,7 +37,7 @@ public struct LargeButtonView: View {
                     .foregroundStyle(Colors.grey900.swiftUIColor)
                 Spacer()
             }
-            .frame(height: height)
+            .frame(minHeight: 56, maxHeight: height)
             .frame(maxWidth: 343)
             .background(isActive ? Colors.white.swiftUIColor : Colors.grey700.swiftUIColor)
             .clipShape(RoundedRectangle(cornerRadius: 16))

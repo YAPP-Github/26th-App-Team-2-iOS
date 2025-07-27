@@ -38,7 +38,7 @@ public struct SmallButtonView: View {
                     .foregroundStyle(isActive ? Colors.grey900.swiftUIColor : Colors.grey200.swiftUIColor)
                 Spacer()
             }
-            .frame(height: height)
+            .frame(minHeight: 48, maxHeight: height)
             .frame(maxWidth: 160)
             .background(isActive ? Colors.white.swiftUIColor : .clear)
             .clipShape(RoundedRectangle(cornerRadius: 100))
