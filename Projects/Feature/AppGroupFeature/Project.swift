@@ -14,7 +14,13 @@ let project = Project.makeModule(
     targets: [
         .feature(
             interface: .AppGroupFeature,
-            factory: .init()
+            factory: .init(
+                dependencies: [
+                    .domain,
+                    .sdk(name: "FamilyControls", type: .framework, status: .required),
+                    .sdk(name: "ManagedSettings", type: .framework, status: .required)
+                ]
+            )
         ),
         .feature(
             implements: .AppGroupFeature,
@@ -45,11 +51,11 @@ let project = Project.makeModule(
         .feature(
             example: .AppGroupFeature,
             factory: .init(
+                infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .debug),
                 dependencies: [
                     .feature(interface: .AppGroupFeature)
                 ]
             )
         )
-
     ]
 )
