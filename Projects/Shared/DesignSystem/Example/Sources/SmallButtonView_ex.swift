@@ -14,12 +14,18 @@ struct SmallButtonView_ex: View {
             Text("SmallButtonView Examples")
                 .font(.headline)
                 .padding(.top)
-            
-            Text("SmallButtonView는 아직 구현되지 않았습니다.")
-                .font(.body)
-                .foregroundStyle(Colors.grey700.swiftUIColor)
-            
-            Spacer()
+
+            SmallButtonView(
+                title: "활성화된 버튼",
+                isActive: true) {
+                    print("활성화된 버튼 클릭됨")
+                }
+
+            SmallButtonView(
+                title: "비활성화된 버튼",
+                isActive: false) {
+                    print("비활성화된 버튼 클릭됨")
+                }
         }
         .padding()
         .navigationTitle("SmallButtonView Example")

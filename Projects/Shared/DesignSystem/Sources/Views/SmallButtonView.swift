@@ -1,5 +1,5 @@
 //
-//  SmallButton.swift
+//  SmallButtonView.swift
 //  SharedDesignSystem
 //
 //  Created by Derrick kim on 7/27/25.
@@ -8,8 +8,8 @@
 import SwiftUI
 import SharedDesignSystem
 
-public struct SmallButton: View {
-    
+public struct SmallButtonView: View {
+
     private let title: String
     private let isActive: Bool
     private let height: CGFloat
