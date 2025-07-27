@@ -31,7 +31,7 @@ public final class OnboardingCompletedViewModel {
         print("시작 버튼 탭탭탭!!")
         Task {
             do {
-                try await userSetNickNameUseCase.execute(userName: userName)
+                try await userSetNickNameUseCase.execute(nickname: userName)
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     onboardingCompleted()

@@ -9,27 +9,27 @@ import Foundation
 import DomainUserInterface
 import Core
 
+
+
 extension UserProfileService: @retroactive UserProfileProtocol {
     
     public func setUserNickname(_ nickname: String) async throws {
         
         let setMemberNameRequest = SetMemberNameRequest(nickname: nickname)
         let userNameEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.setName(setMemberNameRequest)
-        print("endPoint: \(userNameEndPoint)")
         let userMemberInfoResponse: MemberInfoResponse = try await networkProvider.request(userNameEndPoint)
-        print("유저 정보 반환: \(userMemberInfoResponse)")
         guard let memberStateType: MemberStateType = MemberStateType(
             rawValue: userMemberInfoResponse.state
         ) else {
             assertionFailure("알 수 없는 멤버 상태")
-            return
+            throw MemberStateError.unknownType
         }
         
         userStorage.saveNickName(userMemberInfoResponse.nickname)
         onboardingState.setMemberState(memberStateType)
     }
     
-    public func getUserNickName() async throws -> String {
+    public func getUserNickname() async throws -> String {
         if let nickName = self.userStorage.getNickName() { return nickName }
         
         let memberInfoEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.getInfo
@@ -41,7 +41,7 @@ extension UserProfileService: @retroactive UserProfileProtocol {
             rawValue: userMemberInfoResponse.state
         ) else {
             assertionFailure("알 수 없는 멤버 상태")
-            return nickname
+            throw MemberStateError.unknownType
         }
         
         

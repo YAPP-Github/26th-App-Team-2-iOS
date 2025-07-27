@@ -18,8 +18,8 @@ public struct UserSetNickNameUseCase {
         self.userProfileService = userProfileService
     }
     
-    public func execute(userName: String) async throws {
-        try await userProfileService.setUserNickname(userName)
+    public func execute(nickname: String) async throws {
+        try await userProfileService.setUserNickname(nickname)
     }
 }
 

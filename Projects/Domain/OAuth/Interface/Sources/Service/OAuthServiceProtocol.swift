@@ -30,12 +30,12 @@ public final class OAuthLogInService {
     public init(
         networkProvider: NetworkProviderProtocol,
         tokenStorage: TokenStorageProtocol,
-        tokenKeyHodler: TokenKeyHolderProtocol,
+        tokenKeyHolder: TokenKeyHolderProtocol,
         onboardingState: OnboardingStateProtocol
     ) {
         self.networkProvider = networkProvider
         self.tokenStorage = tokenStorage
-        self.tokenKeyHolder = tokenKeyHodler
+        self.tokenKeyHolder = tokenKeyHolder
         self.onboardingState = onboardingState
     }
     

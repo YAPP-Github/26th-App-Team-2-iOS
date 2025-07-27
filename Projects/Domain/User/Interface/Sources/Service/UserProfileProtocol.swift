@@ -10,7 +10,7 @@ import Core
 
 public protocol UserProfileProtocol {
     func setUserNickname(_ nickname: String) async throws
-    func getUserNickName() async throws -> String
+    func getUserNickname() async throws -> String
 }
 
 

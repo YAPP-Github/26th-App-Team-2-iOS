@@ -76,7 +76,7 @@ public final class ProductionDIContainer: DIContainerProtocol {
     public lazy var oAuthLogInService: OAuthServiceProtocol = OAuthLogInService(
         networkProvider: NetworkProvider(networkSession: NetworkSession()),
         tokenStorage: tokenStorage,
-        tokenKeyHodler: BundleTokenKeyHolder(),
+        tokenKeyHolder: BundleTokenKeyHolder(),
         onboardingState: onboardingStateService
     )
     

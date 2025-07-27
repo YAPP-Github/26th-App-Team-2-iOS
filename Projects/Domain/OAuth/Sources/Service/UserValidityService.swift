@@ -24,9 +24,9 @@ extension UserValidityService: @retroactive UserValidityProtocol {
             let authRefreshRequest = AuthRefreshRequest(refreshToken: refreshToken.token)
             let refreshEndPoint = BrakeRouter.AuthEndPoint<BrakeResponse<AuthRefreshResponse>>.refresh(authRefreshRequest)
             let refreshResponse: BrakeResponse<AuthRefreshResponse> = try await networkProvider.request(refreshEndPoint)
-            
+#if DEBUG
             print("AccessToken \(refreshResponse.data.accessToken)\nRefreshToken: \(refreshResponse.data.refreshToken)")
-            
+#endif
             try await self.tokenStorage.save(token: AccessToken(token: refreshResponse.data.accessToken), for: accessTokenKey)
             try await self.tokenStorage.save(token: RefreshToken(token: refreshResponse.data.refreshToken), for: refreshTokenKey)
             

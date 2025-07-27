@@ -35,8 +35,9 @@ extension OAuthServiceProtocol {
         
         let accessToken = AccessToken(token: response.data.accessToken)
         let refreshToken = RefreshToken(token: response.data.refreshToken)
-        
+#if DEBUG
         print("유저 토큰 반환: \n accessToken \(accessToken) \n refreshToken \(refreshToken)")
+#endif
         let accessTokenKey = try self.tokenKeyHolder.fetchAccessTokenKey()
         let refreshTokenKey = try self.tokenKeyHolder.fetchRefreshTokenKey()
 
