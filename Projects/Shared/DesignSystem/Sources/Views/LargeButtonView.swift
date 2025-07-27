@@ -38,11 +38,12 @@ public struct LargeButtonView: View {
                 Spacer()
             }
             .frame(height: height)
-            .frame(minWidth: 343, maxWidth: 408)
+            .frame(maxWidth: 343)
             .background(isActive ? Colors.white.swiftUIColor : Colors.grey700.swiftUIColor)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
         .buttonStyle(.plain)
         .interactiveDismissDisabled(true)
     }
+    
 }
