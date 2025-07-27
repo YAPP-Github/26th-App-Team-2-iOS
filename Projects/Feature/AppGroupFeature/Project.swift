@@ -49,8 +49,6 @@ let project = Project.makeModule(
         .feature(
             example: .AppGroupFeature,
             factory: .init(
-                infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .debug),
-                entitlements: "\(Project.Environment.appName).entitlements",
                 dependencies: [
                     .feature(interface: .AppGroupFeature)
                 ]
