@@ -40,7 +40,7 @@ public struct SetNickNameView: View {
                             Text("공백, 특수문자 없이 2~10자를 입력해 주세요.")
                         }
                         Spacer()
-                        Text("\(setNickNameViewModel.nickName)/10")
+                        Text("\(setNickNameViewModel.nickName.count)/10")
                     }
                 }
                 

@@ -1,0 +1,25 @@
+//
+//  UserSetNickNameUseCase.swift
+//  DomainUser
+//
+//  Created by Greem on 7/26/25.
+//
+
+import Foundation
+import Core
+
+public struct UserSetNickNameUseCase {
+    
+    private let userProfileService: UserProfileProtocol
+    
+    public init(
+        userProfileService: UserProfileProtocol
+    ) {
+        self.userProfileService = userProfileService
+    }
+    
+    public func execute(userName: String) async throws {
+        try await userProfileService.setUserNickname(userName)
+    }
+}
+

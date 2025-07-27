@@ -6,12 +6,10 @@
 //
 
 import SwiftUI
-import Domain
-
-
 
 public struct OnboardingView: View {
     
+    @Environment(\.diContainer) var diContainer
     @Environment(StartUpViewModel.self) var startUpViewModel
     @State var onboardingManager = OnboardingManager()
     
@@ -48,7 +46,7 @@ public struct OnboardingView: View {
                         ScreenTimeAuthView()
                             .environment(
                                 ScreenTimeAuthViewModel(
-                                    requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase(),
+                                    requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
                                     screenTimeApproved: {
                                         onboardingManager.goToUserNotificationAuth()
                                     }
@@ -58,7 +56,7 @@ public struct OnboardingView: View {
                         UserNotificationAuthView()
                             .environment(
                                 UserNotificationAuthViewModel(
-                                    requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase(),
+                                    requestUserNotificationAuthUseCase: diContainer.requestUserNotificationAuthUseCase,
                                     notificationApproved: {
                                         onboardingManager.goToOnboardingCompleted()
                                     }
@@ -69,8 +67,10 @@ public struct OnboardingView: View {
                             .environment(
                                 OnboardingCompletedViewModel(
                                     userName: nickName,
-                                    userOnboardingFinishedUseCase: UserOnboardingFinishedUseCase(),
-                                    onboardingCompleted: startUpViewModel.onboardingCompleted
+                                    userSetNickNameUseCase: diContainer.userSetNickNameUseCase,
+                                    onboardingCompleted: {
+                                        startUpViewModel.onboardingCompleted()
+                                    }
                                 )
                         )
                             

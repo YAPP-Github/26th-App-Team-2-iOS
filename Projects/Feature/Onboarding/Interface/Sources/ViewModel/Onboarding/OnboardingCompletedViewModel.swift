@@ -11,27 +11,38 @@ import Domain
 @Observable
 public final class OnboardingCompletedViewModel {
     
-    private let userOnboardingFinishedUseCase: UserOnboardingFinishedUseCase
+    var errorOccuredPresented: Bool = false
+    
+    private let userSetNickNameUseCase: UserSetNickNameUseCase
     private let onboardingCompleted: (() -> ())
     private let userName: String
     
     public init(
         userName: String,
-        userOnboardingFinishedUseCase: UserOnboardingFinishedUseCase,
+        userSetNickNameUseCase: UserSetNickNameUseCase,
         onboardingCompleted: @escaping (() -> ())
     ) {
         self.userName = userName
-        self.userOnboardingFinishedUseCase = userOnboardingFinishedUseCase
+        self.userSetNickNameUseCase = userSetNickNameUseCase
         self.onboardingCompleted = onboardingCompleted
     }
     
     public func startBtnTapped() {
+        print("시작 버튼 탭탭탭!!")
         Task {
-            await userOnboardingFinishedUseCase.execute(userName: userName)
-            await MainActor.run { [weak self] in
-                guard let self else { return }
-                onboardingCompleted()
+            do {
+                try await userSetNickNameUseCase.execute(userName: userName)
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    onboardingCompleted()
+                }
+            } catch {
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    self.errorOccuredPresented = true
+                }
             }
+            
         }
         
     }

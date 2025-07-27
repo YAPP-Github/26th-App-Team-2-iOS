@@ -19,6 +19,7 @@ public final class UserProfileService {
     public let onboardingState: OnboardingStateProtocol
     public let userStorage: UserStorageProtocol
     
+    
     public init(
         networkProvider: NetworkProviderProtocol,
         onboardingState: OnboardingStateProtocol,

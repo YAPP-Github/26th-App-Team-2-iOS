@@ -67,7 +67,8 @@ public struct LoginView: View {
                         kakaoLogInShow = false
                     })
                 }
-            })
+            }
+        )
         .fullScreenCover(isPresented: $shouldShowWebView) {
             NavigationView {
                 if let url = wkURL {
@@ -75,16 +76,20 @@ public struct LoginView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .navigationTitle("약관")
                         .navigationBarTitleDisplayMode(.inline)
-                        .navigationBarItems(trailing: Button("닫기") {
-                            shouldShowWebView = false
-                        })
+                        .navigationBarItems(
+                            trailing: Button("닫기") {
+                                shouldShowWebView = false
+                            }
+                        )
                 } else {
                     Text("잘못된 URL입니다")
                         .navigationTitle("오류")
                         .navigationBarTitleDisplayMode(.inline)
-                        .navigationBarItems(trailing: Button("닫기") {
-                            shouldShowWebView = false
-                        })
+                        .navigationBarItems(
+                            trailing: Button("닫기") {
+                                shouldShowWebView = false
+                            }
+                        )
                 }
             }
         }

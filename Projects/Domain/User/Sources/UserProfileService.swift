@@ -15,8 +15,9 @@ extension UserProfileService: @retroactive UserProfileProtocol {
         
         let setMemberNameRequest = SetMemberNameRequest(nickname: nickname)
         let userNameEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.setName(setMemberNameRequest)
+        print("endPoint: \(userNameEndPoint)")
         let userMemberInfoResponse: MemberInfoResponse = try await networkProvider.request(userNameEndPoint)
-        
+        print("유저 정보 반환: \(userMemberInfoResponse)")
         guard let memberStateType: MemberStateType = MemberStateType(
             rawValue: userMemberInfoResponse.state
         ) else {

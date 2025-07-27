@@ -116,5 +116,4 @@ public enum ScreenTimeAuthorizationResult: Equatable {
     case unknownError
     case networkError
     case authenticationMethodUnavailable
-  
 }

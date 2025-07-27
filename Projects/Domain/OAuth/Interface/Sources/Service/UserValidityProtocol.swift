@@ -18,23 +18,7 @@ public final class UserValidityService {
     public let networkProvider: NetworkProviderProtocol
     
     
-    static public func make() -> UserValidityService {
-        let tokenStorage = KeyChainTokenStorage()
-        let tokenKeyHolder = BundleTokenKeyHolder()
-        return UserValidityService(
-            tokenStorage: tokenStorage,
-            tokenKeyHolder: tokenKeyHolder,
-            networkProviderProtocol: NetworkProvider(
-                networkSession: NetworkSession(
-                    requestInterceptor: TokenInterceptor(
-                        tokenStorage: tokenStorage,
-                        tokenKeyHolder: tokenKeyHolder
-                    )
-                ),
-                urlComponentConfig: .default
-            )
-        )
-    }
+
     
     public init(
         tokenStorage: TokenStorageProtocol,

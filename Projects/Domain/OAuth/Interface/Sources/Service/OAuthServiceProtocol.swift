@@ -25,16 +25,7 @@ public final class OAuthLogInService {
     public let tokenKeyHolder: TokenKeyHolderProtocol
     public let onboardingState: OnboardingStateProtocol
     
-    public static func make() -> OAuthLogInService {
-        OAuthLogInService(
-            networkProvider: NetworkProvider(networkSession: NetworkSession()),
-            tokenStorage: KeyChainTokenStorage(),
-            tokenKeyHodler: BundleTokenKeyHolder(),
-            onboardingState: OnboardingStateService(
-                memberStateStorage: UserDefaultsMemberStateStorage()
-            ) as! OnboardingStateProtocol
-        )
-    }
+
 
     public init(
         networkProvider: NetworkProviderProtocol,

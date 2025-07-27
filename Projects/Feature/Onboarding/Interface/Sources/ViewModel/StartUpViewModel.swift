@@ -20,12 +20,13 @@ public class StartUpViewModel {
     @ObservationIgnored
     private var isCompleted: Bool = false
     
-    public init() {
-        self.autoLogInUseCase = AutoLogInUseCase(
-            userValidity: UserValidityService.make(),
-            onboardingState: OnboardingStateService.make()
-        )
-        self.onboardingStateUseCase = OnboardingStateUseCase(onboardingState: OnboardingStateService.make())
+    public init(
+        autoLogInUseCase: AutoLogInUseCase,
+        onboardingStateUseCase: OnboardingStateUseCase
+    ) {
+        self.autoLogInUseCase = autoLogInUseCase
+        self.onboardingStateUseCase = onboardingStateUseCase
+
     }
     
     public func startUpOnAppear() {
