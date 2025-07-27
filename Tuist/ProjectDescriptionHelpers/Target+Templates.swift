@@ -152,28 +152,56 @@ public extension Target {
             newFactory.dependencies = factory.dependencies
         case .DeviceActivityMonitorExtension:
             newFactory.product = .appExtension
-            newFactory.name = "\(Project.Environment.appName)DeviceActivityMonitorExtension"
+            newFactory.name = "\(Project.Environment.appName)DeviceActivityMonitorExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).DeviceActivityMonitorExtension"
             newFactory.sources = .mainAppDeviceActivityMonitorExtensionSources
-            newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/Brake-DeviceActivityMonitorExtension.entitlements"
-            newFactory.infoPlist = "Extensions/DeviceActivityMonitorExtension/Info.plist"
+            newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements"
+            newFactory.infoPlist = .extendingDefault(with: [
+                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
+                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
+                "CFBundleName": "\(Project.Environment.appName)DeviceActivityMonitorExtension-\(deploymentTarget.rawValue.capitalized)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.deviceactivity.monitor-extension",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension"
+                ]
+            ])
         case .NotificationExtension:
             newFactory.product = .appExtension
-            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension"
+            newFactory.name = "\(Project.Environment.appName)NotificationExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).notification"
             newFactory.resources = ["Resources/**"]
             newFactory.sources = .notificationExtensionSources
         case .ShieldConfigurationExtension:
             newFactory.product = .appExtension
-            newFactory.name = "\(Project.Environment.appName)ShieldConfigurationExtension"
+            newFactory.name = "\(Project.Environment.appName)ShieldConfigurationExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldConfigurationExtension"
             newFactory.sources = .mainAppShieldConfigurationExtensionSources
-            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Sources/Images.xcassets/**"]
+            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
+            newFactory.infoPlist = .extendingDefault(with: [
+                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
+                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
+                "CFBundleName": "\(Project.Environment.appName)ShieldConfigurationExtension-\(deploymentTarget.rawValue.capitalized)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.ManagedSettingsUI.shield-configuration-service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension"
+                ]
+            ])
+            newFactory.entitlements = "Extensions/ShieldConfigurationExtension/BrakeShieldConfigurationExtension.entitlements"
         case .ShieldActionConfigurationExtension:
             newFactory.product = .appExtension
-            newFactory.name = "\(Project.Environment.appName)ShieldActionConfigurationExtension"
+            newFactory.name = "\(Project.Environment.appName)ShieldActionConfigurationExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldActionConfigurationExtension"
             newFactory.sources = .mainAppShieldActionConfigurationExtensionSources
+            newFactory.infoPlist = .extendingDefault(with: [
+                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
+                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
+                "CFBundleName": "\(Project.Environment.appName)ShieldActionConfigurationExtension-\(deploymentTarget.rawValue.capitalized)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.ManagedSettings.shield-action-service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShieldActionConfigurationExtension"
+                ]
+            ])
+            newFactory.entitlements = "Extensions/ShieldActionConfigurationExtension/BrakeShieldActionConfigurationExtension.entitlements"
         }
 
         return .make(factory: newFactory)
@@ -190,8 +218,11 @@ public extension Target {
         case .iOS:
             fallthrough
         case .NotificationExtension:
-            // NotificationExtension은 deploymentTarget이 필요하므로 이 메서드에서는 지원하지 않음
-            fatalError("NotificationExtension target requires deploymentTarget parameter")
+            newFactory.product = .appExtension
+            newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)NotificationExtension" : factory.name
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).notification"
+            newFactory.sources = .notificationExtensionSources
+            newFactory.resources = ["Resources/**"]
         case .ShieldConfigurationExtension:
             newFactory.product = .appExtension
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)ShieldConfigurationExtension" : factory.name

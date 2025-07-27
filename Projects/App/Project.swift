@@ -24,10 +24,10 @@ let appTargets: [Target] = [
             entitlements: "\(Project.Environment.appName).entitlements",
             scripts: Project.Environment.appScripts,
             dependencies: [
-                .target(name: "Brake-Debug-NotificationExtension"),
-                .target(name: "BrakeDeviceActivityMonitorExtension"),
-                .target(name: "BrakeShieldConfigurationExtension"),
-                .target(name: "BrakeShieldActionConfigurationExtension"),
+                .target(name: "BrakeNotificationExtension-Debug"),
+                .target(name: "BrakeDeviceActivityMonitorExtension-Debug"),
+                .target(name: "BrakeShieldConfigurationExtension-Debug"),
+                .target(name: "BrakeShieldActionConfigurationExtension-Debug"),
                 .feature
             ],
             
@@ -43,10 +43,10 @@ let appTargets: [Target] = [
             entitlements: "\(Project.Environment.appName).entitlements",
             scripts: Project.Environment.appScripts,
             dependencies: [
-                .target(name: "Brake-Release-NotificationExtension"),
-                .target(name: "BrakeDeviceActivityMonitorExtension"),
-                .target(name: "BrakeShieldConfigurationExtension"),
-                .target(name: "BrakeShieldActionConfigurationExtension"),
+                .target(name: "BrakeNotificationExtension-Release"),
+                .target(name: "BrakeDeviceActivityMonitorExtension-Release"),
+                .target(name: "BrakeShieldConfigurationExtension-Release"),
+                .target(name: "BrakeShieldActionConfigurationExtension-Release"),
                 .feature
             ],
             settings: Project.Environment.releaseTargetSettings
@@ -59,12 +59,16 @@ let appTargets: [Target] = [
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)-\(ProjectDeploymentTarget.debug.rawValue)",
+                "CFBundleName": "\(Project.Environment.appName)NotificationExtension-Debug",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
                 ]
             ]),
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
             settings: Project.Environment.debugTargetSettings
         )
     ),
@@ -73,9 +77,9 @@ let appTargets: [Target] = [
         deploymentTarget: .release,
         factory: .init(
             infoPlist: .extendingDefault(with: [
-                "CFBundleShortVersionString": "1",
+                "CFBundleShortVersionString": "1.0",
                 "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)",
+                "CFBundleName": "\(Project.Environment.appName)NotificationExtension-Release",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
@@ -90,41 +94,86 @@ let appTargets: [Target] = [
     ),
     .app(
         implements: .ShieldConfigurationExtension,
+        deploymentTarget: .debug,
         factory: .init(
-            name: "BrakeShieldConfigurationExtension",
-            infoPlist: "Extensions/ShieldConfigurationExtension/Info.plist",
-            entitlements: "Extensions/ShieldConfigurationExtension/BrakeShieldConfigurationExtension.entitlements",
             dependencies: [
                 .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
             ],
-            settings: Project.Environment.projectSettings
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app(
+        implements: .ShieldConfigurationExtension,
+        deploymentTarget: .release,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.releaseTargetSettings
         )
     ),
     .app( 
         implements: .ShieldActionConfigurationExtension,
+        deploymentTarget: .debug,
         factory: .init(
-            name: "BrakeShieldActionConfigurationExtension",
-            infoPlist: "Extensions/ShieldActionConfigurationExtension/Info.plist",
-            entitlements: "Extensions/ShieldActionConfigurationExtension/BrakeShieldActionConfigurationExtension.entitlements",
             dependencies: [
                 .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
             ],
-            settings: Project.Environment.projectSettings
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app( 
+        implements: .ShieldActionConfigurationExtension,
+        deploymentTarget: .release,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.releaseTargetSettings
         )
     ),
     .app(
         implements: .DeviceActivityMonitorExtension,
+        deploymentTarget: .debug,
         factory: .init(
-            name: "BrakeDeviceActivityMonitorExtension",
-            infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
-            entitlements: "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements",
             dependencies: [
                 .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
             ],
-            settings: Project.Environment.projectSettings
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app(
+        implements: .DeviceActivityMonitorExtension,
+        deploymentTarget: .release,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.releaseTargetSettings
         )
     ),
     .app(
