@@ -1,5 +1,5 @@
 //
-//  Bundle+Keychain.swift
+//  Bundle.swift
 //  SharedUtil
 //
 //  Created by Derrick kim on 7/5/25.
@@ -14,6 +14,10 @@ public extension Bundle {
     
     var refreshTokenKey: String? {
         return self.object(forInfoDictionaryKey: "REFRESH_TOKEN_KEY") as? String
+    }
+
+    var appGroupName: String? {
+        return self.object(forInfoDictionaryKey: "APP_GROUP_NAME") as? String
     }
     
 }
