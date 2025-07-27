@@ -9,10 +9,11 @@ import SwiftUI
 import SharedDesignSystem
 
 public struct SmallButton: View {
-    public let title: String
-    public let isActive: Bool
-    public let height: CGFloat
-    public let action: () -> Void
+    
+    private let title: String
+    private let isActive: Bool
+    private let height: CGFloat
+    private let action: () -> Void
 
     public init(
         title: String,

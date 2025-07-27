@@ -9,10 +9,10 @@ import SwiftUI
 
 public struct BrakeNavigationView: View {
     
-    public let title: String
-    public let onBackButtonTapped: () -> Void
-    public let onCloseButtonTapped: () -> Void
-    
+    private let title: String
+    private let onBackButtonTapped: () -> Void
+    private let onCloseButtonTapped: () -> Void
+
     public init(
         title: String,
         onBackButtonTapped: @escaping () -> Void,

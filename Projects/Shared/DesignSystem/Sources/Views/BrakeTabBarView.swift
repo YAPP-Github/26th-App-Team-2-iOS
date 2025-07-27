@@ -10,7 +10,7 @@ import SwiftUI
 
 public struct BrakeTabBarView: View {
 
-    @Binding public var selectedTabBarItem: TabItemType
+    @Binding private var selectedTabBarItem: TabItemType
 
     public init(selectedTabBarItem: Binding<TabItemType>) {
         self._selectedTabBarItem = selectedTabBarItem
