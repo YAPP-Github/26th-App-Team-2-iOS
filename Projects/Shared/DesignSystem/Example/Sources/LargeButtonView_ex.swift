@@ -18,14 +18,14 @@ struct LargeButtonView_ex: View {
                 .padding(.top)
             
             LargeButtonView(
-                buttonTitle: "활성화된 버튼",
+                title: "활성화된 버튼",
                 isActive: true,
                 height: 56) {
                     print("활성화된 버튼 클릭됨")
                 }
             
             LargeButtonView(
-                buttonTitle: "비활성화된 버튼",
+                title: "비활성화된 버튼",
                 isActive: false,
                 height: 56) {
                     print("비활성화된 버튼 클릭됨")
@@ -35,7 +35,7 @@ struct LargeButtonView_ex: View {
                 .padding(.horizontal)
             
             LargeButtonView(
-                buttonTitle: "토글 버튼",
+                title: "토글 버튼",
                 isActive: isActive,
                 height: 56) {
                     print("토글 버튼 클릭됨")

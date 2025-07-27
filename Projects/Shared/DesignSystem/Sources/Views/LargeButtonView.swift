@@ -9,18 +9,18 @@ import SwiftUI
 
 public struct LargeButtonView: View {
 
-    public let buttonTitle: String
+    public let title: String
     public let isActive: Bool
     public let height: CGFloat
     public let action: () -> Void
 
     public init(
-        buttonTitle: String,
+        title: String,
         isActive: Bool,
         height: CGFloat = 56,
         action: @escaping () -> Void
     ) {
-        self.buttonTitle = buttonTitle
+        self.title = title
         self.isActive = isActive
         self.height = height
         self.action = action
@@ -32,7 +32,7 @@ public struct LargeButtonView: View {
         } label: {
             HStack {
                 Spacer()
-                Text(buttonTitle)
+                Text(title)
                     .font(.pretendard(size: 16, type: .bold))
                     .foregroundStyle(Colors.grey900.swiftUIColor)
                 Spacer()
