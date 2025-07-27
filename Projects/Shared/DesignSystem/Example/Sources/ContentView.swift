@@ -22,6 +22,10 @@ struct ContentView: View {
                     NavigationLink("TabBarView_ex") {
                         BrakeTabBarView_ex()
                     }
+
+                    NavigationLink("BrakeNavigationView_ex") {
+                        BrakeNavigationView_ex()
+                    }
                 } header: {
                     Text("Custom Views")
                 }
