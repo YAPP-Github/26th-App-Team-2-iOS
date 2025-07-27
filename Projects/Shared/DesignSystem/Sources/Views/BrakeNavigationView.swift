@@ -56,7 +56,7 @@ public struct BrakeNavigationView: View {
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 20)
-        .frame(width: 357, height: 56)
+        .frame(height: 56)
         .background(Colors.grey900.swiftUIColor)
     }
 }

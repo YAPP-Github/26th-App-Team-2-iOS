@@ -36,7 +36,7 @@ public struct BrakeTabBarView: View {
                 .buttonStyle(.plain)
             }
         }
-        .frame(width: 279, height: 80)
+        .frame(height: 80)
         .background(Colors.grey800.swiftUIColor)
         .clipShape(RoundedRectangle(cornerRadius: 60))
     }
