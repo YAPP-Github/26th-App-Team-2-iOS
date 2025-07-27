@@ -17,6 +17,14 @@ struct ContentView: View {
                 } header: {
                     Text("Custom Components")
                 }
+
+                Section {
+                    NavigationLink("TabBarView_ex") {
+                        BrakeTabBarView_ex()
+                    }
+                } header: {
+                    Text("Custom Views")
+                }
             }
         }
         .navigationTitle("앱 컴포넌트 관리")
