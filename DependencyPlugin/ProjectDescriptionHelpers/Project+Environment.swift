@@ -43,7 +43,8 @@ public extension Project {
                 "STRIP_LINKED_PRODUCT": "NO",
                 "SYMBOLS_HIDDEN_BY_DEFAULT": "NO",
                 "ENABLE_DEBUG_DYLIB": "NO", /// xcode 16이상의 crashlytics dysm 파일을 못 찾는 dylib 에러 해결
-                "SWIFT_VERSION": "5.9"
+                "SWIFT_VERSION": "5.9",
+                "CODE_SIGN_ALLOW_ENTITLEMENTS_MODIFICATION": "YES"
             ],
             configurations: [
                 .build(.debug),
@@ -122,6 +123,7 @@ public extension Project {
                 "UILaunchStoryboardName": "LaunchScreen",
                 "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
                 "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
+                "NSFamilyControlsUsageDescription": "스크린타임 데이터를 관리하기 위해 접근 권한이 필요합니다.",
                 "UIApplicationSceneManifest": [
                     "UIApplicationSupportsMultipleScenes": true,
                     "UISceneConfigurations": [
@@ -143,14 +145,13 @@ public extension Project {
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
-                "ITSAppUsesNonExemptEncryption": false,
+                "APP_GROUP_NAME": "${APP_GROUP_NAME}",
+                "ITSAppUsesNonExemptEncryption": false
             ]
             return .extendingDefault(with: plist)
         }
-        
-        
+
         public static func testAppInfoPlist() -> InfoPlist {
-            
             return .extendingDefault(with: [
                 "CFBundleShortVersionString": "\(currentAppVersion)",
                 "CFBundleVersion": "1",
@@ -166,6 +167,7 @@ public extension Project {
                         ]]
                     ]
                 ],
+                "NSFamilyControlsUsageDescription": "앱 사용 시간을 관리하기 위해 Family Controls 권한이 필요합니다.",
                 "LSApplicationQueriesSchemes": [
                     "kakaokompassauth",
                     "kakaolink"
@@ -182,7 +184,44 @@ public extension Project {
                 "ACCESS_TOKEN_KEY": "${ACCESS_TOKEN_KEY}",
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
+                "APP_GROUP_NAME": "${APP_GROUP_NAME}",
                 "ITSAppUsesNonExemptEncryption": false
+            ])
+        }
+        
+        public static func appScreenTimeDeviceActivityMonitorExtensionInfoPlist() -> InfoPlist {
+            return .extendingDefault(with: [
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.deviceactivity.monitor-extension",
+                    "NSExtensionPrincipalClass": "CoreAppScreenTimeDeviceActivityMonitorExtension.DeviceActivityMonitorExtension"
+                ],
+                "CFBundleShortVersionString": "1.0",
+                "CFBundleVersion": "1",
+                "APP_GROUP_NAME": "${APP_GROUP_NAME}"
+            ])
+        }
+        
+        public static func appScreenTimeShieldConfigurationExtensionInfoPlist() -> InfoPlist {
+            return .extendingDefault(with: [
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.ManagedSettingsUI.shield-configuration-service",
+                    "NSExtensionPrincipalClass": "CoreAppScreenTimeShieldConfigurationExtension.ShieldConfigurationExtension"
+                ],
+                "CFBundleShortVersionString": "1.0",
+                "CFBundleVersion": "1",
+                "APP_GROUP_NAME": "${APP_GROUP_NAME}"
+            ])
+        }
+        
+        public static func appScreenTimeShieldActionConfigurationExtensionInfoPlist() -> InfoPlist {
+            return .extendingDefault(with: [
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.ManagedSettings.shield-action-service",
+                    "NSExtensionPrincipalClass": "CoreAppScreenTimeShieldActionConfigurationExtension.ShieldActionConfigurationExtension"
+                ],
+                "CFBundleShortVersionString": "1.0",
+                "CFBundleVersion": "1",
+                "APP_GROUP_NAME": "${APP_GROUP_NAME}"
             ])
         }
         

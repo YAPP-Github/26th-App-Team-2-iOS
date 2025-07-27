@@ -9,3 +9,5 @@
 @_exported import CoreNetworkInterface
 @_exported import CoreLocalStorage
 @_exported import CoreLocalStorageInterface
+@_exported import CoreAppScreenTimeInterface
+@_exported import CoreAppScreenTime

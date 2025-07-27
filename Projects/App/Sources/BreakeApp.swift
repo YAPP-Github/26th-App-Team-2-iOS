@@ -1,14 +1,17 @@
 //
 //  BreakeApp.swift
-//  ProjectDescriptionHelpers
+//  Brake
 //
-//  Created by Greem on 6/22/25.
+//  Created by Derrick kim on 2025/01/27.
 //
 
 import SwiftUI
+import FamilyControls
+import ManagedSettings
 
 @main
 struct BreakeApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
         WindowGroup {

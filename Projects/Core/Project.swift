@@ -14,7 +14,9 @@ let targets: [Target] = [
         factory: .init(
             dependencies: [
                 .core(implements: .Network),
-                .core(implements: .LocalStorage)
+                .core(implements: .LocalStorage),
+                .core(implements: .AppScreenTime),
+                .shared
             ],
             settings: .settings(configurations: [
                 .build(.debug),

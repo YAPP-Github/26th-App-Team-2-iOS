@@ -24,7 +24,10 @@ let appTargets: [Target] = [
             entitlements: "\(Project.Environment.appName).entitlements",
             scripts: Project.Environment.appScripts,
             dependencies: [
-                .target(name: "Brake-Debug-NotificationExtension"),
+                .target(name: "BrakeNotificationExtension-Debug"),
+                .target(name: "BrakeDeviceActivityMonitorExtension-Debug"),
+                .target(name: "BrakeShieldConfigurationExtension-Debug"),
+                .target(name: "BrakeShieldActionConfigurationExtension-Debug"),
                 .feature
             ],
             
@@ -40,7 +43,10 @@ let appTargets: [Target] = [
             entitlements: "\(Project.Environment.appName).entitlements",
             scripts: Project.Environment.appScripts,
             dependencies: [
-                .target(name: "Brake-Release-NotificationExtension"),
+                .target(name: "BrakeNotificationExtension-Release"),
+                .target(name: "BrakeDeviceActivityMonitorExtension-Release"),
+                .target(name: "BrakeShieldConfigurationExtension-Release"),
+                .target(name: "BrakeShieldActionConfigurationExtension-Release"),
                 .feature
             ],
             settings: Project.Environment.releaseTargetSettings
@@ -53,12 +59,16 @@ let appTargets: [Target] = [
             infoPlist: .extendingDefault(with: [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)-\(ProjectDeploymentTarget.debug.rawValue)",
+                "CFBundleName": "\(Project.Environment.appName)NotificationExtension-Debug",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
                 ]
             ]),
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
             settings: Project.Environment.debugTargetSettings
         )
     ),
@@ -67,18 +77,105 @@ let appTargets: [Target] = [
         deploymentTarget: .release,
         factory: .init(
             infoPlist: .extendingDefault(with: [
-                "CFBundleShortVersionString": "1",
+                "CFBundleShortVersionString": "1.0",
                 "CFBundleVersion": "1",
-                "CFBundleName": "\(Project.Environment.appName)",
+                "CFBundleName": "\(Project.Environment.appName)NotificationExtension-Release",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
                 ]
             ]),
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage)
+            ],
             settings: Project.Environment.releaseTargetSettings
         )
     ),
-    
+    .app(
+        implements: .ShieldConfigurationExtension,
+        deploymentTarget: .debug,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app(
+        implements: .ShieldConfigurationExtension,
+        deploymentTarget: .release,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.releaseTargetSettings
+        )
+    ),
+    .app( 
+        implements: .ShieldActionConfigurationExtension,
+        deploymentTarget: .debug,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app( 
+        implements: .ShieldActionConfigurationExtension,
+        deploymentTarget: .release,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.releaseTargetSettings
+        )
+    ),
+    .app(
+        implements: .DeviceActivityMonitorExtension,
+        deploymentTarget: .debug,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.debugTargetSettings
+        )
+    ),
+    .app(
+        implements: .DeviceActivityMonitorExtension,
+        deploymentTarget: .release,
+        factory: .init(
+            dependencies: [
+                .core(interface: .LocalStorage),
+                .core(implements: .LocalStorage),
+                .core(interface: .AppScreenTime),
+                .core(implements: .AppScreenTime),
+                .shared(implements: .Util)
+            ],
+            settings: Project.Environment.releaseTargetSettings
+        )
+    ),
     .app(
         tests: .iOS,
         factory: .init(
@@ -90,7 +187,7 @@ let appTargets: [Target] = [
             ],
             settings: Project.Environment.debugTargetSettings
         )
-    ),
+    )
 ]
 
 let project: Project = .makeModule(
@@ -99,6 +196,7 @@ let project: Project = .makeModule(
     schemes: appSchemes,
     additionalFiles: [
         "./xcconfigs/Shared.xcconfig",
-        "./xcconfigs/TokenKeys.xcconfig",
+        "./xcconfigs/TokenKeys.xcconfig"
     ]
 )
+

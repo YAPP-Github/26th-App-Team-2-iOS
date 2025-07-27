@@ -150,12 +150,97 @@ public extension Target {
             newFactory.sources = .sources
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
             newFactory.dependencies = factory.dependencies
+        case .DeviceActivityMonitorExtension:
+            newFactory.product = .appExtension
+            newFactory.name = "\(Project.Environment.appName)DeviceActivityMonitorExtension-\(deploymentTarget.rawValue.capitalized)"
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).DeviceActivityMonitorExtension"
+            newFactory.sources = .mainAppDeviceActivityMonitorExtensionSources
+            newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements"
+            newFactory.infoPlist = .extendingDefault(with: [
+                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
+                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
+                "CFBundleName": "\(Project.Environment.appName)DeviceActivityMonitorExtension-\(deploymentTarget.rawValue.capitalized)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.deviceactivity.monitor-extension",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension"
+                ]
+            ])
         case .NotificationExtension:
             newFactory.product = .appExtension
-            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-NotificationExtension"
+            newFactory.name = "\(Project.Environment.appName)NotificationExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).notification"
             newFactory.resources = ["Resources/**"]
             newFactory.sources = .notificationExtensionSources
+        case .ShieldConfigurationExtension:
+            newFactory.product = .appExtension
+            newFactory.name = "\(Project.Environment.appName)ShieldConfigurationExtension-\(deploymentTarget.rawValue.capitalized)"
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldConfigurationExtension"
+            newFactory.sources = .mainAppShieldConfigurationExtensionSources
+            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
+            newFactory.infoPlist = .extendingDefault(with: [
+                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
+                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
+                "CFBundleName": "\(Project.Environment.appName)ShieldConfigurationExtension-\(deploymentTarget.rawValue.capitalized)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.ManagedSettingsUI.shield-configuration-service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension"
+                ]
+            ])
+            newFactory.entitlements = "Extensions/ShieldConfigurationExtension/BrakeShieldConfigurationExtension.entitlements"
+        case .ShieldActionConfigurationExtension:
+            newFactory.product = .appExtension
+            newFactory.name = "\(Project.Environment.appName)ShieldActionConfigurationExtension-\(deploymentTarget.rawValue.capitalized)"
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldActionConfigurationExtension"
+            newFactory.sources = .mainAppShieldActionConfigurationExtensionSources
+            newFactory.infoPlist = .extendingDefault(with: [
+                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
+                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
+                "CFBundleName": "\(Project.Environment.appName)ShieldActionConfigurationExtension-\(deploymentTarget.rawValue.capitalized)",
+                "NSExtension": [
+                    "NSExtensionPointIdentifier": "com.apple.ManagedSettings.shield-action-service",
+                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShieldActionConfigurationExtension"
+                ]
+            ])
+            newFactory.entitlements = "Extensions/ShieldActionConfigurationExtension/BrakeShieldActionConfigurationExtension.entitlements"
+        }
+
+        return .make(factory: newFactory)
+    }
+    
+    static func app(
+        implements module: ModulePath.App,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.App.name + module.rawValue
+        
+        switch module {
+        case .iOS:
+            fallthrough
+        case .NotificationExtension:
+            newFactory.product = .appExtension
+            newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)NotificationExtension" : factory.name
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).notification"
+            newFactory.sources = .notificationExtensionSources
+            newFactory.resources = ["Resources/**"]
+        case .ShieldConfigurationExtension:
+            newFactory.product = .appExtension
+            newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)ShieldConfigurationExtension" : factory.name
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).ShieldConfigurationExtension"
+            newFactory.sources = .shieldConfigurationExtensionSources
+            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
+        case .ShieldActionConfigurationExtension:
+            newFactory.product = .appExtension
+            newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)ShieldActionConfigurationExtension" : factory.name
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).ShieldActionConfigurationExtension"
+            newFactory.sources = .shieldActionConfigurationExtensionSources
+        case .DeviceActivityMonitorExtension:
+            newFactory.product = .appExtension
+            newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)DeviceActivityMonitorExtension" : factory.name
+            newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).DeviceActivityMonitorExtension"
+            newFactory.sources = .mainAppDeviceActivityMonitorExtensionSources
+            newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements"
+            newFactory.infoPlist = "Extensions/DeviceActivityMonitorExtension/Info.plist"
         }
 
         return .make(factory: newFactory)
@@ -187,6 +272,21 @@ public extension Target {
             newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).notification.tests"
             newFactory.sources = .tests
             newFactory.resources = .resources(["Resources/**"])
+        case .ShieldConfigurationExtension:
+            newFactory.destinations = .iOS
+            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-ShieldConfigurationExtension-Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).ShieldConfigurationExtension.tests"
+            newFactory.sources = .tests
+        case .ShieldActionConfigurationExtension:
+            newFactory.destinations = .iOS
+            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-ShieldActionConfigurationExtension-Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).ShieldActionConfigurationExtension.tests"
+            newFactory.sources = .tests
+        case .DeviceActivityMonitorExtension:
+            newFactory.destinations = .iOS
+            newFactory.name = "\(Project.Environment.appName)-\(deploymentTarget.rawValue)-DeviceActivityMonitorExtension-Tests"
+            newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(deploymentTarget.rawValue).DeviceActivityMonitorExtension.tests"
+            newFactory.sources = .tests
         }
         
         return .make(factory: newFactory)
@@ -333,15 +433,99 @@ public extension Target {
         return make(factory: newFactory)
     }
 
-    static func core(example module: ModulePath.Core, factory: TargetFactory) -> Self {
+    static func core(
+        example module: ModulePath.Core,
+        deploymentTarget: ProjectDeploymentTarget,
+        factory: TargetFactory
+    ) -> Self {
         var newFactory = factory
         newFactory.name = ModulePath.Core.name + module.rawValue + "Example"
         newFactory.sources = .exampleSources
         newFactory.product = .app
-        newFactory.bundleId = Project.Environment.bundlePrefix + ".\(module.rawValue)"
+        // Ensure the bundle ID matches the extension bundle IDs
+        newFactory.bundleId = !factory.bundleId.isEmpty ? factory.bundleId : "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example"
+        newFactory.settings = Project.Environment.debugTargetSettings
 
         return make(factory: newFactory)
     }
+    
+    // Example용 Extension (Core 모듈에서 사용)
+    static func core(
+        shieldConfigurationExtension module: ModulePath.Core,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = !factory.name.isEmpty ? factory.name : ModulePath.Core.name + module.rawValue + "ShieldConfigurationExtension"
+        newFactory.sources = .shieldConfigurationExtensionSources
+        newFactory.product = .appExtension
+        // Example용 bundle ID 사용
+        newFactory.bundleId = !factory.bundleId.isEmpty ? factory.bundleId : "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example.ShieldConfigurationExtension"
+        newFactory.settings = Project.Environment.projectSettings
+        newFactory.resources = ["Extensions/ShieldConfigurationExtension/Sources/Images.xcassets/**"]
+
+        return make(factory: newFactory)
+    }
+    
+    static func core(
+        shieldConfigurationExtension module: ModulePath.Core,
+        deploymentTarget: ProjectDeploymentTarget,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = !factory.name.isEmpty ? factory.name : ModulePath.Core.name + module.rawValue + "ShieldConfigurationExtension"
+        newFactory.sources = .shieldConfigurationExtensionSources
+        newFactory.product = .appExtension
+        newFactory.resources = ["Extensions/ShieldConfigurationExtension/Sources/Images.xcassets/**"]
+        newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example.ShieldConfigurationExtension"
+        newFactory.settings = Project.Environment.projectSettings
+
+        return make(factory: newFactory)
+    }
+
+    static func core(
+        shieldActionConfigurationExtension module: ModulePath.Core,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = !factory.name.isEmpty ? factory.name : ModulePath.Core.name + module.rawValue + "ShieldActionConfigurationExtension"
+        newFactory.sources = .shieldActionConfigurationExtensionSources
+        newFactory.product = .appExtension
+        // Example용 bundle ID 사용
+        newFactory.bundleId = !factory.bundleId.isEmpty ? factory.bundleId : "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example.ShieldActionConfigurationExtension"
+        newFactory.settings = Project.Environment.projectSettings
+
+        return make(factory: newFactory)
+    }
+    
+    static func core(
+        shieldActionConfigurationExtension module: ModulePath.Core,
+        deploymentTarget: ProjectDeploymentTarget,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = !factory.name.isEmpty ? factory.name : ModulePath.Core.name + module.rawValue + "ShieldActionConfigurationExtension"
+        newFactory.sources = .shieldActionConfigurationExtensionSources
+        newFactory.product = .appExtension
+        newFactory.bundleId = "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example.ShieldActionConfigurationExtension"
+        newFactory.settings = Project.Environment.projectSettings
+
+        return make(factory: newFactory)
+    }
+
+    static func core(
+        deviceActivityMonitorExtension module: ModulePath.Core,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = !factory.name.isEmpty ? factory.name : ModulePath.Core.name + module.rawValue + "DeviceActivityMonitorExtension"
+        newFactory.sources = .deviceActivityMonitorExtensionSources
+        newFactory.product = .appExtension
+        newFactory.bundleId = !factory.bundleId.isEmpty ? factory.bundleId : "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example.DeviceActivityMonitorExtension"
+        newFactory.settings = Project.Environment.projectSettings
+
+        return make(factory: newFactory)
+    }
+
 }
 
 // MARK: Target + Shared
