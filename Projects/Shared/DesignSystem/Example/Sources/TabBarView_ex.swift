@@ -51,7 +51,6 @@ struct BrakeTabBarView_ex: View {
                 BrakeTabBarView(selectedTabBarItem: $selectedTab)
                     .padding(.bottom, 16)
             }
-//            .background(Colors.white.swiftUIColor)
         }
         .navigationTitle("TabBar Example")
         .navigationBarTitleDisplayMode(.inline)
