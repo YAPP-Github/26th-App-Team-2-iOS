@@ -7,11 +7,11 @@
 
 import Foundation
 import FamilyControls
-
+import Core
 
 public struct CreateAppGroupUseCase {
     
-    private let appGroupService: AppGroupProtocol = AppGroupService()
+    private let appGroupService: AppGroupProtocol = AppGroupService(appGroupStorage: AppGroupStorage())
     public init() {
         
     }
