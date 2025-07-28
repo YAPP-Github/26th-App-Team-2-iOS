@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import Domain
 
 @Observable
 public final class AppGroupMainViewModel {
@@ -19,6 +19,8 @@ public final class AppGroupMainViewModel {
     public func addButtonTapped() {
         addGroupPresent.toggle()
     }
+    
+    
 }
 
 public struct AppGroupMainView: View {
@@ -44,7 +46,11 @@ public struct AppGroupMainView: View {
         ) {
             NavigationStack {
                 AddAppGroupView()
-                    .environment(AddAppGroupViewModel())
+                    .environment(
+                        AddAppGroupViewModel(
+                            createAppGroupUseCase: CreateAppGroupUseCase()
+                        )
+                    )
             }
         }
     }
