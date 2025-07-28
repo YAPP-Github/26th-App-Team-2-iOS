@@ -27,12 +27,12 @@ struct BrakeTextFieldView_ex: View {
                 VStack(spacing: 20) {
                     Text("범용적인 BrakeTextFieldView")
                         .font(.headline)
-                        .foregroundStyle(Colors.white.swiftUIColor)
+                        .foregroundStyle(Color.brakeWhite)
                     
                     VStack(spacing: 15) {
                         Text("기본 텍스트 필드")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeTextFieldView(
                             text: $simpleText,
@@ -43,14 +43,14 @@ struct BrakeTextFieldView_ex: View {
                     VStack(spacing: 15) {
                         Text("커스텀 스타일 텍스트 필드")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeTextFieldView(
                             text: $customText,
                             placeholder: "커스텀 스타일",
-                            backgroundColor: Colors.grey700.swiftUIColor,
-                            textColor: Colors.brakeYellowDark.swiftUIColor,
-                            placeholderColor: Colors.grey500.swiftUIColor,
+                            backgroundColor: Color.grey700,
+                            textColor: Color.brakeYellowDark,
+                            placeholderColor: Color.grey500,
                             cornerRadius: 8
                         )
                     }
@@ -60,12 +60,12 @@ struct BrakeTextFieldView_ex: View {
                 VStack(spacing: 20) {
                     Text("유효성 검증 BrakeValidatedTextFieldView")
                         .font(.headline)
-                        .foregroundStyle(Colors.white.swiftUIColor)
+                        .foregroundStyle(Color.brakeWhite)
 
                     VStack(spacing: 20) {
                         Text("그룹명 입력 (상단 Description)")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeValidatedTextFieldView(
                             text: $groupName,
@@ -80,7 +80,7 @@ struct BrakeTextFieldView_ex: View {
                     VStack(spacing: 20) {
                         Text("유효한 닉네임 (하단 Description)")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeValidatedTextFieldView(
                             text: $nickname1,
@@ -95,7 +95,7 @@ struct BrakeTextFieldView_ex: View {
                     VStack(spacing: 20) {
                         Text("유효하지 않은 닉네임 (하단 Description)")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeValidatedTextFieldView(
                             text: $nickname2,
@@ -110,7 +110,7 @@ struct BrakeTextFieldView_ex: View {
                     VStack(spacing: 20) {
                         Text("성공 상태 닉네임 (하단 Description)")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeValidatedTextFieldView(
                             text: $nickname3,
@@ -125,7 +125,7 @@ struct BrakeTextFieldView_ex: View {
                     VStack(spacing: 20) {
                         Text("Description 없는 텍스트 필드")
                             .font(.subheadline)
-                            .foregroundStyle(Colors.grey700.swiftUIColor)
+                            .foregroundStyle(Color.grey700)
                         
                         BrakeValidatedTextFieldView(
                             text: .constant(""),

@@ -42,6 +42,15 @@ struct LargeButtonView_ex: View {
                 }
             
             Spacer()
+            VStack {
+                LargeButtonView(
+                    buttonType: .confirm,
+                    title: "Confirm 버튼",
+                    isActive: true
+                ) {
+                    print("Confirm 버튼이 활성화 됨!!")
+                }
+            }
         }
         .padding()
         .navigationTitle("LargeButtonView Example")

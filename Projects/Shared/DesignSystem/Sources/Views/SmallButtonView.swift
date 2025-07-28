@@ -35,12 +35,12 @@ public struct SmallButtonView: View {
                 Spacer()
                 Text(title)
                     .font(.pretendard(size: 16, type: .semiBold))
-                    .foregroundStyle(isActive ? Colors.grey900.swiftUIColor : Colors.grey200.swiftUIColor)
+                    .foregroundStyle(isActive ? Color.grey900 : Color.grey200)
                 Spacer()
             }
             .frame(minHeight: 48, maxHeight: height)
             .frame(maxWidth: 160)
-            .background(isActive ? Colors.white.swiftUIColor : .clear)
+            .background(isActive ? Color.brakeWhite : .clear)
             .clipShape(RoundedRectangle(cornerRadius: 100))
         }
         .buttonStyle(.plain)

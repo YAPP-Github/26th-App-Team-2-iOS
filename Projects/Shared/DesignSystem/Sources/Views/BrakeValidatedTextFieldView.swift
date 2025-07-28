@@ -153,7 +153,7 @@ fileprivate struct TextFieldDescriptionView: View {
                 HStack(spacing: 0) {
                     Text("\(count)")
                         .font(.pretendard(size: 12, type: .medium))
-                        .foregroundStyle(Colors.white.swiftUIColor)
+                        .foregroundStyle(Color.brakeWhite)
                     Text("/")
                         .font(.pretendard(size: 12, type: .medium))
                         .foregroundStyle(textColor)
@@ -172,12 +172,12 @@ fileprivate struct TextFieldDescriptionView: View {
 
     private var textColor: Color {
         if isTop {
-            return Colors.grey400.swiftUIColor
+            return Color.grey400
         } else {
             if hasError {
-                return Colors.error.swiftUIColor
+                return Color.error
             } else {
-                return Colors.guideGreen.swiftUIColor
+                return Color.guideGreen
             }
         }
     }
