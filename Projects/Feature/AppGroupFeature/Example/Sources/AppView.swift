@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Domain
+import Core
 import FeatureAppGroupFeatureInterface
 
 @main
@@ -14,7 +16,13 @@ struct FeatureAppGroupFeatureApp: App {
     var body: some Scene {
         WindowGroup {
             AppGroupMainView()
-                .environment(AppGroupMainViewModel())
+                .environment(
+                    AppGroupMainViewModel(
+                        fetchAppGroupUseCase: FetchAppGroupUseCase(
+                            appGroupService: AppGroupService(appGroupStorage: AppGroupStorage())
+                        )
+                    )
+                )
         }
     }
     

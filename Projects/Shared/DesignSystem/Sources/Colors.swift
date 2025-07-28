@@ -29,4 +29,6 @@ public extension Color {
     static let insightBlueDark: Color = SharedDesignSystemAsset.Colors.insightBlueDark.swiftUIColor
     static let insightBlueLight: Color = SharedDesignSystemAsset.Colors.insightBlueLight.swiftUIColor
     static let brakeWhite: Color = SharedDesignSystemAsset.Colors.white.swiftUIColor
+    static let brakeDark: Color = SharedDesignSystemAsset.Colors.brakeDark.swiftUIColor
+    static let grey00: Color = SharedDesignSystemAsset.Colors.grey00.swiftUIColor
 }

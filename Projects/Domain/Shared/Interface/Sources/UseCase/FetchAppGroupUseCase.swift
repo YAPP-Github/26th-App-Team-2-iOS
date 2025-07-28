@@ -11,13 +11,13 @@ public struct FetchAppGroupUseCase {
     
     private let appGroupService: AppGroupProtocol
     
-    init(
+    public init(
         appGroupService: AppGroupProtocol
     ) {
         self.appGroupService = appGroupService
     }
     
-    func execute() async throws -> AppGroup? {
+    public func execute() async throws -> AppGroup? {
         try await appGroupService.getAppGroup()
     }
 }
