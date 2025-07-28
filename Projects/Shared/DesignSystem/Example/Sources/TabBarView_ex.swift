@@ -1,0 +1,58 @@
+//
+//  BrakeTabBarView_ex.swift
+//  SharedDesignSystemExample
+//
+//  Created by Derrick kim on 7/27/25.
+//
+
+import SwiftUI
+import SharedDesignSystem
+
+struct BrakeTabBarView_ex: View {
+    @State private var selectedTab: TabItemType = .report
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // 상단 컨텐츠 영역
+            ZStack {
+                // 선택된 탭에 따라 다른 색상의 배경
+                switch selectedTab {
+                case .report:
+                    Colors.brakeYellowDark.swiftUIColor
+                        .ignoresSafeArea()
+                case .dashboard:
+                    Colors.insightBlue.swiftUIColor
+                        .ignoresSafeArea()
+                case .myInfo:
+                    Colors.guideGreen.swiftUIColor
+                        .ignoresSafeArea()
+                }
+
+                VStack(spacing: 20) {
+                    Text("현재 선택된 탭")
+                        .font(.pretendard(size: 24, type: .bold))
+                        .foregroundStyle(Colors.white.swiftUIColor)
+
+                    Text(selectedTab.title)
+                        .font(.pretendard(size: 32, type: .extraBold))
+                        .foregroundStyle(Colors.white.swiftUIColor)
+
+                    Text("탭을 클릭하여 다른 뷰로 전환해보세요")
+                        .font(.pretendard(size: 16, type: .medium))
+                        .foregroundStyle(Colors.white.swiftUIColor)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            // 하단 탭바
+            VStack {
+                BrakeTabBarView(selectedTabBarItem: $selectedTab)
+                    .padding(.bottom, 16)
+            }
+        }
+        .navigationTitle("TabBar Example")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}

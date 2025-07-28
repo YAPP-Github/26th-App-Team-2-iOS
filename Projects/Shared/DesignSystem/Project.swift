@@ -6,7 +6,18 @@ let targets: [Target] = [
     .shared(
         implements: .DesignSystem,
         factory: .init()
+    ),
+    .shared(
+        example: .DesignSystem,
+        factory: .init(
+            bundleId: "\(Project.Environment.bundlePrefix).design.system.example",
+            infoPlist: Project.Environment.testAppInfoPlist(),
+            dependencies: [
+                .shared(implements: .DesignSystem),
+            ]
+        )
     )
+
 ]
 
 let project: Project = .makeModule(

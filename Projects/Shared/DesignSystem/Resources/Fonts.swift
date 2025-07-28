@@ -8,8 +8,8 @@
 import SwiftUI
 
 public extension Font {
-    static func pretendard(size fontSize: CGFloat, type: PretendardFontType) -> UIFont {
-        return UIFont(name: "\(type.name)", size: fontSize) ?? .init()
+    static func pretendard(size fontSize: CGFloat, type: PretendardFontType) -> Font {
+        return Font.custom(type.name, size: fontSize)
     }
 }
 

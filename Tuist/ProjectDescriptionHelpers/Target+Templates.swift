@@ -551,4 +551,19 @@ public extension Target {
         return make(factory: newFactory)
     }
 
+    static func shared(
+        example module: ModulePath.Shared,
+        factory: TargetFactory
+    ) -> Self {
+        var newFactory = factory
+        newFactory.name = ModulePath.Shared.name + module.rawValue + "Example"
+        newFactory.sources = .exampleSources
+        newFactory.product = .app
+        newFactory.bundleId = !factory.bundleId.isEmpty ? factory.bundleId : "\(Project.Environment.bundlePrefix).\(module.rawValue.lowercased()).example"
+        newFactory.settings = Project.Environment.exampleTargetSettings
+
+        return make(factory: newFactory)
+    }
+
+
 }
