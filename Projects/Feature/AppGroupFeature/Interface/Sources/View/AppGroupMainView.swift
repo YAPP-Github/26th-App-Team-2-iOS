@@ -19,8 +19,6 @@ public final class AppGroupMainViewModel {
     public func addButtonTapped() {
         addGroupPresent.toggle()
     }
-    
-    
 }
 
 public struct AppGroupMainView: View {
@@ -48,7 +46,7 @@ public struct AppGroupMainView: View {
                 AddAppGroupView()
                     .environment(
                         AddAppGroupViewModel(
-                            createAppGroupUseCase: CreateAppGroupUseCase()
+//                            createAppGroupUseCase: CreateAppGroupUseCase()
                         )
                     )
             }

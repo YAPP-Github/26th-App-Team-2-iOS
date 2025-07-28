@@ -6,12 +6,38 @@
 //
 
 import Foundation
-
+import SwiftData
 
 public protocol AppGroupStorageProtocol {
-    func getAllGroups() throws -> [AppGroup]
-    func getGroup(id: Int) throws -> AppGroup
-    func appendGroup(_ appGroup: AppGroup) throws
-    func upsertGroup(_ appGroup: AppGroup) throws
-    func deleteGroup(id: Int) throws
+    var context: ModelContext { get }
+    func getAllAppGroupEntities() async throws -> [AppGroupEntity]
+    func getAppGroupEntity(groupID: Int) async throws -> AppGroupEntity
+    
+    func appendAppGroupEntity(_ appGroup: AppGroupEntity) async throws
+    func upsertAppGroupEntity(_ appGroup: AppGroupEntity) async throws
+    
+    func deleteAppGroupEntity(groupID: Int) async throws
+}
+
+
+public final actor AppGroupStorage {
+    
+    
+    public let context: ModelContext
+    
+    public init() {
+        do {
+            let container = try ModelContainer(for: AppGroupEntity.self)
+            self.context = ModelContext(container)
+        } catch {
+            fatalError("컨테이너 생성 문제 \(error.localizedDescription)")
+        }
+    }
+}
+extension ModelContainer {
+    static var getAppGroupContainer: ModelContainer {
+        get throws {
+            try ModelContainer(for: AppGroupEntity.self)
+        }
+    }
 }

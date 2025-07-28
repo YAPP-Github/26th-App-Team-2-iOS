@@ -10,6 +10,7 @@ import FamilyControls
 
 
 public struct CreateAppGroupUseCase {
+    
     private let appGroupService: AppGroupProtocol = AppGroupService()
     public init() {
         
@@ -18,7 +19,6 @@ public struct CreateAppGroupUseCase {
     public func execute(
         groupName: String,
         activitySelection: FamilyActivitySelection
-    ) {
-//        appGroupService.createAppGroup(groupName: groupName, activitySelection: activitySelection)
+    ) async {
     }
 }

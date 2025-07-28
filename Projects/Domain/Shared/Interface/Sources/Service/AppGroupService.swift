@@ -7,6 +7,7 @@
 
 import Foundation
 import FamilyControls
+import Core
 
 public protocol AppGroupProtocol {
     func createAppGroup(
@@ -17,8 +18,10 @@ public protocol AppGroupProtocol {
 
 public final class AppGroupService: AppGroupProtocol {
     
+    private let appGroupStorage: AppGroupStorageProtocol
+    
     public init() {
-        
+        self.appGroupStorage = AppGroupStorage()
     }
     
     public func createAppGroup(
@@ -26,12 +29,23 @@ public final class AppGroupService: AppGroupProtocol {
         activitySelection: FamilyActivitySelection
     ) async throws -> AppGroup {
         
+        let appGroup = AppGroup(
+            name: groupName,
+            groupID: UUID().hashValue,
+            selection: activitySelection
+        )
         
+        let appGroupEntity = try AppGroupEntity(appGroup: appGroup)
+        try await self.appGroupStorage.appendAppGroupEntity(appGroupEntity)
         
-        .init(name: groupName, groupID: -1, selection: activitySelection)
+        return appGroup
     }
     
-    public func getAppGroup() -> AppGroup? {
-        return nil
+    public func getAppGroup() async throws -> AppGroup? {
+        let appGroupEntities = try await self.appGroupStorage.getAllAppGroupEntities()
+        guard let appGroupEntity = appGroupEntities.first else {
+            return nil
+        }
+        return try appGroupEntity.toAppGroup()
     }
 }

@@ -19,12 +19,12 @@ public final class AddAppGroupViewModel {
     var selectionPresent: Bool = false
     var applicationTokens: [ApplicationToken] { newSelection.applicationTokens.map { $0 } }
     
-    let createAppGroupUseCase: CreateAppGroupUseCase
+    let createAppGroupUseCase: CreateAppGroupUseCase = CreateAppGroupUseCase()
     
     public init(
-        createAppGroupUseCase: CreateAppGroupUseCase
+//        createAppGroupUseCase: CreateAppGroupUseCase
     ) {
-        self.createAppGroupUseCase = createAppGroupUseCase
+//        self.createAppGroupUseCase = createAppGroupUseCase
     }
     
     public func selectionBtnTapped() {
@@ -32,26 +32,7 @@ public final class AddAppGroupViewModel {
     }
     
     public func updateSelection(_ selection: FamilyActivitySelection) {
-
-        do {
-            let selectionEncoded = try JSONEncoder().encode(selection)
-            print("인코딩 된 값: \(selectionEncoded.count)")
-
-            let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: selectionEncoded)
-            self.newSelection = selection
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-        
-        
-        
-        
-//        guard let decodedApplicationTokens = try? JSONDecoder().decode([ApplicationToken].self, from: encodedData) else {
-//            assertionFailure("디코딩 실패")
-//            return
-//        }
-//        print("앱 토큰 decoding 이후: \(decodedApplicationTokens)")
-//        self.newSelection = selection
+        self.newSelection = selection
     }
     
     public func addBtnTapped() {
