@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+public struct FetchAppGroupUseCase {
+    
+    func execute() {
+        
+    }
+}

@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import Domain
+import Shared
 import FamilyControls
 import DeviceActivity
 import ManagedSettings
@@ -16,8 +18,13 @@ public final class AddAppGroupViewModel {
     var newSelection: FamilyActivitySelection = .init()
     var selectionPresent: Bool = false
     var applicationTokens: [ApplicationToken] { newSelection.applicationTokens.map { $0 } }
-    public init() {
-        
+    
+    let createAppGroupUseCase: CreateAppGroupUseCase
+    
+    public init(
+        createAppGroupUseCase: CreateAppGroupUseCase
+    ) {
+        self.createAppGroupUseCase = createAppGroupUseCase
     }
     
     public func selectionBtnTapped() {
@@ -25,10 +32,31 @@ public final class AddAppGroupViewModel {
     }
     
     public func updateSelection(_ selection: FamilyActivitySelection) {
-        print("받은 selection: \(selection)")
-        self.newSelection = selection
+
+        do {
+            let selectionEncoded = try JSONEncoder().encode(selection)
+            print("인코딩 된 값: \(selectionEncoded.count)")
+
+            let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: selectionEncoded)
+            self.newSelection = selection
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+        
+        
+        
+        
+//        guard let decodedApplicationTokens = try? JSONDecoder().decode([ApplicationToken].self, from: encodedData) else {
+//            assertionFailure("디코딩 실패")
+//            return
+//        }
+//        print("앱 토큰 decoding 이후: \(decodedApplicationTokens)")
+//        self.newSelection = selection
     }
     
+    public func addBtnTapped() {
+        
+    }
 }
 
 public struct AddAppGroupView: View {
@@ -44,7 +72,7 @@ public struct AddAppGroupView: View {
             } label: {
                 Text("사용을 자제할 앱을 선택해주세요.")
             }
-            VStack{
+            VStack {
                 Text("목록: \(addAppGroupViewModel.applicationTokens.count)개")
                 HStack {
                     ForEach(addAppGroupViewModel.applicationTokens, id: \.hashValue) { applicationToken in
@@ -95,6 +123,15 @@ public struct AddAppGroupView: View {
                 .frame(height: 340)
                 .padding(.horizontal)
                 
+            }
+            Spacer()
+            
+            LargeButtonView(
+                buttonType: .confirm,
+                title: "완료",
+                isActive: true
+            ) {
+                addAppGroupViewModel.addBtnTapped()
             }
         }
         .sheet(

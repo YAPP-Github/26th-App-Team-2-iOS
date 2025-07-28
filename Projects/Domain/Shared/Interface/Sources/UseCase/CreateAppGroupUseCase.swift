@@ -6,3 +6,19 @@
 //
 
 import Foundation
+import FamilyControls
+
+
+public struct CreateAppGroupUseCase {
+    private let appGroupService: AppGroupProtocol = AppGroupService()
+    public init() {
+        
+    }
+    
+    public func execute(
+        groupName: String,
+        activitySelection: FamilyActivitySelection
+    ) {
+//        appGroupService.createAppGroup(groupName: groupName, activitySelection: activitySelection)
+    }
+}

@@ -24,9 +24,9 @@ public enum TabItemType: String, CaseIterable, Identifiable {
 
     public var iconImage: Image {
         switch self {
-        case .report:       return Images.iconReport.swiftUIImage.renderingMode(.template)
-        case .dashboard:    return Images.iconDashboard.swiftUIImage.renderingMode(.template)
-        case .myInfo:       return Images.iconMyInfo.swiftUIImage.renderingMode(.template)
+        case .report:       return Image.iconReport.renderingMode(.template)
+        case .dashboard:    return Image.iconDashboard.renderingMode(.template)
+        case .myInfo:       return Image.iconMyInfo.renderingMode(.template)
         }
     }
 }
