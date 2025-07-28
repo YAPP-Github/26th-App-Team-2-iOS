@@ -33,18 +33,24 @@ public extension View {
         primaryButtonTitle: String,
         secondaryButtonTitle: String? = nil,
         primaryAction: @escaping () -> Void,
-        secondaryAction: (() -> Void)? = nil
+        secondaryAction: (() -> Void)? = nil,
+        showCloseButton: Bool = false,
+        closeAction: (() -> Void)? = nil
     ) -> some View {
-        self.modifier(BrakePopUpModifier(
-            isPresented: isPresented,
-            title: title,
-            message: message,
-            icon: icon,
-            alertType: alertType,
-            primaryButtonTitle: primaryButtonTitle,
-            secondaryButtonTitle: secondaryButtonTitle,
-            primaryAction: primaryAction,
-            secondaryAction: secondaryAction
-        ))
+        self.modifier(
+            BrakePopUpModifier(
+                isPresented: isPresented,
+                title: title,
+                message: message,
+                icon: icon,
+                alertType: alertType,
+                primaryButtonTitle: primaryButtonTitle,
+                secondaryButtonTitle: secondaryButtonTitle,
+                primaryAction: primaryAction,
+                secondaryAction: secondaryAction,
+                showCloseButton: showCloseButton,
+                closeAction: closeAction
+            )
+        )
     }
 }

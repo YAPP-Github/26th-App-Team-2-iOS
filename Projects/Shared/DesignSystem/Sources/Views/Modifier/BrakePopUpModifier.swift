@@ -10,7 +10,7 @@ import SwiftUI
 public struct BrakePopUpModifier: ViewModifier {
     @Binding private var isPresented: Bool
     private let alertView: BrakeAlertView
-    
+
     public init(
         isPresented: Binding<Bool>,
         title: String,
@@ -20,7 +20,9 @@ public struct BrakePopUpModifier: ViewModifier {
         primaryButtonTitle: String,
         secondaryButtonTitle: String? = nil,
         primaryAction: @escaping () -> Void,
-        secondaryAction: (() -> Void)? = nil
+        secondaryAction: (() -> Void)? = nil,
+        showCloseButton: Bool = false,
+        closeAction: (() -> Void)? = nil
     ) {
         self._isPresented = isPresented
         self.alertView = BrakeAlertView(
@@ -31,16 +33,20 @@ public struct BrakePopUpModifier: ViewModifier {
             primaryButtonTitle: primaryButtonTitle,
             secondaryButtonTitle: secondaryButtonTitle,
             primaryAction: primaryAction,
-            secondaryAction: secondaryAction
+            secondaryAction: secondaryAction,
+            showCloseButton: showCloseButton,
+            closeAction: closeAction
         )
     }
-    
+
     public func body(content: Content) -> some View {
         content
-            .modifier(BrakeAlertModifier(
-                isPresented: $isPresented,
-                alertContent: { alertView },
-                background: { Color.black.opacity(0.5) }
-            ))
+            .modifier(
+                BrakeAlertModifier(
+                    isPresented: $isPresented,
+                    alertContent: { alertView },
+                    background: { Color.black.opacity(0.5) }
+                )
+            )
     }
 }
