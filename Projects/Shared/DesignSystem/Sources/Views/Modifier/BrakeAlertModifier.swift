@@ -25,6 +25,8 @@ public struct BrakeAlertModifier<AlertContent: View, Background: View>: ViewModi
                             .allowsHitTesting(allowsInteraction)
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.clear)
                 .presentationBackground {
                     self.background
                         .allowsHitTesting(allowsInteraction)
