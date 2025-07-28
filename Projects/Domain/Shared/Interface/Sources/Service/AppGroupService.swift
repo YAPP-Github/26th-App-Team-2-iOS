@@ -10,6 +10,9 @@ import FamilyControls
 import Core
 
 public protocol AppGroupProtocol {
+    
+    func getAppGroup() async throws -> AppGroup?
+    func updateAppGroup(appGroup: AppGroup) async throws
     func createAppGroup(
         groupName: String,
         activitySelection: FamilyActivitySelection
@@ -18,9 +21,13 @@ public protocol AppGroupProtocol {
 
 public final class AppGroupService: AppGroupProtocol {
     
+    
+    
     private let appGroupStorage: AppGroupStorageProtocol
     
-    public init() {
+    public init(
+        appGroupStorage: AppGroupStorageProtocol
+    ) {
         self.appGroupStorage = AppGroupStorage()
     }
     
@@ -39,6 +46,10 @@ public final class AppGroupService: AppGroupProtocol {
         try await self.appGroupStorage.appendAppGroupEntity(appGroupEntity)
         
         return appGroup
+    }
+    
+    public func updateAppGroup(appGroup: AppGroup) async throws {
+        
     }
     
     public func getAppGroup() async throws -> AppGroup? {

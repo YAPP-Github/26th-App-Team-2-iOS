@@ -16,9 +16,15 @@ public struct CreateAppGroupUseCase {
         
     }
     
+    @discardableResult
     public func execute(
         groupName: String,
         activitySelection: FamilyActivitySelection
-    ) async {
+    ) async throws -> AppGroup {
+        let appGroup = try await appGroupService.createAppGroup(
+            groupName: groupName,
+            activitySelection: activitySelection
+        )
+        return appGroup
     }
 }
