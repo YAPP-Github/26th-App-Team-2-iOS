@@ -22,7 +22,6 @@ public protocol AppGroupStorageProtocol {
 
 public final actor AppGroupStorage {
     
-    
     public let context: ModelContext
     
     public init() {
@@ -31,13 +30,6 @@ public final actor AppGroupStorage {
             self.context = ModelContext(container)
         } catch {
             fatalError("컨테이너 생성 문제 \(error.localizedDescription)")
-        }
-    }
-}
-extension ModelContainer {
-    static var getAppGroupContainer: ModelContainer {
-        get throws {
-            try ModelContainer(for: AppGroupEntity.self)
         }
     }
 }

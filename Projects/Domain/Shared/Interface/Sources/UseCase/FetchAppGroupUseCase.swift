@@ -9,7 +9,15 @@ import Foundation
 
 public struct FetchAppGroupUseCase {
     
-    func execute() {
-        
+    private let appGroupService: AppGroupProtocol
+    
+    init(
+        appGroupService: AppGroupProtocol
+    ) {
+        self.appGroupService = appGroupService
+    }
+    
+    func execute() async throws -> AppGroup? {
+        try await appGroupService.getAppGroup()
     }
 }
