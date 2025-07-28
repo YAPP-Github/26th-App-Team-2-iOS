@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Domain
+import SharedDesignSystem
 
 public struct ScreenTimeAuthView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel

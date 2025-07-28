@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-
-
-
-
-
 public struct OnboardingInfoView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(OnboardingManager.self) var onboardingManager
