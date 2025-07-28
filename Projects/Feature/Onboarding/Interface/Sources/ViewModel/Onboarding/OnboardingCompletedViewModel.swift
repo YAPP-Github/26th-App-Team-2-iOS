@@ -28,7 +28,6 @@ public final class OnboardingCompletedViewModel {
     }
     
     public func startBtnTapped() {
-        print("시작 버튼 탭탭탭!!")
         Task {
             do {
                 try await userSetNicknameUseCase.execute(nickname: userName)

@@ -18,6 +18,8 @@ let project = Project.makeModule(
                 dependencies: [
                     .domain(interface: .User),
                     .domain(implements: .User),
+                    .domain(interface: .Shared),
+                    .domain(implements: .Shared),
                     .core
                 ]
             )

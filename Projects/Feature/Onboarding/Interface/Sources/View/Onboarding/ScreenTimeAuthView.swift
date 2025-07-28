@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Domain
 
 public struct ScreenTimeAuthView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
