@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SharedDesignSystem
 
 public struct SmallButtonView: View {
 
