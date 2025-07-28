@@ -20,21 +20,4 @@ public final class AppGroupEntity {
         self.name = name
         self.selectionData = selectionData
     }
-    
-    convenience public init(appGroup: AppGroup) throws {
-        let selectionData = try JSONEncoder().encode(appGroup)
-        self.init(groupID: appGroup.groupID, name: appGroup.name, selectionData: selectionData)
-    }
-    
-    public func toAppGroup() throws -> AppGroup {
-        let selectionData = try JSONDecoder().decode(
-            FamilyActivitySelection.self,
-            from: selectionData
-        )
-        return AppGroup(
-            name: name,
-            groupID: groupID,
-            selections: selectionData
-        )
-    }
 }

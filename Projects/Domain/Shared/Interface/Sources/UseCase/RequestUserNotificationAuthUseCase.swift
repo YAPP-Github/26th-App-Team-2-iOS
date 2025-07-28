@@ -10,9 +10,7 @@ import NotificationCenter
 
 public struct RequestUserNotificationAuthUseCase {
     
-    public init() {
-        
-    }
+    public init() { }
     
     public func execute() async -> NotificationAuthorizationResult {
         let notificationSettings: UNNotificationSettings = await UNUserNotificationCenter.current().notificationSettings()

@@ -32,7 +32,8 @@ let project = Project.makeModule(
             testing: .LocalStorage,
             factory: .init(
                 dependencies: [
-                    .core(interface: .LocalStorage)
+                    .core(interface: .LocalStorage),
+                    .core(implements: .LocalStorage)
                 ]
             )
         ),

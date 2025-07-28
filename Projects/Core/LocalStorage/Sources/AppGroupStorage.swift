@@ -6,72 +6,61 @@
 //
 
 import Foundation
-import CoreLocalStorageInterface
 import SwiftData
 import FamilyControls
+import CoreLocalStorageInterface
 
 /// SwiftData ModelContext는 MainActor에서만 동작
-@MainActor
-public final class AppGroupStorage: @preconcurrency AppGroupStorageProtocol {
-    
-    let context: ModelContext
-    
-    public init() throws {
-        let container = try ModelContainer(for: AppGroupEntity.self)
-        self.context = container.mainContext
-    }
-    
-    public func getAllGroups() throws -> [AppGroup] {
+extension AppGroupStorage: @retroactive AppGroupStorageProtocol { }
+
+extension AppGroupStorageProtocol {
+    public func getAllAppGroupEntities() async throws -> [AppGroupEntity] {
         let descriptor = FetchDescriptor<AppGroupEntity>()
         let entities = try context.fetch(descriptor)
-        return try entities.map { try $0.toAppGroup() }
+        return entities
     }
     
-    public func getGroup(id: Int) throws -> AppGroup {
-        let predicate = #Predicate<AppGroupEntity> { $0.groupID == id }
+    public func getAppGroupEntity(groupID: Int) async throws -> AppGroupEntity {
+        let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
-        let result = try context.fetch(descriptor)
-        guard let appGroup = try result.first?.toAppGroup() else {
-            fatalError("변환 실패")
+        let result = try? context.fetch(descriptor)
+        guard let appGroup = result?.first else {
+            throw AppGroupEntityError.notExist
         }
         return appGroup
     }
     
     
-    public func appendGroup(_ appGroup: AppGroup) throws {
-        let selectionData = try JSONEncoder().encode(appGroup)
-        let entity = AppGroupEntity(
-            groupID: appGroup.groupID,
-            name: appGroup.name,
-            selectionData: selectionData
-        )
-        context.insert(entity)
+    public func appendAppGroupEntity(_ appGroup: AppGroupEntity) async throws {
+        context.insert(appGroup)
         try context.save()
     }
     
-    public func upsertGroup(_ appGroup: AppGroup) throws {
-        let predicate = #Predicate<AppGroupEntity> { $0.groupID == appGroup.groupID }
+    public func upsertAppGroupEntity(_ appGroup: AppGroupEntity) async throws {
+        let groupID: Int = appGroup.groupID
+        let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
-        let existing = try context.fetch(descriptor).first
+        
+        let existing = try? context.fetch(descriptor).first
 
         if let entity = existing {
             // 2. 있으면 업데이트
             entity.name = appGroup.name
-            entity.selectionData = try JSONEncoder().encode(appGroup.selections)
+            entity.selectionData = appGroup.selectionData
         } else {
             // 3. 없으면 새로 추가
-            let newEntity = try AppGroupEntity(appGroup: appGroup)
-            context.insert(newEntity)
+            context.insert(appGroup)
         }
         try context.save()
     }
     
-    public func deleteGroup(id: Int) throws {
-        let predicate = #Predicate<AppGroupEntity> { $0.groupID == id }
+    public func deleteAppGroupEntity(groupID: Int) async throws {
+        let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
         if let entity = try context.fetch(descriptor).first {
             context.delete(entity)
             try context.save()
         }
+        // 존재하지 않는 엔티티의 경우 조용히 무시 (에러를 던지지 않음)
     }
 }
