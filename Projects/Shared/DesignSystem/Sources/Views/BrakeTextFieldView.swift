@@ -19,9 +19,9 @@ public struct BrakeTextFieldView: View {
     public init(
         text: Binding<String>,
         placeholder: String,
-        backgroundColor: Color = Colors.grey850.swiftUIColor,
-        textColor: Color = Colors.white.swiftUIColor,
-        placeholderColor: Color = Colors.grey400.swiftUIColor,
+        backgroundColor: Color = Color.grey850,
+        textColor: Color = Color.brakeWhite,
+        placeholderColor: Color = Color.grey400,
         cornerRadius: CGFloat = 16
     ) {
         self._text = text

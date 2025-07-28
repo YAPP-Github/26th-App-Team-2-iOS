@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import NotificationCenter
+import Domain
 
 extension NotificationAuthorizationResult {
     public var alertTitle: String {
@@ -65,43 +65,3 @@ public final class UserNotificationAuthViewModel {
     }
 }
 
-
-public enum NotificationAuthorizationResult: Equatable {
-    case approved
-    case denied
-    case userRestricted
-    case unknownError
-}
-
-
-public struct RequestUserNotificationAuthUseCase {
-    
-    public init() {
-        
-    }
-    
-    public func execute() async -> NotificationAuthorizationResult {
-        let notificationSettings: UNNotificationSettings = await UNUserNotificationCenter.current().notificationSettings()
-        let status: UNAuthorizationStatus = notificationSettings.authorizationStatus
-        switch status {
-        case .notDetermined, .ephemeral, .provisional:
-            do {
-                let reqeustResult = try await UNUserNotificationCenter
-                    .current()
-                    .requestAuthorization(
-                        options: [ .alert, .badge, .sound ]
-                    )
-                if reqeustResult { // 권한 요청 허용
-                    return .approved
-                } else { // 권한 요청 거부
-                    return .userRestricted
-                }
-            } catch {
-                return .unknownError
-            }
-        case .denied: return .denied
-        case .authorized: return .approved
-        @unknown default: return .unknownError
-        }
-    }
-}
