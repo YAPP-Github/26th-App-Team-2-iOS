@@ -37,4 +37,7 @@ public extension Image {
     static let iconTinyArrow: Image = SharedDesignSystemAsset.Images.iconTinyArrow.swiftUIImage
     static let iconTrash: Image = SharedDesignSystemAsset.Images.iconTrash.swiftUIImage
     static let iconUser: Image = SharedDesignSystemAsset.Images.iconUser.swiftUIImage
+    static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
+    static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
+    static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
 }

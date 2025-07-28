@@ -33,6 +33,9 @@ struct ContentView: View {
                     NavigationLink("BrakeToastView_ex") {
                         BrakeToastView_ex()
                     }
+                    NavigationLink("BrakePopUpView_ex") {
+                        BrakePopUpView_ex()
+                    }
                 } header: {
                     Text("Custom Views")
                 }

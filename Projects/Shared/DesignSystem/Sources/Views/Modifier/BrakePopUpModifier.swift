@@ -1,5 +1,5 @@
 //
-//  ViewExtension.swift
+//  BrakePopUpModifier.swift
 //  SharedDesignSystem
 //
 //  Created by Derrick kim on 7/28/25.
@@ -7,24 +7,11 @@
 
 import SwiftUI
 
-public extension View {
-    @ViewBuilder
-    func alert<Content: View, Background: View> (
-        isPresented: Binding<Bool>,
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder background: @escaping () -> Background
-    ) -> some View {
-        self.modifier(
-            BrakeAlertModifier(
-                isPresented: isPresented,
-                alertContent: content,
-                background: background
-            )
-        )
-    }
-
-    @ViewBuilder
-    func brakePopUp(
+public struct BrakePopUpModifier: ViewModifier {
+    @Binding private var isPresented: Bool
+    private let alertView: BrakeAlertView
+    
+    public init(
         isPresented: Binding<Bool>,
         title: String,
         message: String? = nil,
@@ -34,9 +21,9 @@ public extension View {
         secondaryButtonTitle: String? = nil,
         primaryAction: @escaping () -> Void,
         secondaryAction: (() -> Void)? = nil
-    ) -> some View {
-        self.modifier(BrakePopUpModifier(
-            isPresented: isPresented,
+    ) {
+        self._isPresented = isPresented
+        self.alertView = BrakeAlertView(
             title: title,
             message: message,
             icon: icon,
@@ -45,6 +32,15 @@ public extension View {
             secondaryButtonTitle: secondaryButtonTitle,
             primaryAction: primaryAction,
             secondaryAction: secondaryAction
-        ))
+        )
+    }
+    
+    public func body(content: Content) -> some View {
+        content
+            .modifier(BrakeAlertModifier(
+                isPresented: $isPresented,
+                alertContent: { alertView },
+                background: { Color.black.opacity(0.5) }
+            ))
     }
 }
