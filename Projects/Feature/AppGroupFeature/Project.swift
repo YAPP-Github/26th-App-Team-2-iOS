@@ -16,9 +16,7 @@ let project = Project.makeModule(
             interface: .AppGroupFeature,
             factory: .init(
                 dependencies: [
-                    .domain,
-                    .sdk(name: "FamilyControls", type: .framework, status: .required),
-                    .sdk(name: "ManagedSettings", type: .framework, status: .required)
+                    .domain
                 ]
             )
         ),
@@ -52,6 +50,7 @@ let project = Project.makeModule(
             example: .AppGroupFeature,
             factory: .init(
                 infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .debug),
+                entitlements: "\(Project.Environment.appName).entitlements",
                 dependencies: [
                     .feature(interface: .AppGroupFeature)
                 ]

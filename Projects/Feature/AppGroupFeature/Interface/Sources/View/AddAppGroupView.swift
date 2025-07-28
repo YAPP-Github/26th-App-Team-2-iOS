@@ -46,6 +46,11 @@ public struct AddAppGroupView: View {
             }
             VStack{
                 Text("목록: \(addAppGroupViewModel.applicationTokens.count)개")
+                HStack {
+                    ForEach(addAppGroupViewModel.applicationTokens, id: \.hashValue) { applicationToken in
+                        Label(applicationToken).labelStyle(.iconOnly)
+                    }
+                }.background(.green)
                 ZStack(alignment: .bottom) {
                     List(addAppGroupViewModel.applicationTokens, id: \.hashValue) { applicationToken in
                         HStack {
