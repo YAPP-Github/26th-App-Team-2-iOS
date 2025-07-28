@@ -15,6 +15,7 @@ let targets: [Target] = [
         dependencies: [
             .domain(implements: .User),
             .domain(implements: .OAuth),
+            .domain(interface: .Shared),
             .core
         ],
         settings: .settings(configurations: [

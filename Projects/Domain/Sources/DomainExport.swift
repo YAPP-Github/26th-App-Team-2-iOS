@@ -9,3 +9,5 @@
 @_exported import DomainUserInterface
 @_exported import DomainOAuth
 @_exported import DomainOAuthInterface
+@_exported import DomainShared
+@_exported import DomainSharedInterface

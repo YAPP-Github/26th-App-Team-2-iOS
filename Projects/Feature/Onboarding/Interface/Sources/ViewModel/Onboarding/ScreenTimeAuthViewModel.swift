@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Domain
 import FamilyControls
 extension ScreenTimeAuthorizationResult {
     var alertTitle: String {
@@ -74,46 +75,3 @@ public final class ScreenTimeAuthViewModel {
 }
 
 
-// MARK: -- Domain 레이어로 내려줘야 함...
-public struct RequestScreenTimeAuthUseCase {
-    private let center: AuthorizationCenter = AuthorizationCenter.shared
-    
-    public init() { }
-    
-    public func execute() async -> ScreenTimeAuthorizationResult {
-        let status = center.authorizationStatus
-        switch status {
-        case .notDetermined:
-            do {
-                try await center.requestAuthorization(for: FamilyControlsMember.individual)
-            } catch let error as FamilyControlsError {
-                switch error {
-                case .restricted, .invalidAccountType: return .restricted
-                case .unavailable: return .unavailableDevice
-                case .invalidArgument, .authorizationConflict: return .unknownError
-                case .authorizationCanceled: return .userCancel
-                case .networkError: return.networkError
-                case .authenticationMethodUnavailable: return .authenticationMethodUnavailable
-                @unknown default: return .unknownError
-                }
-            } catch {
-                return .unknownError
-            }
-        case .denied: return .denied
-        case .approved: return .approved
-        @unknown default: return .unknownError
-        }
-        return .unknownError
-    }
-}
-
-public enum ScreenTimeAuthorizationResult: Equatable {
-    case denied
-    case restricted
-    case unavailableDevice // 디바이스 및 기기 미지원
-    case userCancel
-    case approved
-    case unknownError
-    case networkError
-    case authenticationMethodUnavailable
-}
