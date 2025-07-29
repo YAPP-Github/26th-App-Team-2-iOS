@@ -18,7 +18,7 @@ struct BrakeNavigationView_ex: View {
             VStack(spacing: 20) {
                 Text("기본 네비게이션")
                     .font(.subheadline)
-                    .foregroundStyle(Colors.grey700.swiftUIColor)
+                    .foregroundStyle(Color.grey700)
                 
                 BrakeNavigationView(
                     title: "TextLabel",

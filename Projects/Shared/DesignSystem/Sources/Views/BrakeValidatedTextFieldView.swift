@@ -73,7 +73,7 @@ public struct BrakeValidatedTextFieldView: View {
                     HStack {
                         Spacer()
                         if isValid {
-                            Images.iconCheck.swiftUIImage
+                            Image.iconCheckGreen
                                 .frame(width: 24, height: 24)
                         }
                     }

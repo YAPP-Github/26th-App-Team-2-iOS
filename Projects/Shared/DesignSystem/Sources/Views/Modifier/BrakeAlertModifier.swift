@@ -1,34 +1,22 @@
 //
 //  BrakeAlertModifier.swift
-//  FeatureOnboardingInterface
+//  SharedDesignSystem
 //
-//  Created by Greem on 7/25/25.
+//  Created by Derrick kim on 7/28/25.
 //
 
 import SwiftUI
 
-extension View {
-    @ViewBuilder
-    func alert<Content: View, Background: View> (
-        isPresented: Binding<Bool>,
-        @ViewBuilder content: @escaping () -> Content,
-        @ViewBuilder background: @escaping () -> Background
-    ) -> some View {
-        self.modifier(CustomAlertModifier(isPresented: isPresented, alertContent: content, background: background))
-    }
-}
+public struct BrakeAlertModifier<AlertContent: View, Background: View>: ViewModifier {
+    @Binding public var isPresented: Bool
+    @ViewBuilder public var alertContent: AlertContent
+    @ViewBuilder public var background: Background
 
-fileprivate struct CustomAlertModifier<AlertContent: View, Background: View>: ViewModifier {
-    @Binding var isPresented: Bool
-    @ViewBuilder var alertContent: AlertContent
-    @ViewBuilder var background: Background
-    
     @State private var showFullScreenCover: Bool = false
     @State private var animatedValue: Bool = false
     @State private var allowsInteraction: Bool = false
-    
-    
-    func body(content: Content) -> some View {
+
+    public func body(content: Content) -> some View {
         content
             .fullScreenCover(isPresented: $showFullScreenCover) {
                 ZStack {
@@ -37,6 +25,8 @@ fileprivate struct CustomAlertModifier<AlertContent: View, Background: View>: Vi
                             .allowsHitTesting(allowsInteraction)
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.clear)
                 .presentationBackground {
                     self.background
                         .allowsHitTesting(allowsInteraction)
@@ -47,7 +37,7 @@ fileprivate struct CustomAlertModifier<AlertContent: View, Background: View>: Vi
                     withAnimation(.easeInOut(duration: 0.3)) {
                         self.animatedValue = true
                     }
-                    
+
                     try? await Task.sleep(for: .seconds(0.3))
                     allowsInteraction = true
                 }
@@ -61,7 +51,7 @@ fileprivate struct CustomAlertModifier<AlertContent: View, Background: View>: Vi
                     }
                 } else {
                     allowsInteraction = false
-                   
+
                     withAnimation(.easeInOut(duration: 0.3), completionCriteria: .removed) {
                         animatedValue = false
                     } completion: {

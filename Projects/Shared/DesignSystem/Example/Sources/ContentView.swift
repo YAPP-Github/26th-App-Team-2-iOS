@@ -30,6 +30,12 @@ struct ContentView: View {
                     NavigationLink("BrakeTextFieldView_ex") {
                         BrakeTextFieldView_ex()
                     }
+                    NavigationLink("BrakeToastView_ex") {
+                        BrakeToastView_ex()
+                    }
+                    NavigationLink("BrakePopUpView_ex") {
+                        BrakePopUpView_ex()
+                    }
                 } header: {
                     Text("Custom Views")
                 }

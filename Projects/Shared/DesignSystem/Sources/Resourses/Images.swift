@@ -7,43 +7,15 @@
 
 import Foundation
 import SwiftUI
-public enum Images {
-    public static let iconAppGroup = SharedDesignSystemAsset.Images.iconAppGroup
-    public static let iconBack = SharedDesignSystemAsset.Images.iconBack
-    public static let iconCalendar = SharedDesignSystemAsset.Images.iconCalendar
-    public static let iconCancel = SharedDesignSystemAsset.Images.iconCancel
-    public static let iconChart = SharedDesignSystemAsset.Images.iconChart
-    public static let iconCheck = SharedDesignSystemAsset.Images.iconCheck
-    public static let iconCircleBack = SharedDesignSystemAsset.Images.iconCircleBack
-    public static let iconCircleCancelRed = SharedDesignSystemAsset.Images.iconCircleCancelRed
-    public static let iconCircleCancel = SharedDesignSystemAsset.Images.iconCircleCancel
-    public static let iconCircleEdit = SharedDesignSystemAsset.Images.iconCircleEdit
-    public static let iconCoolTime = SharedDesignSystemAsset.Images.iconCoolTime
-    public static let iconDashboard = SharedDesignSystemAsset.Images.iconDashboard
-    public static let iconDone = SharedDesignSystemAsset.Images.iconDone
-    public static let iconEdit = SharedDesignSystemAsset.Images.iconEdit
-    public static let iconGraph = SharedDesignSystemAsset.Images.iconGraph
-    public static let iconHome = SharedDesignSystemAsset.Images.iconHome
-    public static let iconList = SharedDesignSystemAsset.Images.iconList
-    public static let iconMyInfo = SharedDesignSystemAsset.Images.iconMyInfo
-    public static let iconMyInfo28 = SharedDesignSystemAsset.Images.iconMyInfo28
-    public static let iconNumber1 = SharedDesignSystemAsset.Images.iconNumber1
-    public static let iconPlus = SharedDesignSystemAsset.Images.iconPlus
-    public static let iconReport = SharedDesignSystemAsset.Images.iconReport
-    public static let iconSetting = SharedDesignSystemAsset.Images.iconSetting
-    public static let iconThickCancel = SharedDesignSystemAsset.Images.iconThickCancel
-    public static let iconTinyArrow = SharedDesignSystemAsset.Images.iconTinyArrow
-    public static let iconTrash = SharedDesignSystemAsset.Images.iconTrash
-    public static let iconUser = SharedDesignSystemAsset.Images.iconUser
-}
 
 public extension Image {
+    static let iconCheckGreen = SharedDesignSystemAsset.Images.iconCheckGreen.swiftUIImage
+    static let iconCheckInsightBlue = SharedDesignSystemAsset.Images.iconCheckInsightBlue.swiftUIImage
     static let iconAppGroup: Image = SharedDesignSystemAsset.Images.iconAppGroup.swiftUIImage
     static let iconBack: Image = SharedDesignSystemAsset.Images.iconBack.swiftUIImage
     static let iconCalendar: Image = SharedDesignSystemAsset.Images.iconCalendar.swiftUIImage
     static let iconCancel: Image = SharedDesignSystemAsset.Images.iconCancel.swiftUIImage
     static let iconChart: Image = SharedDesignSystemAsset.Images.iconChart.swiftUIImage
-    static let iconCheck: Image = SharedDesignSystemAsset.Images.iconCheck.swiftUIImage
     static let iconCircleBack: Image = SharedDesignSystemAsset.Images.iconCircleBack.swiftUIImage
     static let iconCircleCancelRed: Image = SharedDesignSystemAsset.Images.iconCircleCancelRed.swiftUIImage
     static let iconCircleCancel: Image = SharedDesignSystemAsset.Images.iconCircleCancel.swiftUIImage
@@ -65,4 +37,7 @@ public extension Image {
     static let iconTinyArrow: Image = SharedDesignSystemAsset.Images.iconTinyArrow.swiftUIImage
     static let iconTrash: Image = SharedDesignSystemAsset.Images.iconTrash.swiftUIImage
     static let iconUser: Image = SharedDesignSystemAsset.Images.iconUser.swiftUIImage
+    static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
+    static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
+    static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
 }
