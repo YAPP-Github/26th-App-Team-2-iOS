@@ -9,11 +9,12 @@ import SwiftUI
 import SharedDesignSystem
 
 extension AddAppGroupView {
-    struct AddAppGroupNavigationView: View {
+    struct UpsertAppGroupNavigationView: View {
+        let isCreating: Bool
         let cancelCompletion: () -> Void
         var body: some View {
             BrakeNavigationView(
-                title: Text("앱 그룹 추가")
+                title: Text(isCreating ? "앱 그룹 추가" : "앱 그룹 관리")
                     .foregroundStyle(Color.grey100)
                     .font(.pretendard(size: 16, type: .semiBold)),
                 trailing: {

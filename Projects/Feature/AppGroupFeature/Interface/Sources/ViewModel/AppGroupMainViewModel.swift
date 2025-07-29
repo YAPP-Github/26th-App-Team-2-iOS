@@ -8,6 +8,7 @@
 import Foundation
 import Domain
 
+
 extension AppGroup: @retroactive Identifiable {
     public var id: Int { self.groupID }
 }
@@ -42,12 +43,14 @@ public final class AppGroupMainViewModel {
     }
     
     
-    public func removeCompleted(appGroup: AppGroup) {
+    public func deleteCompleted(appGroup: AppGroup) {
         self.appGroups = []
     }
+    
     public func upsertCompleted(appGroup: AppGroup) {
         self.appGroups = [appGroup]
     }
+    
 }
 
 fileprivate extension AppGroupMainViewModel {

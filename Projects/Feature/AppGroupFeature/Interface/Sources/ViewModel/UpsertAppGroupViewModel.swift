@@ -20,25 +20,34 @@ public final class UpsertAppGroupViewModel {
     var applicationTokens: [ApplicationToken] {
         newSelection.applicationTokens.map { $0 }
     }
+    
     private(set) var newSelection: FamilyActivitySelection = .init()
-    let createCompletion: (AppGroup) -> ()
+    let upsertCompletion: (AppGroup) -> ()
+    let deleteCompletion: ((AppGroup) -> ())?
+    let isCreating: Bool
     
     // MARK: -- Private Parameters...
-    private let createAppGroupUseCase: CreateAppGroupUseCase
+    private let upsertAppGroupUseCase: UpsertAppGroupUseCase
+    private let deleteAppGroupUseCase: DeleteAppGroupUseCase?
     private let appGroup: AppGroup?
     
     public init(
         appGroup: AppGroup? = nil,
-        createAppGroupUseCase: CreateAppGroupUseCase,
-        createCompletion: @escaping (AppGroup) -> ()
+        upsertAppGroupUseCase: UpsertAppGroupUseCase,
+        upsertCompletion: @escaping (AppGroup) -> (),
+        deleteAppGroupUseCase: DeleteAppGroupUseCase? = nil,
+        deleteCompletion: ((AppGroup) -> ())? = nil
     ) {
         if let appGroup = appGroup {
             self.newSelection = appGroup.selection
             self.appGroupName = appGroup.name
         }
+        self.isCreating = (appGroup == nil)
         self.appGroup = appGroup
-        self.createAppGroupUseCase = createAppGroupUseCase
-        self.createCompletion = createCompletion
+        self.upsertAppGroupUseCase = upsertAppGroupUseCase
+        self.upsertCompletion = upsertCompletion
+        self.deleteAppGroupUseCase = deleteAppGroupUseCase
+        self.deleteCompletion = deleteCompletion
     }
     
     public func selectionBtnTapped() {
@@ -49,25 +58,42 @@ public final class UpsertAppGroupViewModel {
         self.newSelection = selection
     }
     
-    public func addBtnTapped() {
+    public func deleteGroupBtnTapped() {
+        Task {
+            guard let appGroup, let deleteAppGroupUseCase, let deleteCompletion else { return }
+            do {
+                try await deleteAppGroupUseCase.execute(appGroupID: appGroup.groupID)
+            } catch {
+                print("오류가 발생했슈~")
+            }
+            
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                deleteCompletion(appGroup)
+                dismiss = true
+            }
+        }
+    }
+    
+    public func upsertCompleteBtnTapped() {
         Task {
             do {
                 let newAppGroup = if let appGroup {
-                    try await createAppGroupUseCase.execute(
+                    try await upsertAppGroupUseCase.execute(
+                        appGroupID: appGroup.groupID,
                         groupName: appGroupName,
                         activitySelection: newSelection
                     )
                 } else {
-                    try await createAppGroupUseCase.execute(
+                    try await upsertAppGroupUseCase.execute(
                         groupName: appGroupName,
                         activitySelection: newSelection
                     )
                 }
-                print("앱 그룹 추가 성공")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-                    createCompletion(newAppGroup)
-                    dismiss = true
+                    upsertCompletion(newAppGroup)
+                    self.dismiss = true
                 }
             } catch {
                 
