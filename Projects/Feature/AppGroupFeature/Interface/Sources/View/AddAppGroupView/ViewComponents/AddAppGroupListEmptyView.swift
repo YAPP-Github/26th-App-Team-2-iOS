@@ -10,7 +10,7 @@ import SharedDesignSystem
 
 extension AddAppGroupView {
     struct AddAppGroupListEmptyView: View {
-        @Environment(AddAppGroupViewModel.self) var addAppGroupViewModel
+        @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
         var body: some View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color.grey850)

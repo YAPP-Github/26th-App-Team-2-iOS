@@ -14,8 +14,7 @@ import ManagedSettings
 
 public struct AddAppGroupView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(AddAppGroupViewModel.self) var addAppGroupViewModel
-    @State private var tempText = ""
+    @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
     @FocusState private var isFocused: Bool
     
     public init() { }
@@ -36,14 +35,15 @@ public struct AddAppGroupView: View {
                 Color.clear.frame(height: 16)
                 
                 VStack(spacing: 8) {
+                    @Bindable var viewModel = addAppGroupViewModel
                     AddAppGroupSectionHeaderView(
                         title: "그룹명:",
-                        highlightDesc: "\(tempText.count)",
+                        highlightDesc: "\(addAppGroupViewModel.appGroupName.count)",
                         description: "/10"
                     )
                     
                     BrakeTextFieldView(
-                        text: $tempText,
+                        text: $viewModel.appGroupName,
                         placeholder: "ex) SNS",
                         backgroundColor: .grey850,
                         textColor: .brakeWhite,
@@ -83,6 +83,9 @@ public struct AddAppGroupView: View {
             bottomButtonView
                 .padding(.bottom, 10)
         }
+        .onChange(of: addAppGroupViewModel.dismiss, { oldValue, newValue in
+            if newValue { self.dismiss() }
+        })
         .sheet(
             isPresented: Binding(
                 get: { addAppGroupViewModel.selectionPresent },
@@ -95,7 +98,6 @@ public struct AddAppGroupView: View {
                 }
             }
         )
-        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
@@ -119,7 +121,7 @@ extension AddAppGroupView {
             LargeButtonView(
                 buttonType: .confirm,
                 title: "완료",
-                isActive: !addAppGroupViewModel.applicationTokens.isEmpty
+                isActive: !addAppGroupViewModel.applicationTokens.isEmpty && !addAppGroupViewModel.appGroupName.isEmpty
             ) {
                 addAppGroupViewModel.addBtnTapped()
             }
