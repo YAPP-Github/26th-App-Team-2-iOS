@@ -20,7 +20,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for applications shielded because of their category.
         guard let displayName = application.localizedDisplayName,
               let categoryName = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 앱")
@@ -29,7 +28,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
-        // Customize the shield as needed for web domains.
         guard let displayName = webDomain.domain else {
             return setShieldConfig("알 수 없는 웹사이트")
         }
@@ -37,7 +35,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for web domains shielded because of their category.
         guard let displayName = webDomain.domain,
               let categoryName = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 웹사이트")
@@ -45,29 +42,30 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return setShieldConfig("\(categoryName) - \(displayName)")
     }
 
-    private func isNotificationArrived() -> Bool {
-        // AppScheduleStorage를 사용하여 알림 상태 확인
-        return appScheduleStorage.getBlockingStatus()
-    }
-
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        let isNotiArrived = isNotificationArrived()
-
-        let customIcon = UIImage(resource: isNotiArrived ? .iconArrow : .iconWarning)
+        let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
+        let customIcon = getIconImage(by: status)
         let customTitle = ShieldConfiguration.Label(
-            text: isNotiArrived ? "알림을 눌러 사용 시간을 설정해주세요" : "\(tokenName)을 꼭 사용하실건가요?",
+            text: status.title,
             color: .white
         )
-        let customSecondaryButtonLabel = ShieldConfiguration.Label(
-            text: isNotiArrived ? "다시 알림 보내기" : "안하기",
-            color: .lightGray
-        )
 
-        let topButton = ShieldConfiguration.Label(
-            text: "사용하기",
+        let customPrimaryButtonLabel: ShieldConfiguration.Label?
+        let primaryButton = ShieldConfiguration.Label(
+            text: status.primaryButtonTitle,
             color: .black
         )
-        let customPrimaryButtonLabel: ShieldConfiguration.Label? = isNotiArrived ? nil :topButton
+        switch status {
+        case .unlockedTemporarily:
+            customPrimaryButtonLabel = nil
+        default:
+            customPrimaryButtonLabel = primaryButton
+        }
+
+        let customSecondaryButtonLabel = ShieldConfiguration.Label(
+            text: status.secondaryButtonTitle,
+            color: .lightGray
+        )
 
         let shieldConfiguration = ShieldConfiguration(
             backgroundBlurStyle: .dark,
@@ -81,6 +79,17 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         )
         return shieldConfiguration
     }
+
+    private func getIconImage(by status: BlockingStatus) -> UIImage {
+        switch status {
+        case .blocking:
+            return UIImage(resource: .iconArrow)
+        case .unlockedTemporarily:
+            return UIImage(resource: .iconWarning)
+        case .extensionPrompt:
+            return UIImage(resource: .illustrationBlock)
+        case .cooldownActive, .blockedAfterExtension:
+            return UIImage(resource: .illustrationBlock)
+        }
+    }
 }
-
-
