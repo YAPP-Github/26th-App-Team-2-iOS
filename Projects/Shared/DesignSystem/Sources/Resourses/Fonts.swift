@@ -9,7 +9,7 @@ import SwiftUI
 
 public extension Font {
     static func pretendard(size fontSize: CGFloat, type: PretendardFontType) -> Font {
-        return Font.custom(type.name, size: fontSize)
+        return type.fontConvertible.swiftUIFont(size: fontSize)
     }
 }
 
@@ -24,24 +24,24 @@ public extension Font {
         case semiBold
         case thin
 
-        public var name : String {
+        public var fontConvertible: SharedDesignSystemFontConvertible {
             switch self {
             case .black:
-                return "Pretendard-Black"
+                return SharedDesignSystemFontFamily.Pretendard.black
             case .bold:
-                return "Pretendard-Bold"
+                return SharedDesignSystemFontFamily.Pretendard.bold
             case .extraBold:
-                return "Pretendard-ExtraBold"
+                return SharedDesignSystemFontFamily.Pretendard.extraBold
             case .extraLight:
-                return "Pretendard-ExtraLight"
+                return SharedDesignSystemFontFamily.Pretendard.extraLight
             case .light:
-                return "Pretendard-Light"
+                return SharedDesignSystemFontFamily.Pretendard.light
             case .medium:
-                return "Pretendard-Medium"
+                return SharedDesignSystemFontFamily.Pretendard.medium
             case .semiBold:
-                return "Pretendard-SemiBold"
+                return SharedDesignSystemFontFamily.Pretendard.semiBold
             case .thin:
-                return "Pretendard-Thin"
+                return SharedDesignSystemFontFamily.Pretendard.thin
             }
         }
     }
