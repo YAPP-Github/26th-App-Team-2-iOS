@@ -9,20 +9,28 @@ import SwiftUI
 import Domain
 import Core
 import FeatureAppGroupFeatureInterface
+import SharedDesignSystem
 
 @main
 struct FeatureAppGroupFeatureApp: App {
-    
+    @State private var selectedTab: TabItemType = .report
     var body: some Scene {
         WindowGroup {
-            AppGroupMainView()
-                .environment(
-                    AppGroupMainViewModel(
-                        fetchAppGroupUseCase: FetchAppGroupUseCase(
-                            appGroupService: AppGroupService(appGroupStorage: AppGroupStorage())
+            ZStack {
+                NavigationStack {
+                    AppGroupMainView()
+                        .environment(
+                            AppGroupMainViewModel(
+                                fetchAppGroupUseCase: FetchAppGroupUseCase(
+                                    appGroupService: AppGroupService(appGroupStorage: AppGroupStorage())
+                                )
+                            )
                         )
-                    )
-                )
+                }
+            }.safeAreaInset(edge: .bottom) {
+                BrakeTabBarView(selectedTabBarItem: $selectedTab)
+                    .padding(.bottom, 16)
+            }
         }
     }
     

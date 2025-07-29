@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-extension AddAppGroupView{
-    struct AddAppGroupSectionHeaderView: View {
+extension UpsertAppGroupView{
+    struct UpsertAppGroupSectionHeaderView: View {
         let title: String
         let highlightDesc: String
         let description: String
@@ -21,13 +21,14 @@ extension AddAppGroupView{
                     .padding(.leading, 16)
                 Spacer()
                 (
-                    Text(highlightDesc)
-                        .foregroundStyle(Color.brakeWhite) + Text(description)
-                        .foregroundStyle(Color.grey200)
+                    Text(highlightDesc).foregroundStyle(Color.brakeWhite)
+                    +
+                    Text(description).foregroundStyle(Color.grey200)
                 )
                 .font(.pretendard(size: 12, type: .medium))
                 .padding(.trailing, 16)
             }
         }
     }
+    
 }

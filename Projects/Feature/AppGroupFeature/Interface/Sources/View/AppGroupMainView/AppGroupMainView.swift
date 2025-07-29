@@ -10,6 +10,8 @@ import Domain
 import SharedDesignSystem
 import FamilyControls
 
+extension Image: @retroactive AppGroupImagesProtocol { }
+
 public struct AppGroupMainView: View {
     
     @Environment(AppGroupMainViewModel.self) var appGroupMainViewModel
@@ -18,18 +20,18 @@ public struct AppGroupMainView: View {
     
     public var body: some View {
         ZStack {
-            Color.grey900.ignoresSafeArea(.all)
+            Color.grey900.ignoresSafeArea()
             @Bindable var viewModel = appGroupMainViewModel
-            Group {
-                if appGroupMainViewModel.appGroups.isEmpty {
-                    AppGroupMainEmptyAppGroupView {
-                        appGroupMainViewModel.addButtonTapped()
+                Group {
+                    if appGroupMainViewModel.appGroups.isEmpty {
+                        AppGroupMainEmptyAppGroupView {
+                            appGroupMainViewModel.addButtonTapped()
+                        }
+                        
+                    } else {
+                        AppGroupMainGroupListView()
                     }
-                    
-                } else {
-                    AppGroupMainGroupListView()
                 }
-            }
             .onAppear() {
                 Task {
                     try await RequestScreenTimeAuthUseCase().execute()
