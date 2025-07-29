@@ -40,7 +40,7 @@ public struct AppGroupMainView: View {
             .fullScreenCover(
                 isPresented: $viewModel.addGroupPresent
             ) {
-                AddAppGroupView()
+                UpsertAppGroupView()
                     .environment(
                         UpsertAppGroupViewModel(
                             upsertAppGroupUseCase: UpsertAppGroupUseCase(),
@@ -53,7 +53,7 @@ public struct AppGroupMainView: View {
             .fullScreenCover(
                 item: $viewModel.editAppGroup,
                 content: { appGroup in
-                    AddAppGroupView()
+                    UpsertAppGroupView()
                         .environment(
                             UpsertAppGroupViewModel(
                                 appGroup: appGroup,

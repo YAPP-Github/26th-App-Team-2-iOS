@@ -40,7 +40,7 @@ public struct UpsertAppGroupView: View {
                     
                     VStack(spacing: 8) {
                         @Bindable var viewModel = addAppGroupViewModel
-                        AddAppGroupSectionHeaderView(
+                        UpsertAppGroupSectionHeaderView(
                             title: "그룹명:",
                             highlightDesc: "\(addAppGroupViewModel.appGroupName.count)",
                             description: "/10"
@@ -61,7 +61,7 @@ public struct UpsertAppGroupView: View {
                     Color.clear.frame(height: 24)
                     
                     VStack(spacing: 8) {
-                        AddAppGroupSectionHeaderView(
+                        UpsertAppGroupSectionHeaderView(
                             title: "목록:",
                             highlightDesc: "\(addAppGroupViewModel.applicationTokens.count)",
                             description: "개"
@@ -69,9 +69,9 @@ public struct UpsertAppGroupView: View {
                         
                         Group {
                             if addAppGroupViewModel.applicationTokens.isEmpty {
-                                AddAppGroupListEmptyView()
+                                UpsertAppGroupListEmptyView()
                             } else {
-                                AddAppGroupListView()
+                                UpsertAppGroupListView()
                             }
                         }
                         .aspectRatio(1, contentMode: .fit)
