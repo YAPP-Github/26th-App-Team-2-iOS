@@ -12,7 +12,7 @@ import SharedDesignSystem
 
 extension AddAppGroupView {
     struct AddAppGroupListView: View {
-        @Environment(AddAppGroupViewModel.self) var addAppGroupViewModel
+        @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
         
         var body: some View {
             ZStack(alignment: .bottom) {
