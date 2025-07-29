@@ -26,7 +26,7 @@ public struct BrakeToastView: View {
     public var body: some View {
         HStack(spacing: 12) {
             // 아이콘
-            Image.iconCheckInsightBlue.swiftUIImage
+            Image.iconCheckInsightBlue
                 .frame(width: 24, height: 24)
                 .clipShape(Circle())
             

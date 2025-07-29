@@ -10,7 +10,7 @@ import SwiftUI
 
 public extension Image {
     static let iconCheckGreen = SharedDesignSystemAsset.Images.iconCheckGreen.swiftUIImage
-    static let iconCheckInsightBlue = SharedDesignSystemAsset.Images.iconCheckInsightBlue
+    static let iconCheckInsightBlue = SharedDesignSystemAsset.Images.iconCheckInsightBlue.swiftUIImage
     static let iconAppGroup: Image = SharedDesignSystemAsset.Images.iconAppGroup.swiftUIImage
     static let iconBack: Image = SharedDesignSystemAsset.Images.iconBack.swiftUIImage
     static let iconCalendar: Image = SharedDesignSystemAsset.Images.iconCalendar.swiftUIImage
