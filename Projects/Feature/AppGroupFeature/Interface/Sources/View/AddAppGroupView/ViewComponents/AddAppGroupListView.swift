@@ -21,29 +21,40 @@ extension AddAppGroupView {
                     .allowsHitTesting(false)
                 
                 ZStack(alignment: .bottom) {
-                    List(addAppGroupViewModel.applicationTokens, id: \.hashValue) { applicationToken in
-                        HStack {
-                            Label(applicationToken)
-                                .font(.pretendard(size: 16, type: .medium))
-                            Spacer()
-                            Button {
-                                print("탭탭탭 xmark")
-                            } label: {
-                                Image(systemName: "xmark")
-                                    .resizable()
-                                    .frame(width: 11, height: 11)
-                                    .foregroundStyle(Color.grey300)
+                    ScrollView(.vertical) {
+                        VStack(spacing: 0) {
+                            ForEach(addAppGroupViewModel.applicationTokens, id: \.hashValue) { applicationToken in
+                                HStack {
+                                    HStack(spacing: 0) {
+                                        Label(applicationToken).labelStyle(.iconOnly)
+                                            .scaleEffect(1.2)
+                                        Label(applicationToken)
+                                            .labelStyle(.titleOnly)
+                                            .scaleEffect(0.8)
+                                            .multilineTextAlignment(.leading)
+                                            .background(Color.grey600)
+                                    }
+                                    Spacer()
+                                    Button {
+                                        self.addAppGroupViewModel.deleteApplicationBtnTapped(applicationToken: applicationToken)
+                                    } label: {
+                                        Image.iconThickCancel
+                                            .foregroundStyle(Color.grey300)
+                                            .frame(width: 24, height: 24)
+                                    }
+                                    .contentShape(Rectangle())
+                                    .buttonStyle(.plain)
+                                }
+                                .padding(.trailing, 12)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 7.5)
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.grey850)
                             }
-                            .buttonStyle(.plain)
                         }
-                        .padding(.trailing, 12)
-                        .listRowInsets(.init(top: 8, leading: 7.5, bottom: 8, trailing: 7.5))
-                        .listRowSeparator(.hidden)
-                        .listRowBackground(Color.grey850)
                     }
                 }
                 .selectionDisabled()
-                .listStyle(.plain)
                 .safeAreaPadding(.top, 16)
                 .safeAreaPadding(.horizontal, 16)
                 .safeAreaInset(edge: .bottom, alignment: .center, spacing: 0) {
@@ -75,6 +86,17 @@ extension AddAppGroupView {
                     RoundedRectangle(cornerRadius: 8).fill(Color.grey850)
                 })
             }
+        }
+    }
+}
+
+struct CustomLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.icon
+                .foregroundColor(.orange)
+            configuration.title
+                .foregroundColor(.green)
         }
     }
 }

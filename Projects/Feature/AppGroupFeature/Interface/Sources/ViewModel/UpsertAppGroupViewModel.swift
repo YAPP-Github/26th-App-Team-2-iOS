@@ -15,11 +15,10 @@ import Domain
 public final class UpsertAppGroupViewModel {
     var appGroupName: String = ""
     var selectionPresent: Bool = false
+    var deleteConfirmPresent: Bool = false
     var dismiss: Bool = false
     
-    var applicationTokens: [ApplicationToken] {
-        newSelection.applicationTokens.map { $0 }
-    }
+    var applicationTokens: [ApplicationToken] { newSelection.applicationTokens.map { $0 } }
     
     private(set) var newSelection: FamilyActivitySelection = .init()
     let upsertCompletion: (AppGroup) -> ()
@@ -55,10 +54,19 @@ public final class UpsertAppGroupViewModel {
     }
     
     public func updateSelection(_ selection: FamilyActivitySelection) {
+        
         self.newSelection = selection
     }
     
-    public func deleteGroupBtnTapped() {
+    public func deleteApplicationBtnTapped(applicationToken: ApplicationToken) {
+        // FamilyActivitySelection의 applicationTokens는 읽기 전용이므로
+        // 새로운 FamilyActivitySelection을 생성해야 함
+        self.newSelection.applicationTokens.remove(applicationToken)
+        
+        print("앱이 삭제되었습니다: \(applicationToken)")
+    }
+    
+    public func deleteConfirmBtnTapped() {
         Task {
             guard let appGroup, let deleteAppGroupUseCase, let deleteCompletion else { return }
             do {
@@ -69,10 +77,15 @@ public final class UpsertAppGroupViewModel {
             
             await MainActor.run { [weak self] in
                 guard let self else { return }
+                self.deleteConfirmPresent = false
                 deleteCompletion(appGroup)
                 dismiss = true
             }
         }
+    }
+    
+    public func deleteGroupBtnTapped() {
+        self.deleteConfirmPresent = true
     }
     
     public func upsertCompleteBtnTapped() {
