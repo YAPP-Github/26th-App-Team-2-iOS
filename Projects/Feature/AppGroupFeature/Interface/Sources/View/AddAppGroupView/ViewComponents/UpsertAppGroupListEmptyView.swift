@@ -31,7 +31,6 @@ extension UpsertAppGroupView {
                                 }
                                 .frame(width: 52, height: 52)
                         }
-                        
                     }
                 }
         }

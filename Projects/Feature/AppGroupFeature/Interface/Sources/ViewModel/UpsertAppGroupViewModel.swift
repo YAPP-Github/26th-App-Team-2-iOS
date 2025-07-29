@@ -20,7 +20,7 @@ public final class UpsertAppGroupViewModel {
     
     var applicationTokens: [ApplicationToken] { newSelection.applicationTokens.map { $0 } }
     
-    private(set) var newSelection: FamilyActivitySelection = .init()
+    private(set) var newSelection = FamilyActivitySelection(includeEntireCategory: true)
     let upsertCompletion: (AppGroup) -> ()
     let deleteCompletion: ((AppGroup) -> ())?
     let isCreating: Bool

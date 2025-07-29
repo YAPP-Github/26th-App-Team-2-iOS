@@ -8,7 +8,7 @@
 import SwiftUI
 import SharedDesignSystem
 
-extension AddAppGroupView {
+extension UpsertAppGroupView {
     struct UpsertAppGroupNavigationView: View {
         let isCreating: Bool
         let cancelCompletion: () -> Void
