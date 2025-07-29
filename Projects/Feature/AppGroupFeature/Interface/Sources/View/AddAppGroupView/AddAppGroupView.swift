@@ -80,7 +80,6 @@ public struct AddAppGroupView: View {
                     Spacer()
                 }
                 .ignoresSafeArea(.keyboard)
-                
                 bottomButtonView
                     .padding(.bottom, 10)
             }
@@ -89,11 +88,22 @@ public struct AddAppGroupView: View {
         .onChange(of: addAppGroupViewModel.dismiss, { oldValue, newValue in
             if newValue {
                 isFocused = false
-                // dismiss()는 즉시 실행되므로 애니메이션을 적용할 수 없음
-                // iOS 16+에서는 presentationDetents를 사용하여 더 세밀한 제어 가능
                 self.dismiss()
             }
         })
+        .alert(
+            "삭제하기",
+            isPresented: Binding(
+                get: { addAppGroupViewModel.deleteConfirmPresent },
+                set: { addAppGroupViewModel.deleteConfirmPresent = $0 }
+               ),
+               actions: {
+                   Button("취소", role: .cancel) { }
+                   Button("확인") {
+                       addAppGroupViewModel.deleteConfirmBtnTapped()
+                   }
+               }
+        )
         .sheet(
             isPresented: Binding(
                 get: { addAppGroupViewModel.selectionPresent },

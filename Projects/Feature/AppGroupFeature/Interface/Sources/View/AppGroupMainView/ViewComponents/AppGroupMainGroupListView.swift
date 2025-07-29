@@ -48,7 +48,7 @@ extension AppGroupMainView {
             VStack(spacing: 12) {
                 HStack {
                     HStack {
-                        Image.iconAppGroup
+                        Image.iconGroup
                         Text(appGroup.name)
                             .font(.pretendard(size: 16, type: .medium))
                     }
@@ -66,6 +66,7 @@ extension AppGroupMainView {
                     ForEach(infoApplicationTokens, id: \.hashValue) { applicationToken in
                         Label(applicationToken)
                             .labelStyle(.iconOnly)
+                            .scaleEffect(1.2)
                     }
                     
                     if allApplicationTokensCount > 6 {

@@ -8,7 +8,7 @@
 import SwiftUI
 import Domain
 import SharedDesignSystem
-
+import FamilyControls
 
 public struct AppGroupMainView: View {
     
@@ -28,7 +28,11 @@ public struct AppGroupMainView: View {
                     
                 } else {
                     AppGroupMainGroupListView()
-                        
+                }
+            }
+            .onAppear() {
+                Task {
+                    try await RequestScreenTimeAuthUseCase().execute()
                 }
             }
             .fullScreenCover(
