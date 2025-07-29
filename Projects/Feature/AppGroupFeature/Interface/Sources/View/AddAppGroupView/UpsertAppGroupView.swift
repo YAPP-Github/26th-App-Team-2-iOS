@@ -12,7 +12,10 @@ import FamilyControls
 import DeviceActivity
 import ManagedSettings
 
-public struct AddAppGroupView: View {
+
+
+
+public struct UpsertAppGroupView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
     @FocusState private var isFocused: Bool
@@ -119,7 +122,7 @@ public struct AddAppGroupView: View {
     }
 }
 
-extension AddAppGroupView {
+extension UpsertAppGroupView {
     @ViewBuilder var bottomButtonView: some View {
         VStack(spacing: 22) {
             if !addAppGroupViewModel.isCreating && !isFocused {

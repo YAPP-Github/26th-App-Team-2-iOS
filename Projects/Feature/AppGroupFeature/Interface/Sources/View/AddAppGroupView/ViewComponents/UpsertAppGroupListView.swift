@@ -10,8 +10,8 @@ import ManagedSettings
 import SharedDesignSystem
 
 
-extension AddAppGroupView {
-    struct AddAppGroupListView: View {
+extension UpsertAppGroupView {
+    struct UpsertAppGroupListView: View {
         @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
         
         var body: some View {
@@ -32,7 +32,6 @@ extension AddAppGroupView {
                                             .labelStyle(.titleOnly)
                                             .scaleEffect(0.8)
                                             .multilineTextAlignment(.leading)
-                                            .background(Color.grey600)
                                     }
                                     Spacer()
                                     Button {
@@ -48,13 +47,10 @@ extension AddAppGroupView {
                                 .padding(.trailing, 12)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 7.5)
-                                .listRowSeparator(.hidden)
-                                .listRowBackground(Color.grey850)
                             }
                         }
                     }
                 }
-                .selectionDisabled()
                 .safeAreaPadding(.top, 16)
                 .safeAreaPadding(.horizontal, 16)
                 .safeAreaInset(edge: .bottom, alignment: .center, spacing: 0) {

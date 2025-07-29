@@ -8,8 +8,8 @@
 import SwiftUI
 import SharedDesignSystem
 
-extension AddAppGroupView {
-    struct AddAppGroupListEmptyView: View {
+extension UpsertAppGroupView {
+    struct UpsertAppGroupListEmptyView: View {
         @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
         var body: some View {
             RoundedRectangle(cornerRadius: 16)
