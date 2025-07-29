@@ -20,71 +20,79 @@ public struct AddAppGroupView: View {
     public init() { }
     
     public var body: some View {
-        ZStack(alignment: .bottom) {
-            Color.grey900.edgesIgnoringSafeArea(.all)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    isFocused = false
-                }
-            
-            VStack(spacing: 0) {
-                AddAppGroupNavigationView {
-                    dismiss()
-                }
-                
-                Color.clear.frame(height: 16)
-                
-                VStack(spacing: 8) {
-                    @Bindable var viewModel = addAppGroupViewModel
-                    AddAppGroupSectionHeaderView(
-                        title: "그룹명:",
-                        highlightDesc: "\(addAppGroupViewModel.appGroupName.count)",
-                        description: "/10"
-                    )
-                    
-                    BrakeTextFieldView(
-                        text: $viewModel.appGroupName,
-                        placeholder: "ex) SNS",
-                        backgroundColor: .grey850,
-                        textColor: .brakeWhite,
-                        placeholderColor: .grey700,
-                        cornerRadius: 16
-                    )
-                    .focused($isFocused)
-                }
-                .padding(.horizontal, 16)
-                
-                Color.clear.frame(height: 24)
-                
-                VStack(spacing: 8) {
-                    AddAppGroupSectionHeaderView(
-                        title: "목록:",
-                        highlightDesc: "\(addAppGroupViewModel.applicationTokens.count)",
-                        description: "개"
-                    )
-                    
-                    Group {
-                        if addAppGroupViewModel.applicationTokens.isEmpty {
-                            AddAppGroupListEmptyView()
-                        } else {
-                            AddAppGroupListView()
-                        }
+        NavigationView {
+            ZStack(alignment: .bottom) {
+                Color.grey900.edgesIgnoringSafeArea(.all)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isFocused = false
                     }
-                    .aspectRatio(1, contentMode: .fit)
+                
+                VStack(spacing: 0) {
+                    UpsertAppGroupNavigationView(isCreating: addAppGroupViewModel.isCreating) {
+                        dismiss()
+                    }
+                    
+                    Color.clear.frame(height: 16)
+                    
+                    VStack(spacing: 8) {
+                        @Bindable var viewModel = addAppGroupViewModel
+                        AddAppGroupSectionHeaderView(
+                            title: "그룹명:",
+                            highlightDesc: "\(addAppGroupViewModel.appGroupName.count)",
+                            description: "/10"
+                        )
+                        
+                        BrakeTextFieldView(
+                            text: $viewModel.appGroupName,
+                            placeholder: "ex) SNS",
+                            backgroundColor: .grey850,
+                            textColor: .brakeWhite,
+                            placeholderColor: .grey700,
+                            cornerRadius: 16
+                        )
+                        .focused($isFocused)
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    Color.clear.frame(height: 24)
+                    
+                    VStack(spacing: 8) {
+                        AddAppGroupSectionHeaderView(
+                            title: "목록:",
+                            highlightDesc: "\(addAppGroupViewModel.applicationTokens.count)",
+                            description: "개"
+                        )
+                        
+                        Group {
+                            if addAppGroupViewModel.applicationTokens.isEmpty {
+                                AddAppGroupListEmptyView()
+                            } else {
+                                AddAppGroupListView()
+                            }
+                        }
+                        .aspectRatio(1, contentMode: .fit)
+                    }
+                    .padding(.horizontal, 16)
+                    .onTapGesture {
+                        self.isFocused = false
+                    }
+                    Spacer()
                 }
-                .padding(.horizontal, 16)
-                .onTapGesture {
-                    self.isFocused = false
-                }
-                Spacer()
+                .ignoresSafeArea(.keyboard)
+                
+                bottomButtonView
+                    .padding(.bottom, 10)
             }
-            .ignoresSafeArea(.keyboard)
-            
-            bottomButtonView
-                .padding(.bottom, 10)
+            .toolbar(.hidden, for: .navigationBar)
         }
         .onChange(of: addAppGroupViewModel.dismiss, { oldValue, newValue in
-            if newValue { self.dismiss() }
+            if newValue {
+                isFocused = false
+                // dismiss()는 즉시 실행되므로 애니메이션을 적용할 수 없음
+                // iOS 16+에서는 presentationDetents를 사용하여 더 세밀한 제어 가능
+                self.dismiss()
+            }
         })
         .sheet(
             isPresented: Binding(
@@ -104,9 +112,9 @@ public struct AddAppGroupView: View {
 extension AddAppGroupView {
     @ViewBuilder var bottomButtonView: some View {
         VStack(spacing: 22) {
-            if !addAppGroupViewModel.applicationTokens.isEmpty && !isFocused {
+            if !addAppGroupViewModel.isCreating && !isFocused {
                 Button {
-                    
+                    self.addAppGroupViewModel.deleteGroupBtnTapped()
                 } label: {
                     HStack(spacing: 1.5) {
                         Image.iconTrash
@@ -123,7 +131,7 @@ extension AddAppGroupView {
                 title: "완료",
                 isActive: !addAppGroupViewModel.applicationTokens.isEmpty && !addAppGroupViewModel.appGroupName.isEmpty
             ) {
-                addAppGroupViewModel.addBtnTapped()
+                addAppGroupViewModel.upsertCompleteBtnTapped()
             }
             .padding(.horizontal, 16)
         }

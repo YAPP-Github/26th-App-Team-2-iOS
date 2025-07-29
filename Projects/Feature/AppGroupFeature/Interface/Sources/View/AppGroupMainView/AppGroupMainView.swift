@@ -20,40 +20,48 @@ public struct AppGroupMainView: View {
         ZStack {
             Color.grey900.ignoresSafeArea(.all)
             @Bindable var viewModel = appGroupMainViewModel
-            if appGroupMainViewModel.appGroups.isEmpty {
-                AppGroupMainEmptyAppGroupView {
-                    appGroupMainViewModel.addButtonTapped()
+            Group {
+                if appGroupMainViewModel.appGroups.isEmpty {
+                    AppGroupMainEmptyAppGroupView {
+                        appGroupMainViewModel.addButtonTapped()
+                    }
+                    
+                } else {
+                    AppGroupMainGroupListView()
+                        
                 }
-                .fullScreenCover(
-                    isPresented: $viewModel.addGroupPresent
-                ) {
+            }
+            .fullScreenCover(
+                isPresented: $viewModel.addGroupPresent
+            ) {
+                AddAppGroupView()
+                    .environment(
+                        UpsertAppGroupViewModel(
+                            upsertAppGroupUseCase: UpsertAppGroupUseCase(),
+                            upsertCompletion: { appGroup in
+                                self.appGroupMainViewModel.upsertCompleted(appGroup: appGroup)
+                            }
+                        )
+                    )
+            }
+            .fullScreenCover(
+                item: $viewModel.editAppGroup,
+                content: { appGroup in
                     AddAppGroupView()
                         .environment(
                             UpsertAppGroupViewModel(
-                                createAppGroupUseCase: CreateAppGroupUseCase(),
-                                createCompletion: { appGroup in
+                                appGroup: appGroup,
+                                upsertAppGroupUseCase: UpsertAppGroupUseCase(),
+                                upsertCompletion: { appGroup in
                                     self.appGroupMainViewModel.upsertCompleted(appGroup: appGroup)
+                                },
+                                deleteAppGroupUseCase: DeleteAppGroupUseCase(),
+                                deleteCompletion: { appGroup in
+                                    self.appGroupMainViewModel.deleteCompleted(appGroup: appGroup)
                                 }
                             )
                         )
-                }
-            } else {
-                AppGroupMainGroupListView()
-                    .fullScreenCover(
-                        item: $viewModel.editAppGroup,
-                        content: { appGroup in
-                            AddAppGroupView()
-                                .environment(
-                                    UpsertAppGroupViewModel(
-                                        appGroup: appGroup,
-                                        createAppGroupUseCase: CreateAppGroupUseCase(),
-                                        createCompletion: { appGroup in
-                                            self.appGroupMainViewModel.upsertCompleted(appGroup: appGroup)
-                                        }
-                                    )
-                                )
-                        })
-            }
+                })
         }
         .onAppear() {
             appGroupMainViewModel.onAppear()

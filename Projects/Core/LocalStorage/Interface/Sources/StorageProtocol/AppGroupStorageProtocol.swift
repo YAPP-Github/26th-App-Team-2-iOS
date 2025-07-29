@@ -14,6 +14,7 @@ public protocol AppGroupStorageProtocol {
     func getAppGroupEntity(groupID: Int) async throws -> AppGroupEntity
     
     func appendAppGroupEntity(_ appGroup: AppGroupEntity) async throws
+    func updateAppGroupEntity(_ appGroup: AppGroupEntity) async throws
     func upsertAppGroupEntity(_ appGroup: AppGroupEntity) async throws
     
     func deleteAppGroupEntity(groupID: Int) async throws
@@ -21,6 +22,7 @@ public protocol AppGroupStorageProtocol {
 
 
 public final actor AppGroupStorage {
+    
     
     public let context: ModelContext
     

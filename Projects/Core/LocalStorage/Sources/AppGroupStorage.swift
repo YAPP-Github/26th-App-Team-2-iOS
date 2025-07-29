@@ -36,6 +36,20 @@ extension AppGroupStorageProtocol {
         try context.save()
     }
     
+    public func updateAppGroupEntity(_ appGroup: AppGroupEntity) async throws {
+        let groupID: Int = appGroup.groupID
+        let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
+        let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
+        do {
+            guard let existing = try? context.fetch(descriptor).first else {
+                throw AppGroupEntityError.notExist
+            }
+            existing.name = appGroup.name
+            existing.selectionData = appGroup.selectionData
+            try context.save()
+        }
+    }
+    
     public func upsertAppGroupEntity(_ appGroup: AppGroupEntity) async throws {
         let groupID: Int = appGroup.groupID
         let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }

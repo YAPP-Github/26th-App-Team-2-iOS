@@ -17,6 +17,7 @@ public protocol AppGroupProtocol {
         groupName: String,
         activitySelection: FamilyActivitySelection
     ) async throws -> AppGroup
+    func deleteAppGroup(groupID: Int) async throws
 }
 
 public final class AppGroupService: AppGroupProtocol {
@@ -49,7 +50,8 @@ public final class AppGroupService: AppGroupProtocol {
     }
     
     public func updateAppGroup(appGroup: AppGroup) async throws {
-        
+        let appGroupEntity = try AppGroupEntity(appGroup: appGroup)
+        try await self.appGroupStorage.updateAppGroupEntity(appGroupEntity)
     }
     
     public func getAppGroup() async throws -> AppGroup? {
@@ -58,5 +60,9 @@ public final class AppGroupService: AppGroupProtocol {
             return nil
         }
         return try appGroupEntity.toAppGroup()
+    }
+    
+    public func deleteAppGroup(groupID: Int) async throws {
+        try await self.appGroupStorage.deleteAppGroupEntity(groupID: groupID)
     }
 }
