@@ -26,8 +26,8 @@ extension UpsertAppGroupView {
                             Circle().fill(Color.brakeYellow)
                                 .overlay {
                                     Image(systemName: "plus")
-                                        .font(.pretendard(size: 14, type: .semiBold))
-                                        .foregroundStyle(Color.brakeDark)
+                                        .tint(.grey800)
+                                        .font(.pretendard(size: 16, type: .bold))
                                 }
                                 .frame(width: 52, height: 52)
                         }

@@ -65,12 +65,14 @@ extension UpsertAppGroupView {
                         label: {
                             HStack {
                                 Spacer()
-                                HStack(spacing: 6) {
+                                HStack(spacing: 4) {
                                     Image(systemName: "plus")
                                     Text("추가")
                                 }
                                 .tint(Color.grey00)
+                                .font(.pretendard(size: 14, type: .semiBold))
                                 Spacer()
+                                    
                             }
                             .frame(height: 45)
                             .background(Color.grey800)

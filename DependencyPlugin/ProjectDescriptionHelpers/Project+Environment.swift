@@ -146,7 +146,8 @@ public extension Project {
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
                 "APP_GROUP_NAME": "${APP_GROUP_NAME}",
-                "ITSAppUsesNonExemptEncryption": false
+                "ITSAppUsesNonExemptEncryption": false,
+                "UIUserInterfaceStyle": "Dark"
             ]
             return .extendingDefault(with: plist)
         }
@@ -185,7 +186,8 @@ public extension Project {
                 "REFRESH_TOKEN_KEY": "${REFRESH_TOKEN_KEY}",
                 "DEVELOPMENT_TEAM_ID": "${DEVELOPMENT_TEAM_ID}",
                 "APP_GROUP_NAME": "${APP_GROUP_NAME}",
-                "ITSAppUsesNonExemptEncryption": false
+                "ITSAppUsesNonExemptEncryption": false,
+                "UIUserInterfaceStyle": "Dark"
             ])
         }
         

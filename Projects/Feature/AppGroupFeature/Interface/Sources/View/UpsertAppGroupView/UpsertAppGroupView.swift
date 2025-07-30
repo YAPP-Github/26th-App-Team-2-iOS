@@ -15,7 +15,6 @@ import ManagedSettings
 public struct UpsertAppGroupView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
-     
     @FocusState private var isFocused: Bool
     
     public init() { }
@@ -52,6 +51,7 @@ public struct UpsertAppGroupView: View {
                             placeholderColor: .grey700,
                             cornerRadius: 16
                         )
+                        .autocorrectionDisabled()
                         .focused($isFocused)
                     }
                     .padding(.horizontal, 16)
@@ -81,10 +81,25 @@ public struct UpsertAppGroupView: View {
                     Spacer()
                 }
                 .ignoresSafeArea(.keyboard)
-                bottomButtonView
+                
+                UpsertAppGroupFooterView(
+                    groupDeleteActive: !addAppGroupViewModel.isCreating && !isFocused ,
+                    groupDeleteAction: {
+                        self.addAppGroupViewModel.deleteGroupBtnTapped()
+                    },
+                    confirmActive: !addAppGroupViewModel.applicationTokens.isEmpty && !addAppGroupViewModel.appGroupName.isEmpty,
+                    confirmAction: {
+                        addAppGroupViewModel.upsertCompleteBtnTapped()
+                    }
+                )
                     .padding(.bottom, 10)
             }
             .toolbar(.hidden, for: .navigationBar)
+        }
+        .onAppear() {
+            if addAppGroupViewModel.isCreating {
+                self.isFocused = true
+            }
         }
         .onChange(of: addAppGroupViewModel.dismiss, { oldValue, newValue in
             if newValue {
@@ -92,7 +107,6 @@ public struct UpsertAppGroupView: View {
                 self.dismiss()
             }
         })
-        
         .brakePopUp(
             isPresented:  Binding(
                 get: { addAppGroupViewModel.deleteConfirmPresent },
@@ -124,34 +138,4 @@ public struct UpsertAppGroupView: View {
         )
     }
 }
-
-extension UpsertAppGroupView {
-    @ViewBuilder var bottomButtonView: some View {
-        VStack(spacing: 22) {
-            if !addAppGroupViewModel.isCreating && !isFocused {
-                Button {
-                    self.addAppGroupViewModel.deleteGroupBtnTapped()
-                } label: {
-                    HStack(spacing: 1.5) {
-                        Image.iconTrash
-                        Text("그룹 삭제")
-                            .font(.pretendard(size: 14, type: .medium))
-                            .foregroundStyle(Color.grey300)
-                            .underline()
-                    }
-                }
-            }
-            
-            LargeButtonView(
-                buttonType: .confirm,
-                title: "완료",
-                isActive: !addAppGroupViewModel.applicationTokens.isEmpty && !addAppGroupViewModel.appGroupName.isEmpty
-            ) {
-                addAppGroupViewModel.upsertCompleteBtnTapped()
-            }
-            .padding(.horizontal, 16)
-        }
-    }
-}
-
 
