@@ -7,6 +7,7 @@
 import SwiftUI
 import Domain
 import WebKit
+import SharedDesignSystem
 public struct LoginView: View {
     @Environment(LogInViewModel.self) var logInViewModel
     @State private var wkURL: URL? = URL(string: "https://www.naver.com")
