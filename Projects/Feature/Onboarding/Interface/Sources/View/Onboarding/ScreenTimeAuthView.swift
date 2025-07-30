@@ -10,46 +10,62 @@ import Domain
 import SharedDesignSystem
 
 public struct ScreenTimeAuthView: View {
-    @Environment(StartUpViewModel.self) var startUpViewModel
-    @Environment(ScreenTimeAuthViewModel.self) var screenTimeAuthViewModel
+    @Environment(\.dismiss) private var dismiss
+    @Environment(StartUpViewModel.self) private var startUpViewModel
+    @Environment(ScreenTimeAuthViewModel.self) private var screenTimeAuthViewModel
     
-    private let screenTimeTypes: [ScreenTimeAuthorizationResult] = [
-        .denied,
-        .unknownError,
-        .authenticationMethodUnavailable ,
-        .networkError,
-        .restricted,
-        .unavailableDevice
-    ]
     
     public init() { }
     
     public var body: some View {
-        ZStack {
-            VStack(spacing: 20) {
-                Button {
-                    self.screenTimeAuthViewModel.authorizationButtonTapped()
-                } label: {
-                    Text("스크린 타임 권한").font(.title)
+        ZStack(alignment: .bottom) {
+            Color.grey900.ignoresSafeArea()
+            VStack(spacing: 0) {
+                BrakeNavigationView(title: EmptyView(), leading: {
+                    BrakeNavigationButton(type: .back) {
+                        dismiss()
+                    }
+                })
+                VStack(alignment: .center, spacing: 16) {
+                    VStack(alignment: .center, spacing: 0) {
+                        Text("스크린 타임 권한을").frame(height: 33)
+                        Text("허용해주세요.").frame(height: 33)
+                    }
+                    .foregroundStyle(.white)
+                    .font(.pretendard(size: 22, type: .semiBold))
+                    Text("앱 사용량을 모니터링해요.")
+                        .foregroundStyle(Color.grey200)
+                        .font(.pretendard(size: 16, type: .medium))
                 }
-                VStack(spacing: 8) {
-                    Text("임시 확인차 생성 뷰")
-                    ForEach(screenTimeTypes.indices, id: \.self) { idx in
-                        Button(screenTimeTypes[idx].alertTitle) {
-                            self.screenTimeAuthViewModel.screenTimeAuthFailedResult = screenTimeTypes[idx]
-                            self.screenTimeAuthViewModel.screenTimeAuthFailedPresent = true
-                        }
-                    }
-                    
-                    Button("authorizationCanceled") {
-                        self.screenTimeAuthViewModel.cancelScreenTimeGrantPresented = true
-                    }
+                .padding(.top, 47)
+                Spacer()
+            }
+            
+            
+            
+            GeometryReader { proxy in
+                ZStack {
+                    Color.clear
+                    Image.onboarding.screentime
+                        .resizable()
+                        .frame(width: proxy.size.width * 0.688)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
+            
+            LargeButtonView(
+                buttonType: .confirm,
+                title: "허용하기",
+                isActive: true
+            ) {
+                screenTimeAuthViewModel.authorizationButtonTapped()
+            }
+            .padding(.bottom, 16)
         }
+        .toolbar(.hidden, for: .navigationBar)
         .alert(isPresented: .init(get: {
             screenTimeAuthViewModel.cancelScreenTimeGrantPresented
-        }, set: { 
+        }, set: {
             screenTimeAuthViewModel.cancelScreenTimeGrantPresented = $0
         }), content: {
             VStack(spacing: 20) {

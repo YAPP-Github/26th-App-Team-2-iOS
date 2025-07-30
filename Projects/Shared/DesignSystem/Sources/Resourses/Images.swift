@@ -46,18 +46,21 @@ public extension Image {
 }
 
 
-protocol OnboardingImagesProtocol {
-    var onboarding: OnboardingImages { get }
+public protocol OnboardingImagesProtocol {
+    static var onboarding: OnboardingImages { get }
 }
 extension OnboardingImagesProtocol {
-    var onboarding: OnboardingImages {
+    public static var onboarding: OnboardingImages {
         OnboardingImages()
     }
 }
+
 public struct OnboardingImages {
     public let coolDown: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
-    public let more: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
-    public let timeSetting: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
+    public let more: Image = SharedDesignSystemAsset.Images.onboardingMore.swiftUIImage
+    public let timeSetting: Image = SharedDesignSystemAsset.Images.onboardingTimeSetting.swiftUIImage
+    public let screentime: Image = SharedDesignSystemAsset.Images.onboardingAuthScreentime.swiftUIImage
+    public let notification: Image = SharedDesignSystemAsset.Images.onboardingAuthNotification.swiftUIImage
     static let iconCoolDown: Image = SharedDesignSystemAsset.Images.iconCooldown.swiftUIImage
     static let iconGroup: Image = SharedDesignSystemAsset.Images.iconGroup.swiftUIImage
     static let iconTimer: Image = SharedDesignSystemAsset.Images.iconTimer.swiftUIImage
