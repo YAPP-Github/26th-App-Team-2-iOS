@@ -19,33 +19,27 @@ public struct LoginView: View {
     
     public var body: some View {
         ZStack {
+            Color.grey900.ignoresSafeArea()
             VStack(spacing: 16) {
-                Button {
-                    logInViewModel.appleLogInBtnTapped()
-                } label: {
-                    Text("Apple로 로그인")
-                }
-                Button {
+                Spacer()
+                LoginFooterView {
                     logInViewModel.kakaoLogInBtnTapped()
                     self.kakaoLogInShow.toggle()
-                } label: {
-                    Text("카카오로 로그인")
-                }
-                
-                Button {
+                } appleLogInButtonTapped: {
+                    logInViewModel.appleLogInBtnTapped()
+                } privacyInfoButtonTapped: {
                     wkURL = URL(string: "https://www.naver.com")
                     shouldShowWebView = true
-                } label: {
-                    Text("개인정보처리방침")
                 }
-                
-                Button {
-                    wkURL = URL(string: "https://www.naver.com")
-                    shouldShowWebView = true
-                } label: {
-                    Text("이용약관")
-                }
+                .padding([.horizontal, .bottom], 16)
             }
+            VStack(spacing: 8) {
+                Text("계획한 만큼만 앱을 사용하도록\n도와드릴게요")
+                    .font(.pretendard(size: 22, type: .semiBold))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+            }
+            
             if logInViewModel.loading {
                 ProgressView()
             }
@@ -95,8 +89,8 @@ public struct LoginView: View {
             }
         }
     }
+    
 }
-
 
 
 
