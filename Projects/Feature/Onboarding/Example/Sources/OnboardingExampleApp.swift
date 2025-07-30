@@ -19,16 +19,17 @@ struct OnboardingExampleApp: App {
     init() { }
     var body: some Scene {
         WindowGroup {
-//            StartUpView()
-            OnboardingView()
+            StartUpView()
                 .environment(
                     StartUpViewModel(
                         autoLogInUseCase: diContainer.autoLogInUseCase,
                         onboardingStateUseCase: diContainer.onboardingStateUseCase
                     )
                 )
+                
         }
     }
+    
 }
 
 struct StartUpView: View {
@@ -46,7 +47,7 @@ struct StartUpView: View {
                         LogInViewModel(
                             appleLogInUseCase: diContainer.appleLogInUseCase,
                             kakaoLogInUseCase: diContainer.kakaoLogInUseCase,
-                            logInCompleted: self.startUpViewModel.logInCompleted
+                            logInCompleted: startUpViewModel.logInCompleted
                         )
                     )
             case .onboardingRequired:
