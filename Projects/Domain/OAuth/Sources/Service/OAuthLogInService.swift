@@ -18,15 +18,19 @@ extension OAuthServiceProtocol {
         authorizationCode: String
     ) async throws {
         
-        let loginRequest = await AuthLogInRequest(
+        let loginRequest = AuthLogInRequest(
             provider: oAuthType.provider,
             authorizationCode: authorizationCode,
-            deviceId: UIDevice.current.identifierForVendor?.uuidString ?? UUID().uuidString
+            deviceName: getDeviceIdentifier()
         )
         let endPoint = BrakeRouter.AuthEndPoint<BrakeResponse<AuthLogInResponse>>.logIn(loginRequest)
-        
-        let response: BrakeResponse<AuthLogInResponse> = try await networkProvider.request(endPoint)
-        
+        let response: BrakeResponse<AuthLogInResponse>
+        do {
+            response = try await networkProvider.request(endPoint)
+        } catch {
+            print("로그인 응답 오류: \(error)")
+            throw error
+        }
         let state: String = response.data.memberState
         guard let stateType = MemberStateType(rawValue: state) else {
             assertionFailure("멤버 타입 변환 오류 \(state)")
@@ -40,11 +44,35 @@ extension OAuthServiceProtocol {
 #endif
         let accessTokenKey = try self.tokenKeyHolder.fetchAccessTokenKey()
         let refreshTokenKey = try self.tokenKeyHolder.fetchRefreshTokenKey()
-
+        
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
         
         self.onboardingState.setMemberState(stateType)
     }
+    
+    private func getDeviceIdentifier() -> String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = machineMirror.children.reduce("") { identifier, element in
+            guard let value = element.value as? Int8, value != 0 else { return identifier }
+            return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+        
+        return identifier // 예: "iPhone15,3"
+    }
+    
+    public func logInCancel() async throws {
+        
+        let accessTokenKey = try self.tokenKeyHolder.fetchAccessTokenKey()
+        let refreshTokenKey = try self.tokenKeyHolder.fetchRefreshTokenKey()
+        
+        try await tokenStorage.delete(for: accessTokenKey)
+        try await tokenStorage.delete(for: refreshTokenKey)
+        self.onboardingState.setMemberState(.hold)
+    }
+    
 }
 

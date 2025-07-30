@@ -23,6 +23,10 @@ public struct OnboardingView: View {
             SetNicknameView()
                 .environment(
                     SetNicknameViewModel(
+                        logInCancelUseCase: self.diContainer.logInCancelUseCase,
+                        logInCancelCompleted: {
+                            startUpViewModel.logInCancelCompleted()
+                        },
                         userNicknameCreated: { nickname in
                             onboardingManager.nickname = nickname
                             onboardingManager.goToOnboardingInfo()
@@ -35,6 +39,10 @@ public struct OnboardingView: View {
                         SetNicknameView()
                             .environment(
                                 SetNicknameViewModel(
+                                    logInCancelUseCase: self.diContainer.logInCancelUseCase,
+                                    logInCancelCompleted: {
+                                        startUpViewModel.logInCancelCompleted()
+                                    },
                                     userNicknameCreated: { nickname in
                                         onboardingManager.nickname = nickname
                                         onboardingManager.goToOnboardingInfo()

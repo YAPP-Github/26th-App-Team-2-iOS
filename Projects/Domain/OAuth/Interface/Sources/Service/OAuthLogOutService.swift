@@ -1,33 +1,29 @@
 //
-//  OAuthServiceProtocol.swift
+//  OAuthLogOutService.swift
 //  DomainOAuthInterface
 //
-//  Created by Greem on 7/22/25.
+//  Created by Greem on 7/31/25.
 //
 
 import Foundation
 import DomainUserInterface
 import Core
 
-
-public protocol OAuthServiceProtocol {
+public protocol OAuthLogOutServiceProtocol {
     var networkProvider: NetworkProviderProtocol { get }
     var tokenStorage: TokenStorageProtocol { get }
     var tokenKeyHolder: TokenKeyHolderProtocol { get }
     var onboardingState: OnboardingStateProtocol { get }
     
-    func login(oAuthType: OAuthType, authorizationCode: String) async throws
-    func logInCancel() async throws 
+    func logout() async throws
 }
 
-public final class OAuthLogInService {
+public final class OAuthLogOutService {
     public let networkProvider: NetworkProviderProtocol
     public let tokenStorage: TokenStorageProtocol
     public let tokenKeyHolder: TokenKeyHolderProtocol
     public let onboardingState: OnboardingStateProtocol
     
-
-
     public init(
         networkProvider: NetworkProviderProtocol,
         tokenStorage: TokenStorageProtocol,
@@ -39,5 +35,6 @@ public final class OAuthLogInService {
         self.tokenKeyHolder = tokenKeyHolder
         self.onboardingState = onboardingState
     }
-    
 }
+
+ 
