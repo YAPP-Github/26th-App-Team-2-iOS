@@ -16,7 +16,6 @@ public protocol AppGroupStorageProtocol {
     func appendAppGroupEntity(_ appGroup: AppGroupEntity) async throws
     func updateAppGroupEntity(_ appGroup: AppGroupEntity) async throws
     func upsertAppGroupEntity(_ appGroup: AppGroupEntity) async throws
-    
     func deleteAppGroupEntity(groupID: Int) async throws
 }
 
