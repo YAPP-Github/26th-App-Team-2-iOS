@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import SharedDesignSystem
+
+extension Image: @retroactive OnboardingImagesProtocol { }
 
 public struct OnboardingView: View {
     
