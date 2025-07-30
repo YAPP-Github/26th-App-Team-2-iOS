@@ -19,8 +19,7 @@ struct OnboardingExampleApp: App {
     init() { }
     var body: some Scene {
         WindowGroup {
-//            StartUpView()
-            OnboardingView()
+            StartUpView()
                 .environment(
                     StartUpViewModel(
                         autoLogInUseCase: diContainer.autoLogInUseCase,
