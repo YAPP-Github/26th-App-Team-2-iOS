@@ -8,16 +8,16 @@
 import Foundation
 
 public struct BrakeResponse<ResponseItem: Decodable>: Decodable {
-    public let code: Int
+    public let status: Int
     public let data: ResponseItem
     
-    public init(code: Int, data: ResponseItem) {
-        self.code = code
+    public init(status: Int, data: ResponseItem) {
+        self.status = status
         self.data = data
     }
 }
 
 public struct BrakeServerErrorResponse: Decodable {
-    public let code: Int
+    public let status: Int
     public let message: String
 }

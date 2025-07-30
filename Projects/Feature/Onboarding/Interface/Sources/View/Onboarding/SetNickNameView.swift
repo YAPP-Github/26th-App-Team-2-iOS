@@ -12,6 +12,7 @@ public struct SetNicknameView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(SetNicknameViewModel.self) var setNicknameViewModel
     
+    
     @FocusState var nickNmaeFocusState: Bool
     
     public init() { }
@@ -21,9 +22,28 @@ public struct SetNicknameView: View {
                 .ignoresSafeArea()
                 .contentShape(Rectangle())
                 .onTapGesture { nickNmaeFocusState = false }
-            ScrollView {
+            VStack(spacing: 0) {
                 @Bindable var viewModel = setNicknameViewModel
-                Color.clear.frame(height: 52)
+                BrakeNavigationView(title: EmptyView(), leading: {
+                    BrakeNavigationButton(type: .back) {
+                        self.setNicknameViewModel.backButtonTapped()
+                    }
+                })
+                .brakePopUp(
+                    isPresented: $viewModel.resetLogInPresent,
+                    title: "로그인을 취소하시겠어요?",
+                    message: "계정 정보는 모두 사라집니다.",
+                    alertType: .doubleButton,
+                    primaryButtonTitle: "확인",
+                    secondaryButtonTitle: "취소",
+                    primaryAction: {
+                        viewModel.resetLogInPresent = false
+                        viewModel.confirmDeleteUserButtonTapped()
+                    },
+                    secondaryAction: {
+                    viewModel.resetLogInPresent = false
+                })
+                
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("어떻게 불러드릴까요?")
@@ -39,7 +59,6 @@ public struct SetNicknameView: View {
                 }
                 .padding(.horizontal, 32)
                 .padding(.top, 32)
-                Spacer()
                 VStack(spacing: 8) {
                     ZStack(alignment: .trailing) {
                         BrakeTextFieldView(
@@ -85,9 +104,7 @@ public struct SetNicknameView: View {
                     }())
                 }
                 .padding(.top, 38)
-                
                 Spacer()
-                
             }
             .onTapGesture {
                 nickNmaeFocusState = false

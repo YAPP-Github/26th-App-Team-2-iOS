@@ -24,6 +24,7 @@ public protocol DIContainerProtocol {
     // Domain Services
     var userValidityService: UserValidityProtocol { get }
     var oAuthLogInService: OAuthServiceProtocol { get }
+    var oAuthLogOutService: OAuthLogOutServiceProtocol { get }
     var appleAuthCodeService: AppleAuthCodeProtocol { get }
     var userProfileService: UserProfileProtocol { get }
     var onboardingStateService: OnboardingStateProtocol { get }
@@ -33,6 +34,7 @@ public protocol DIContainerProtocol {
     var onboardingStateUseCase: OnboardingStateUseCase { get }
     var appleLogInUseCase: AppleLogInUseCase { get }
     var kakaoLogInUseCase: KakaoLogInUseCase  { get }
+    var logInCancelUseCase: LogInCancelUseCase { get }
     var userSetNicknameUseCase: UserSetNicknameUseCase { get }
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
     var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase { get }
@@ -80,6 +82,14 @@ public final class ProductionDIContainer: DIContainerProtocol {
         onboardingState: onboardingStateService
     )
     
+    /// 로그아웃은 토큰 관련 인터셉터가 필요하다.
+    public lazy var oAuthLogOutService: OAuthLogOutServiceProtocol = OAuthLogOutService(
+        networkProvider: NetworkProvider(networkSession: NetworkSession(requestInterceptor: tokenInterceptor, urlSession: .shared)),
+        tokenStorage: tokenStorage,
+        tokenKeyHolder: tokenKeyHolder,
+        onboardingState: onboardingStateService
+    )
+    
     public lazy var appleAuthCodeService: AppleAuthCodeProtocol = AppleAuthCodeService()
     
     public lazy var userProfileService: UserProfileProtocol = UserProfileService(
@@ -102,6 +112,8 @@ public final class ProductionDIContainer: DIContainerProtocol {
     public lazy var userSetNicknameUseCase: UserSetNicknameUseCase = UserSetNicknameUseCase(
         userProfileService: userProfileService
     )
+    
+    public lazy var logInCancelUseCase: LogInCancelUseCase = LogInCancelUseCase(oAuthService: oAuthLogInService)
     
     public lazy var appleLogInUseCase: AppleLogInUseCase = AppleLogInUseCase(
         oAuthService: oAuthLogInService,
