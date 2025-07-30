@@ -1,5 +1,5 @@
 //
-//  AddAppGroupViewModel.swift
+//  UpsertAppGroupViewModel.swift
 //  FeatureAppGroupFeature
 //
 //  Created by Greem on 7/28/25.

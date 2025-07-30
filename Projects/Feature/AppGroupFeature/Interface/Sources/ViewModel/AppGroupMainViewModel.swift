@@ -117,7 +117,10 @@ fileprivate extension AppGroupMainViewModel {
                 }
             }
         } catch {
-            print("알 수 없는 에러 발생")
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.toast(message: "그룹을 불러오는데 실패했습니다.")
+            }
         }
     }
 }

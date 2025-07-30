@@ -1,5 +1,5 @@
 //
-//  AddAppGroupSectionHeaderView.swift
+//  UpsertAppGroupSectionHeaderView.swift
 //  FeatureAppGroupFeatureInterface
 //
 //  Created by Greem on 7/29/25.
