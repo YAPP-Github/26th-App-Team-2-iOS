@@ -23,15 +23,14 @@ public protocol AppGroupStorageProtocol {
 
 public final actor AppGroupStorage {
     
-    
+    @MainActor
     public let context: ModelContext
     
-    public init() {
-        do {
-            let container = try ModelContainer(for: AppGroupEntity.self)
-            self.context = ModelContext(container)
-        } catch {
-            fatalError("컨테이너 생성 문제 \(error.localizedDescription)")
+    @MainActor
+    public init?() {
+        guard let container = try? ModelContainer(for: AppGroupEntity.self) else {
+            return nil
         }
+        self.context = ModelContext(container)
     }
 }

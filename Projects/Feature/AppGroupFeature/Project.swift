@@ -20,6 +20,7 @@ let project = Project.makeModule(
                 ]
             )
         ),
+        
         .feature(
             implements: .AppGroupFeature,
             factory: .init(
@@ -33,7 +34,8 @@ let project = Project.makeModule(
             testing: .AppGroupFeature,
             factory: .init(
                 dependencies: [
-                    .feature(interface: .AppGroupFeature)
+                    .feature(interface: .AppGroupFeature),
+                    .feature(implements: .AppGroupFeature)
                 ]
             )
         ),
@@ -41,7 +43,8 @@ let project = Project.makeModule(
             tests: .AppGroupFeature,
             factory: .init(
                 dependencies: [
-                    .feature(testing: .AppGroupFeature)
+                    .feature(testing: .AppGroupFeature),
+                    .feature(interface: .AppGroupFeature)
                 ]
             )
         ),

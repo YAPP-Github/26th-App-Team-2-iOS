@@ -20,42 +20,51 @@ public protocol AppGroupProtocol {
     func deleteAppGroup(groupID: Int) async throws
 }
 
+enum AppGroupServiceError: Error {
+    case storageNotExist
+}
+
 public final class AppGroupService: AppGroupProtocol {
     
-    
-    
-    private let appGroupStorage: AppGroupStorageProtocol
+    private let appGroupStorage: AppGroupStorageProtocol?
     
     public init(
-        appGroupStorage: AppGroupStorageProtocol
+        appGroupStorage: AppGroupStorageProtocol?
     ) {
-        self.appGroupStorage = AppGroupStorage()
+        self.appGroupStorage = appGroupStorage
     }
     
     public func createAppGroup(
         groupName: String,
         activitySelection: FamilyActivitySelection
     ) async throws -> AppGroup {
-        
+        guard let appGroupStorage else {
+            throw AppGroupServiceError.storageNotExist
+        }
         let appGroup = AppGroup(
             name: groupName,
-            groupID: UUID().hashValue,
+            groupID: Int(Date().timeIntervalSince1970 * 1000),
             selection: activitySelection
         )
-        
         let appGroupEntity = try AppGroupEntity(appGroup: appGroup)
-        try await self.appGroupStorage.appendAppGroupEntity(appGroupEntity)
+        try await appGroupStorage.appendAppGroupEntity(appGroupEntity)
         
         return appGroup
     }
     
     public func updateAppGroup(appGroup: AppGroup) async throws {
+        guard let appGroupStorage else {
+            throw AppGroupServiceError.storageNotExist
+        }
         let appGroupEntity = try AppGroupEntity(appGroup: appGroup)
-        try await self.appGroupStorage.updateAppGroupEntity(appGroupEntity)
+        try await appGroupStorage.updateAppGroupEntity(appGroupEntity)
     }
     
     public func getAppGroup() async throws -> AppGroup? {
-        let appGroupEntities = try await self.appGroupStorage.getAllAppGroupEntities()
+        guard let appGroupStorage else {
+            throw AppGroupServiceError.storageNotExist
+        }
+        let appGroupEntities = try await appGroupStorage.getAllAppGroupEntities()
         guard let appGroupEntity = appGroupEntities.first else {
             return nil
         }
@@ -63,6 +72,9 @@ public final class AppGroupService: AppGroupProtocol {
     }
     
     public func deleteAppGroup(groupID: Int) async throws {
-        try await self.appGroupStorage.deleteAppGroupEntity(groupID: groupID)
+        guard let appGroupStorage else {
+            throw AppGroupServiceError.storageNotExist
+        }
+        try await appGroupStorage.deleteAppGroupEntity(groupID: groupID)
     }
 }

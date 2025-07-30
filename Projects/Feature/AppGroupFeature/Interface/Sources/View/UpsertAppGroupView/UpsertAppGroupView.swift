@@ -53,6 +53,9 @@ public struct UpsertAppGroupView: View {
                         )
                         .autocorrectionDisabled()
                         .focused($isFocused)
+                        .onChange(of: viewModel.appGroupName) { oldValue, newValue in
+                            viewModel.setAppGroupName(newValue)
+                        }
                     }
                     .padding(.horizontal, 16)
                     

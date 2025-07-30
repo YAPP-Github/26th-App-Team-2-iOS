@@ -52,6 +52,10 @@ public final class UpsertAppGroupViewModel {
     
     // MARK: - Public Methods
     
+    public func setAppGroupName(_ name: String) {
+        self.appGroupName = String(name.prefix(10))
+    }
+    
     // MARK: Selection Management
     public func selectionBtnTapped() {
         selectionPresent.toggle()
