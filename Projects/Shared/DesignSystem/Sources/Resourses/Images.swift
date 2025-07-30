@@ -40,4 +40,22 @@ public extension Image {
     static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
     static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
     static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
+    
+    static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
+    static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
+}
+
+
+protocol OnboardingImagesProtocol {
+    var onboarding: OnboardingImages { get }
+}
+extension OnboardingImagesProtocol {
+    var onboarding: OnboardingImages {
+        OnboardingImages()
+    }
+}
+public struct OnboardingImages {
+    public let coolDown: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
+    public let more: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
+    public let timeSetting: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
 }
