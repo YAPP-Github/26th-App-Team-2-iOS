@@ -17,6 +17,12 @@ struct FeatureAppGroupFeatureApp: App {
     var body: some Scene {
         WindowGroup {
             BrakeTabView(selectedTab: $selectedTab)
+                .environment(
+                    AppGroupMainViewModel(
+                        fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
+                        requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase
+                    )
+                )
                 .safeAreaInset(edge: .bottom) {
                 BrakeTabBarView(selectedTabBarItem: $selectedTab)
                     .padding(.bottom, 16)
@@ -38,10 +44,7 @@ struct BrakeTabView: View {
                     Text("Report")
                     Spacer()
                 }
-            case .dashboard:
-                    Spacer()
-                    AppGroupMainView()
-                       
+            case .dashboard: AppGroupMainView()
             case .myInfo:
                 VStack {
                     Spacer()
