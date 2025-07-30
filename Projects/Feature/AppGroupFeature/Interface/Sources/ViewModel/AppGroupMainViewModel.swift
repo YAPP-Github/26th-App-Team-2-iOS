@@ -18,6 +18,8 @@ public final class AppGroupMainViewModel {
     
     var addGroupPresent: Bool = false
     var editAppGroup: AppGroup? = nil
+    var toastMessage: String? = nil
+    var toastTask: Task<(), any Error>?
     
     private(set) var appGroups: [AppGroup] = []
     
@@ -45,15 +47,35 @@ public final class AppGroupMainViewModel {
     
     public func deleteCompleted(appGroup: AppGroup) {
         self.appGroups = []
+        toast(message: "그룹이 삭제되었습니다.")
     }
     
     public func upsertCompleted(appGroup: AppGroup) {
+        let message = appGroups.isEmpty ? "그룹이 추가되었습니다." : "그룹이 수정되었습니다."
         self.appGroups = [appGroup]
+        
+        toast(message: message)
     }
-    
 }
 
 fileprivate extension AppGroupMainViewModel {
+    
+    func toast(message: String) {
+        self.toastTask?.cancel()
+        self.toastMessage = nil
+        self.toastTask = Task {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                toastMessage = message
+            }
+            try await Task.sleep(for: .seconds(1))
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                toastMessage = nil
+            }
+        }
+    }
+    
     func refreshAppGroups() async {
         do {
             let appGroup = try await fetchAppGroupUseCase.execute()

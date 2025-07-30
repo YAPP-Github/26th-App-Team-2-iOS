@@ -32,7 +32,11 @@ extension UpsertAppGroupView {
                                             .labelStyle(.titleOnly)
                                             .scaleEffect(0.8)
                                             .multilineTextAlignment(.leading)
+                                            .lineLimit(1) // 한 줄로 제한
+                                            .truncationMode(.tail) // 말줄임표로 처리
+                                        Spacer()
                                     }
+                                    .frame(maxWidth: 200)
                                     Spacer()
                                     Button {
                                         self.addAppGroupViewModel.deleteApplicationBtnTapped(applicationToken: applicationToken)

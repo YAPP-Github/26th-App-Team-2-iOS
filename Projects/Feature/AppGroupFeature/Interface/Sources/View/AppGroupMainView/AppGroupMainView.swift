@@ -32,6 +32,10 @@ public struct AppGroupMainView: View {
                         AppGroupMainGroupListView()
                     }
                 }
+                .toast(
+                    message: appGroupMainViewModel.toastMessage,
+                    bottomPadding: 60
+                )
             .onAppear() {
                 Task {
                     try await RequestScreenTimeAuthUseCase().execute()

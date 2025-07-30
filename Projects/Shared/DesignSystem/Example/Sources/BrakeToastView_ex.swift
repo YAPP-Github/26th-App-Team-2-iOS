@@ -11,7 +11,6 @@ import SharedDesignSystem
 struct BrakeToastView_ex: View {
     @State private var showToast = false
     @State private var toastMessage = "성공적으로 저장되었습니다"
-    
     var body: some View {
         VStack(spacing: 30) {
             Text("BrakeToastView Examples")
@@ -46,6 +45,7 @@ struct BrakeToastView_ex: View {
             .background(Color.insightBlue)
             .clipShape(RoundedRectangle(cornerRadius: 12))
             
+
             // 토스트 미리보기
             VStack(spacing: 15) {
                 Text("토스트 미리보기")
@@ -63,20 +63,11 @@ struct BrakeToastView_ex: View {
         .background(Color.black)
         .navigationTitle("BrakeToastView Example")
         .navigationBarTitleDisplayMode(.inline)
-        .overlay(
-            VStack {
-                Spacer()
-                if showToast {
-                    BrakeToastView(message: "완료되었습니다!")
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 40)
-                        .transition(.move(edge: .bottom).combined(with: .opacity))
-                        .animation(.easeOut(duration: 0.3), value: showToast)
-                }
-            }
-        )
+        .toast(show: showToast)
     }
 }
+
+
 
 #Preview {
     NavigationStack {

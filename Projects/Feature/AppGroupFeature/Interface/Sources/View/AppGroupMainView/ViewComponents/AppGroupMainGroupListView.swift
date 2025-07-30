@@ -9,18 +9,6 @@ import SwiftUI
 import SharedDesignSystem
 import Domain
 
-//                GeometryReader { proxy in
-//                    VStack {
-//                        Spacer()
-//                        Text("등록한 앱을 사용할 때\n사용 시간을 설정할 수 있어요")
-//                            .multilineTextAlignment(.center)
-//                            .foregroundStyle(Color.grey100)
-//                            .font(.pretendard(size: 20, type: .semiBold))
-//
-//                    }
-//                    .frame(height: proxy.size.height)
-//                }
-
 extension AppGroupMainView {
     struct AppGroupMainGroupListView: View {
         @Environment(AppGroupMainViewModel.self) var appGroupMainViewModel
@@ -40,19 +28,23 @@ extension AppGroupMainView {
                                         LinearGradient(
                                             stops: [
                                                 .init(color: Color.grey900.opacity(1), location: 0),
+                                                .init(color: Color.grey900.opacity(1), location: 0.1),
                                                 .init(color: Color.grey900.opacity(0.7), location: 0.27),
                                                 .init(color: .clear, location: 1)
                                             ],
                                             startPoint: .bottom,
                                             endPoint: .top
                                         )
-                                        .frame(height: proxy.size.height * 0.2)
+                                        .frame(height: proxy.size.height * 0.25)
                                     }
-                                Text("등록한 앱을 사용할 때\n사용 시간을 설정할 수 있어요")
-                                    .multilineTextAlignment(.center)
-                                    .foregroundStyle(Color.grey100)
-                                    .font(.pretendard(size: 20, type: .semiBold))
-                                    .padding(.bottom, 24)
+                                VStack(spacing: 6) {
+                                    Text("등록한 앱을 사용할 때")
+                                    Text("사용 시간을 설정할 수 있어요")
+                                }
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(Color.grey100)
+                                .font(.pretendard(size: 20, type: .semiBold))
+                                .padding(.bottom, 24)
                             }
                             .frame(height: proxy.size.height / 2)
                             VStack(spacing: 16) {
@@ -123,7 +115,16 @@ extension AppGroupMainView {
             }
             .padding([.top, .horizontal], 16)
             .padding(.bottom, 24)
-            .background(Color.grey700)
+            .background {
+                LinearGradient(
+                    colors: [
+                        Color(hex: "#292C31"),
+                        Color(hex: "#32363B")
+                    ],
+                    startPoint: UnitPoint(x: 0.4, y: 0),
+                    endPoint: UnitPoint(x: 0.6,y: 1)
+                )
+            }
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }

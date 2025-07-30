@@ -12,9 +12,6 @@ import FamilyControls
 import DeviceActivity
 import ManagedSettings
 
-
-
-
 public struct UpsertAppGroupView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
@@ -94,18 +91,23 @@ public struct UpsertAppGroupView: View {
                 self.dismiss()
             }
         })
-        .alert(
-            "삭제하기",
-            isPresented: Binding(
+        
+        .brakePopUp(
+            isPresented:  Binding(
                 get: { addAppGroupViewModel.deleteConfirmPresent },
                 set: { addAppGroupViewModel.deleteConfirmPresent = $0 }
-               ),
-               actions: {
-                   Button("취소", role: .cancel) { }
-                   Button("확인") {
-                       addAppGroupViewModel.deleteConfirmBtnTapped()
-                   }
-               }
+            ),
+            title: "그룹을 삭제할까요?",
+            message: "삭제한 그룹은 복구할 수 없습니다.",
+            alertType: .confirmDoubleButton,
+            primaryButtonTitle: "삭제",
+            secondaryButtonTitle: "취소",
+            primaryAction: {
+                addAppGroupViewModel.deleteConfirmBtnTapped()
+            },
+            secondaryAction: {
+                addAppGroupViewModel.deleteConfirmPresent = false
+            }
         )
         .sheet(
             isPresented: Binding(
