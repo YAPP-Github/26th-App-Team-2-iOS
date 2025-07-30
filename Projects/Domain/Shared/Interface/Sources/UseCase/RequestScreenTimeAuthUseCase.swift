@@ -17,7 +17,7 @@ public struct RequestScreenTimeAuthUseCase {
     public func execute() async -> ScreenTimeAuthorizationResult {
         let status = center.authorizationStatus
         switch status {
-        case .notDetermined:
+        case .notDetermined, .denied:
             do {
                 try await center.requestAuthorization(for: FamilyControlsMember.individual)
             } catch let error as FamilyControlsError {
@@ -33,7 +33,6 @@ public struct RequestScreenTimeAuthUseCase {
             } catch {
                 return .unknownError
             }
-        case .denied: return .denied
         case .approved: return .approved
         @unknown default: return .unknownError
         }

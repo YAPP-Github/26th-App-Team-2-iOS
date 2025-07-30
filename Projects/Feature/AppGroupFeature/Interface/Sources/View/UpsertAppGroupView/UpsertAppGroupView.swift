@@ -15,6 +15,7 @@ import ManagedSettings
 public struct UpsertAppGroupView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
+     
     @FocusState private var isFocused: Bool
     
     public init() { }

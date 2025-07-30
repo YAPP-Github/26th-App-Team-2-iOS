@@ -11,11 +11,11 @@ import Core
 
 public struct DeleteAppGroupUseCase {
     
-    private let appGroupService: AppGroupProtocol = AppGroupService(
-        appGroupStorage: AppGroupStorage()
-    )
+    private let appGroupService: AppGroupProtocol
     
-    public init() { }
+    public init(appGroupService: AppGroupProtocol) {
+        self.appGroupService = appGroupService
+    }
     
     public func execute(
         appGroupID: Int

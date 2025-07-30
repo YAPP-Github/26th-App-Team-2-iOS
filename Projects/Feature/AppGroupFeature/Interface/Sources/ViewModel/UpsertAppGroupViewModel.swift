@@ -8,11 +8,11 @@
 import Foundation
 import FamilyControls
 import ManagedSettings
-
 import Domain
 
 @Observable
 public final class UpsertAppGroupViewModel {
+    // MARK: - Properties
     var appGroupName: String = ""
     var selectionPresent: Bool = false
     var deleteConfirmPresent: Bool = false
@@ -25,11 +25,12 @@ public final class UpsertAppGroupViewModel {
     let deleteCompletion: ((AppGroup) -> ())?
     let isCreating: Bool
     
-    // MARK: -- Private Parameters...
+    // MARK: - Private Properties
     private let upsertAppGroupUseCase: UpsertAppGroupUseCase
     private let deleteAppGroupUseCase: DeleteAppGroupUseCase?
     private let appGroup: AppGroup?
     
+    // MARK: - Initialization
     public init(
         appGroup: AppGroup? = nil,
         upsertAppGroupUseCase: UpsertAppGroupUseCase,
@@ -49,45 +50,22 @@ public final class UpsertAppGroupViewModel {
         self.deleteCompletion = deleteCompletion
     }
     
+    // MARK: - Public Methods
+    
+    // MARK: Selection Management
     public func selectionBtnTapped() {
         selectionPresent.toggle()
     }
     
     public func updateSelection(_ selection: FamilyActivitySelection) {
-        
         self.newSelection = selection
     }
     
     public func deleteApplicationBtnTapped(applicationToken: ApplicationToken) {
-        // FamilyActivitySelection의 applicationTokens는 읽기 전용이므로
-        // 새로운 FamilyActivitySelection을 생성해야 함
         self.newSelection.applicationTokens.remove(applicationToken)
-        
-        print("앱이 삭제되었습니다: \(applicationToken)")
     }
     
-    public func deleteConfirmBtnTapped() {
-        Task {
-            guard let appGroup, let deleteAppGroupUseCase, let deleteCompletion else { return }
-            do {
-                try await deleteAppGroupUseCase.execute(appGroupID: appGroup.groupID)
-            } catch {
-                print("오류가 발생했슈~")
-            }
-            
-            await MainActor.run { [weak self] in
-                guard let self else { return }
-                self.deleteConfirmPresent = false
-                deleteCompletion(appGroup)
-                dismiss = true
-            }
-        }
-    }
-    
-    public func deleteGroupBtnTapped() {
-        self.deleteConfirmPresent = true
-    }
-    
+    // MARK: App Group Management
     public func upsertCompleteBtnTapped() {
         Task {
             do {
@@ -110,6 +88,29 @@ public final class UpsertAppGroupViewModel {
                 }
             } catch {
                 
+            }
+        }
+    }
+    
+    // MARK: Delete Management
+    public func deleteGroupBtnTapped() {
+        self.deleteConfirmPresent = true
+    }
+    
+    public func deleteConfirmBtnTapped() {
+        Task {
+            guard let appGroup, let deleteAppGroupUseCase, let deleteCompletion else { return }
+            do {
+                try await deleteAppGroupUseCase.execute(appGroupID: appGroup.groupID)
+            } catch {
+                assertionFailure("Failed to delete app group: \(error)")
+            }
+            
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.deleteConfirmPresent = false
+                deleteCompletion(appGroup)
+                dismiss = true
             }
         }
     }

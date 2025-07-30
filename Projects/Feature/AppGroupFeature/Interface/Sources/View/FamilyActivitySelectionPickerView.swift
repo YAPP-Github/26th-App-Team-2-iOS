@@ -9,7 +9,6 @@ import Foundation
 import FamilyControls
 import SwiftUI
 
-
 public struct FamilyActivitySelectionPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selection: FamilyActivitySelection

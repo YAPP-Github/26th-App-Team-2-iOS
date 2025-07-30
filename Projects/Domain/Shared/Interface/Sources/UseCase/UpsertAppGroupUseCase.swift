@@ -11,11 +11,11 @@ import Core
 
 public struct UpsertAppGroupUseCase {
     
-    private let appGroupService: AppGroupProtocol = AppGroupService(
-        appGroupStorage: AppGroupStorage()
-    )
+    private let appGroupService: AppGroupProtocol
     
-    public init() { }
+    public init(appGroupService: AppGroupProtocol) {
+        self.appGroupService = appGroupService
+    }
     
     @discardableResult
     public func execute(
