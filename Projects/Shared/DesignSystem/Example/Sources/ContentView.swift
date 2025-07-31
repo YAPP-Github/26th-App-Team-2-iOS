@@ -41,6 +41,9 @@ struct ContentView: View {
                     NavigationLink("BrakeWebView_ex") {
                         WebView_ex()
                     }
+                    NavigationLink("Timer_ex") {
+                        TimerView_ex()
+                    }
                 } header: {
                     Text("Custom Views")
                 }
