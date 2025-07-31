@@ -12,7 +12,7 @@ import Core
 public struct FetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol {
     
     private let blockScheduleManager: BlockScheduleProtocol
-    
+
     public init(blockScheduleManager: BlockScheduleProtocol) {
         self.blockScheduleManager = blockScheduleManager
     }
