@@ -8,11 +8,13 @@
 import Foundation
 import CoreLocalStorageInterface
 
-
 extension UserDefaultsMemberStateStorage: @retroactive MemberStateStorageProtocol {
-    private var MEMBER_STATE: String { "MEMBER_STATE" }
+    private enum Keys {
+        static let memberState = "MEMBER_STATE"
+    }
+
     public func get() -> MemberStateType? {
-        guard let memberStateString: String = UserDefaults.standard.string(forKey: MEMBER_STATE) else {
+        guard let memberStateString: String = UserDefaults.standard.string(forKey: Keys.memberState) else {
             return nil
         }
         guard let memberState = MemberStateType(rawValue: memberStateString) else {
@@ -21,8 +23,8 @@ extension UserDefaultsMemberStateStorage: @retroactive MemberStateStorageProtoco
         }
         return memberState
     }
-    
+
     public func save(memberState: MemberStateType) {
-        UserDefaults.standard.set(memberState.value, forKey: MEMBER_STATE)
+        UserDefaults.standard.set(memberState.value, forKey: Keys.memberState)
     }
 }

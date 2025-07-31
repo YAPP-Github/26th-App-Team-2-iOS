@@ -9,9 +9,13 @@ import Foundation
 import CoreLocalStorageInterface
 
 public struct BreakTimeStorage: BreakTimeStorageProtocol {
-    public let userDefaults: UserDefaults? = UserDefaults(suiteName: Bundle.main.appGroupName)
-
-    public init() { }
+    private let userDefaults: UserDefaults?
+    
+    public init() {
+        // App Group 접근을 더 안전하게 처리
+        let appGroupName = Bundle.main.appGroupName
+        self.userDefaults = UserDefaults(suiteName: appGroupName)
+    }
 
     private enum Keys {
         static let breakEndTime = "breakEndTime"
