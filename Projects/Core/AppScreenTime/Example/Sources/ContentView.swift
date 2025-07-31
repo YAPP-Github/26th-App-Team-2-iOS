@@ -55,6 +55,48 @@ struct ContentView: View {
                                     .background(Color.green)
                                     .cornerRadius(8)
                             }
+                            
+                            // 차단창 테스트 버튼들
+                            Button(action: testBlockingStatus) {
+                                Text("차단창 테스트 (Blocking)")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.blue)
+                                    .cornerRadius(8)
+                            }
+                            
+                            Button(action: testExtensionPrompt) {
+                                Text("연장 프롬프트 테스트")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.orange)
+                                    .cornerRadius(8)
+                            }
+                            
+                            Button(action: testCooldownActive) {
+                                Text("쿨다운 테스트")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.purple)
+                                    .cornerRadius(8)
+                            }
+                            
+                            Button(action: clearAllStatus) {
+                                Text("상태 초기화")
+                                    .font(.headline)
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.gray)
+                                    .cornerRadius(8)
+                            }
+
                         }
                         .padding(.horizontal)
                     }
@@ -71,6 +113,7 @@ struct ContentView: View {
                 TimerSettingView { selectedTime in
                     do {
                         try viewModel.breakTimeManager.createBreakTime(minutes: selectedTime)
+                        viewModel.appScheduleStorage.saveExtensionCount(0) // 초기화 필요
                         viewModel.appScheduleStorage.saveSelectNotificationTrigger(false)
                     } catch DeviceActivityCenterError.intervalTooShort {
                         print("휴식 시간이 너무 짧습니다. 최소 15분 이상 설정해주세요.")
@@ -159,11 +202,37 @@ struct ContentView: View {
         guard let currentSchedule = currentSchedule else { return }
         viewModel.blockScheduleManager.delete(currentSchedule)
     }
-
-    private func formatTime(_ timeInterval: TimeInterval) -> String {
-        let minutes = Int(timeInterval) / 60
-        let seconds = Int(timeInterval) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+    
+    // MARK: - 차단창 테스트 메서드들
+    
+    private func testBlockingStatus() {
+        // 기본 차단 상태 설정
+        viewModel.appScheduleStorage.saveBlockingStatus(.blocking(tokenName: "테스트 앱"))
+        print("✅ 차단 상태 설정 완료: blocking")
     }
     
+    private func testExtensionPrompt() {
+        // 연장 프롬프트 상태 설정
+        viewModel.appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 1))
+        print("✅ 연장 프롬프트 상태 설정 완료: extensionPrompt(time: 5, count: 1)")
+    }
+    
+    private func testCooldownActive() {
+        // 쿨다운 활성 상태 설정
+        viewModel.appScheduleStorage.saveBlockingStatus(
+            .cooldownActive(
+                tokenName: "테스트앱",
+                time: 15,
+                groupName: "SNS 앱"
+            )
+        )
+        print("✅ 쿨다운 상태 설정 완료: cooldownActive")
+    }
+    
+    private func clearAllStatus() {
+        // 모든 상태 초기화
+        viewModel.appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
+        print("✅ 상태 초기화 완료: unlockedTemporarily")
+    }
+
 }
