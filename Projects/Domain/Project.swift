@@ -15,6 +15,7 @@ let targets: [Target] = [
         dependencies: [
             .domain(implements: .User),
             .domain(implements: .OAuth),
+            .domain(implements: .ScreenTimeManagement),
             .domain(interface: .Shared),
             .core
         ],
