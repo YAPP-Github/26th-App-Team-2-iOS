@@ -53,4 +53,6 @@ public struct BreakTimeManager: BreakTimeProtocol {
     public func deleteBreakTime() {
         center.stopBrakeTime()
     }
+    
+    
 }
