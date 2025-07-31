@@ -13,6 +13,7 @@ extension LoginView {
         let kakaoLogInButtonTapped: () -> ()
         let appleLogInButtonTapped: () -> ()
         let privacyInfoButtonTapped: () -> ()
+        let termsOfServiceButtonTapped: () -> ()
         var body: some View {
             VStack(spacing: 25) {
                 VStack(spacing: 0) {
@@ -24,7 +25,7 @@ extension LoginView {
                                 privacyInfoButtonTapped()
                             },
                             "이용약관" : {
-                                privacyInfoButtonTapped()
+                                termsOfServiceButtonTapped()
                             }
                         ])
                 }

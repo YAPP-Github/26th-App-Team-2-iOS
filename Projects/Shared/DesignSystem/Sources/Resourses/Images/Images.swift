@@ -40,63 +40,10 @@ public extension Image {
     static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
     static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
     static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
-    
+    static let iconGroup: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
     static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
     static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
 }
 
 
-public protocol OnboardingImagesProtocol {
-    static var onboarding: OnboardingImages { get }
-}
-extension OnboardingImagesProtocol {
-    public static var onboarding: OnboardingImages {
-        OnboardingImages()
-    }
-}
-
-public struct OnboardingImages {
-    public let coolDown: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
-    public let more: Image = SharedDesignSystemAsset.Images.onboardingMore.swiftUIImage
-    public let timeSetting: Image = SharedDesignSystemAsset.Images.onboardingTimeSetting.swiftUIImage
-    public let screentime: Image = SharedDesignSystemAsset.Images.onboardingAuthScreentime.swiftUIImage
-    public let notification: Image = SharedDesignSystemAsset.Images.onboardingAuthNotification.swiftUIImage
-    
-    static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
-    static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
-}
-
-
-public protocol OnboardingImagesProtocol {
-    static var onboarding: OnboardingImages { get }
-}
-extension OnboardingImagesProtocol {
-    public static var onboarding: OnboardingImages {
-        OnboardingImages()
-    }
-}
-
-public struct OnboardingImages {
-    public let coolDown: Image = SharedDesignSystemAsset.Images.onboardingCooldown.swiftUIImage
-    public let more: Image = SharedDesignSystemAsset.Images.onboardingMore.swiftUIImage
-    public let timeSetting: Image = SharedDesignSystemAsset.Images.onboardingTimeSetting.swiftUIImage
-    public let screentime: Image = SharedDesignSystemAsset.Images.onboardingAuthScreentime.swiftUIImage
-    public let notification: Image = SharedDesignSystemAsset.Images.onboardingAuthNotification.swiftUIImage
-    static let iconCoolDown: Image = SharedDesignSystemAsset.Images.iconCooldown.swiftUIImage
-    static let iconGroup: Image = SharedDesignSystemAsset.Images.iconGroup.swiftUIImage
-    static let iconTimer: Image = SharedDesignSystemAsset.Images.iconTimer.swiftUIImage
-}
-
-public struct AppGroupImages {
-    public let mainEmpty: Image = SharedDesignSystemAsset.Images.appgroupMainEmpty.swiftUIImage
-    public let mainFull: Image = SharedDesignSystemAsset.Images.appgroupMainList.swiftUIImage
-}
-
-public protocol AppGroupImagesProtocol {
-    static var appGroup: AppGroupImages { get }
-}
-
-extension AppGroupImagesProtocol {
-    public static var appGroup: AppGroupImages { AppGroupImages() }
-}
 
