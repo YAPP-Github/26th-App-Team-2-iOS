@@ -61,9 +61,6 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
         
         // 2. 추가적으로 모든 블록 리스트를 해제하는 방법도 시도
         managedSettingsManager.clearAllBlockListsForRest(schedules: [])
-        
-        // 3. 차단 상태도 해제
-        appScheduleStorage.saveBlockingStatus(false)
     }
     
     // 모든 블록 스케줄 업데이트
