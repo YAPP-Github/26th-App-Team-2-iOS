@@ -10,8 +10,6 @@ import Domain
 import SharedDesignSystem
 import FamilyControls
 
-extension Image: @retroactive AppGroupImagesProtocol { }
-
 public struct AppGroupMainView: View {
     @Environment(\.appGroupDIContainer) private var diContainer
     @Environment(AppGroupMainViewModel.self) private var appGroupMainViewModel
@@ -57,9 +55,9 @@ public struct AppGroupMainView: View {
                 get: { appGroupMainViewModel.screenTimeAuthAlertPresent } ,
                 set: { appGroupMainViewModel.screenTimeAuthAlertPresent = $0 }
             ),
-            title: appGroupMainViewModel.screenTimeAuthErrorResult?.title ?? "",
-            message: appGroupMainViewModel.screenTimeAuthErrorResult?.desc,
-            primaryButtonTitle: appGroupMainViewModel.screenTimeAuthErrorResult?.primaryButtonTitle ?? "",
+            title: appGroupMainViewModel.screenTimeAuthErrorResult?.title ?? "스크린타임 권한 오류",
+            message: appGroupMainViewModel.screenTimeAuthErrorResult?.desc ?? "스크린타임 권한 처리 중 알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+            primaryButtonTitle: appGroupMainViewModel.screenTimeAuthErrorResult?.primaryButtonTitle ?? "확인",
             primaryAction: {
                 guard let result = appGroupMainViewModel.screenTimeAuthErrorResult else {
                     appGroupMainViewModel.screenTimeAuthAlertPresent = false

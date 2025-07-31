@@ -15,7 +15,7 @@ struct BreakTimeStorageTests {
     func breakTimeStorage_save_get_delete() {
         let testSuiteName = "test.group.yapp.breake.brake"
         var storage = BreakTimeStorage()
-        storage.userDefaults = UserDefaults(suiteName: testSuiteName)
+//        storage.userDefaults = UserDefaults(suiteName: testSuiteName)
         storage.delete() // 초기화
 
         // 1. 저장
@@ -37,7 +37,7 @@ struct BreakTimeStorageTests {
     func breakTimeStorage_expiredTime_returnsNil() {
         let testSuiteName = "test.group.yapp.breake.brake"
         var storage = BreakTimeStorage()
-        storage.userDefaults = UserDefaults(suiteName: testSuiteName)
+//        storage.userDefaults = UserDefaults(suiteName: testSuiteName)
         storage.delete()
 
         // 더 과거 시간 저장 (예: -1시간)

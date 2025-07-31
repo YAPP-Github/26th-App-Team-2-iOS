@@ -9,7 +9,7 @@ import Foundation
 import CoreLocalStorageInterface
 
 public struct BreakTimeStorage: BreakTimeStorageProtocol {
-    public var userDefaults: UserDefaults? = UserDefaults(suiteName: Bundle.main.appGroupName)
+    public let userDefaults: UserDefaults? = UserDefaults(suiteName: Bundle.main.appGroupName)
 
     public init() { }
 

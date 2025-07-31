@@ -16,16 +16,19 @@ extension AppGroupStorage: @retroactive AppGroupStorageProtocol { }
 extension AppGroupStorageProtocol {
     public func getAllAppGroupEntities() async throws -> [AppGroupEntity] {
         let descriptor = FetchDescriptor<AppGroupEntity>()
-        let entities = try context.fetch(descriptor)
-        return entities
+        do {
+            let entities = try context.fetch(descriptor)
+            return entities
+        } catch {
+            throw AppGroupStorageError.entityNotFound
+        }
     }
     
     public func getAppGroupEntity(groupID: Int) async throws -> AppGroupEntity {
         let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
-        let result = try? context.fetch(descriptor)
-        guard let appGroup = result?.first else {
-            throw AppGroupEntityError.notExist
+        guard let appGroup = try? context.fetch(descriptor).first else {
+            throw AppGroupStorageError.entityFetchingError
         }
         return appGroup
     }
@@ -33,20 +36,27 @@ extension AppGroupStorageProtocol {
     
     public func appendAppGroupEntity(_ appGroup: AppGroupEntity) async throws {
         context.insert(appGroup)
-        try context.save()
+        do {
+            try context.save()
+        } catch {
+            throw AppGroupStorageError.saveFailed
+        }
     }
     
     public func updateAppGroupEntity(_ appGroup: AppGroupEntity) async throws {
         let groupID: Int = appGroup.groupID
         let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
+        
+        guard let existing = try? context.fetch(descriptor).first else {
+            throw AppGroupStorageError.updateFailed
+        }
+        existing.name = appGroup.name
+        existing.selectionData = appGroup.selectionData
         do {
-            guard let existing = try? context.fetch(descriptor).first else {
-                throw AppGroupEntityError.notExist
-            }
-            existing.name = appGroup.name
-            existing.selectionData = appGroup.selectionData
             try context.save()
+        } catch {
+            throw AppGroupStorageError.updateFailed
         }
     }
     
@@ -55,25 +65,30 @@ extension AppGroupStorageProtocol {
         let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
         
-        let existing = try? context.fetch(descriptor).first
-
-        if let entity = existing {
-            // 2. 있으면 업데이트
+        if let entity = try? context.fetch(descriptor).first {
             entity.name = appGroup.name
             entity.selectionData = appGroup.selectionData
         } else {
-            // 3. 없으면 새로 추가
             context.insert(appGroup)
         }
-        try context.save()
+        do {
+            try context.save()
+        } catch {
+            throw AppGroupStorageError.upsertFailed
+        }
     }
     
     public func deleteAppGroupEntity(groupID: Int) async throws {
         let predicate = #Predicate<AppGroupEntity> { $0.groupID == groupID }
         let descriptor = FetchDescriptor<AppGroupEntity>(predicate: predicate)
-        if let entity = try context.fetch(descriptor).first {
-            context.delete(entity)
+        do {
+            let entities = try context.fetch(descriptor)
+            for entity in entities {
+                context.delete(entity)
+            }
             try context.save()
+        } catch {
+            throw AppGroupStorageError.deleteFailed
         }
         // 존재하지 않는 엔티티의 경우 조용히 무시 (에러를 던지지 않음)
     }
