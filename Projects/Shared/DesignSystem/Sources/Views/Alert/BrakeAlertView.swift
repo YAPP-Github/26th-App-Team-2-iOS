@@ -23,6 +23,7 @@ public struct BrakeAlertView: View {
     public enum AlertType {
         case singleButton
         case doubleButton
+        case confirmDoubleButton
         case warning
         case success
         case info
@@ -74,6 +75,18 @@ public struct BrakeAlertView: View {
                             primaryAction: primaryAction,
                             secondaryAction: secondaryAction
                         )
+                    } else if alertType == .confirmDoubleButton,
+                        let secondaryButtonTitle = secondaryButtonTitle {
+                         BrakeAlertTwoButtonView(
+                             primaryButtonTitle: primaryButtonTitle,
+                             secondaryButtonTitle: secondaryButtonTitle,
+                             primaryAction: primaryAction,
+                             secondaryAction: secondaryAction,
+                             primaryBackgroundColor: .brakeYellow,
+                             primaryTextColor: .grey900,
+                             secondaryBackgroundColor: .grey800,
+                             secondaryTextColor: .grey00
+                         )
                     } else {
                         // 단일 버튼
                         Button {

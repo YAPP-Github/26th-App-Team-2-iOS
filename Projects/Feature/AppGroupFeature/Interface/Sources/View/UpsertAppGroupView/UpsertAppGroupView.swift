@@ -1,0 +1,144 @@
+//
+//  AddAppGroupView.swift
+//  FeatureAppGroupFeature
+//
+//  Created by Greem on 7/27/25.
+//
+
+import SwiftUI
+import Domain
+import Shared
+import FamilyControls
+import DeviceActivity
+import ManagedSettings
+
+public struct UpsertAppGroupView: View {
+    @Environment(\.dismiss) var dismiss
+    @Environment(UpsertAppGroupViewModel.self) var addAppGroupViewModel
+    @FocusState private var isFocused: Bool
+    
+    public init() { }
+    
+    public var body: some View {
+        NavigationView {
+            ZStack(alignment: .bottom) {
+                Color.grey900.edgesIgnoringSafeArea(.all)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        isFocused = false
+                    }
+                
+                VStack(spacing: 0) {
+                    UpsertAppGroupNavigationView(isCreating: addAppGroupViewModel.isCreating) {
+                        dismiss()
+                    }
+                    
+                    Color.clear.frame(height: 16)
+                    
+                    VStack(spacing: 8) {
+                        @Bindable var viewModel = addAppGroupViewModel
+                        UpsertAppGroupSectionHeaderView(
+                            title: "그룹명:",
+                            highlightDesc: "\(addAppGroupViewModel.appGroupName.count)",
+                            description: "/10"
+                        )
+                        
+                        BrakeTextFieldView(
+                            text: $viewModel.appGroupName,
+                            placeholder: "ex) SNS",
+                            backgroundColor: .grey850,
+                            textColor: .brakeWhite,
+                            placeholderColor: .grey700,
+                            cornerRadius: 16
+                        )
+                        .autocorrectionDisabled()
+                        .focused($isFocused)
+                        .onChange(of: viewModel.appGroupName) { oldValue, newValue in
+                            viewModel.setAppGroupName(newValue)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    
+                    Color.clear.frame(height: 24)
+                    
+                    VStack(spacing: 8) {
+                        UpsertAppGroupSectionHeaderView(
+                            title: "목록:",
+                            highlightDesc: "\(addAppGroupViewModel.applicationTokens.count)",
+                            description: "개"
+                        )
+                        
+                        Group {
+                            if addAppGroupViewModel.applicationTokens.isEmpty {
+                                UpsertAppGroupListEmptyView()
+                            } else {
+                                UpsertAppGroupListView()
+                            }
+                        }
+                        .aspectRatio(1, contentMode: .fit)
+                    }
+                    .padding(.horizontal, 16)
+                    .onTapGesture {
+                        self.isFocused = false
+                    }
+                    Spacer()
+                }
+                .ignoresSafeArea(.keyboard)
+                
+                UpsertAppGroupFooterView(
+                    groupDeleteActive: !addAppGroupViewModel.isCreating && !isFocused ,
+                    groupDeleteAction: {
+                        self.addAppGroupViewModel.deleteGroupBtnTapped()
+                    },
+                    confirmActive: !addAppGroupViewModel.applicationTokens.isEmpty && !addAppGroupViewModel.appGroupName.isEmpty,
+                    confirmAction: {
+                        addAppGroupViewModel.upsertCompleteBtnTapped()
+                    }
+                )
+                    .padding(.bottom, 10)
+            }
+            .toolbar(.hidden, for: .navigationBar)
+        }
+        .onAppear() {
+            if addAppGroupViewModel.isCreating {
+                self.isFocused = true
+            }
+        }
+        .onChange(of: addAppGroupViewModel.dismiss, { oldValue, newValue in
+            if newValue {
+                isFocused = false
+                self.dismiss()
+            }
+        })
+        .brakePopUp(
+            isPresented:  Binding(
+                get: { addAppGroupViewModel.deleteConfirmPresent },
+                set: { addAppGroupViewModel.deleteConfirmPresent = $0 }
+            ),
+            title: "그룹을 삭제할까요?",
+            message: "삭제한 그룹은 복구할 수 없습니다.",
+            alertType: .confirmDoubleButton,
+            primaryButtonTitle: "삭제",
+            secondaryButtonTitle: "취소",
+            primaryAction: {
+                addAppGroupViewModel.deleteConfirmBtnTapped()
+            },
+            secondaryAction: {
+                addAppGroupViewModel.deleteConfirmPresent = false
+            }
+        )
+        .sheet(
+            isPresented: Binding(
+                get: { addAppGroupViewModel.selectionPresent },
+                set: { addAppGroupViewModel.selectionPresent = $0 }),
+            content: {
+                FamilyActivitySelectionPickerView(
+                    selection: addAppGroupViewModel.newSelection
+                ) { selection in
+                    addAppGroupViewModel.updateSelection(selection)
+                }
+            }
+        )
+    }
+}
+

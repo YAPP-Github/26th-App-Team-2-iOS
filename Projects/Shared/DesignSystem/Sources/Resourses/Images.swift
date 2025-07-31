@@ -40,4 +40,21 @@ public extension Image {
     static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
     static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
     static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
+    static let iconCoolDown: Image = SharedDesignSystemAsset.Images.iconCooldown.swiftUIImage
+    static let iconGroup: Image = SharedDesignSystemAsset.Images.iconGroup.swiftUIImage
+    static let iconTimer: Image = SharedDesignSystemAsset.Images.iconTimer.swiftUIImage
 }
+
+public struct AppGroupImages {
+    public let mainEmpty: Image = SharedDesignSystemAsset.Images.appgroupMainEmpty.swiftUIImage
+    public let mainFull: Image = SharedDesignSystemAsset.Images.appgroupMainList.swiftUIImage
+}
+
+public protocol AppGroupImagesProtocol {
+    static var appGroup: AppGroupImages { get }
+}
+
+extension AppGroupImagesProtocol {
+    public static var appGroup: AppGroupImages { AppGroupImages() }
+}
+

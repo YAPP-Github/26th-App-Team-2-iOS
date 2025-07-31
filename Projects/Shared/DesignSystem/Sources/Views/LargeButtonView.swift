@@ -52,7 +52,7 @@ public struct LargeButtonView: View {
                 Spacer()
             }
             .frame(minHeight: 56, maxHeight: height)
-            .frame(maxWidth: 343)
+            .frame(maxWidth: 360)
             .background(buttonType.backgroundColor(isActive: isActive))
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
