@@ -19,5 +19,6 @@ public struct FetchAppGroupUseCase {
     
     public func execute() async throws -> AppGroup? {
         try await appGroupService.getAppGroup()
+        
     }
 }

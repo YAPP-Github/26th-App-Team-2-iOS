@@ -10,7 +10,7 @@ import SwiftUI
 import SharedDesignSystem
 import Domain
 
-enum BrakeStatus {
+enum BrakeStatus: Int {
     case session
     case locked
     case none
@@ -22,7 +22,7 @@ extension AppGroupMainView {
         
         let editButtonTapped: () -> ()
         let sessionExitButtonTapped: () -> ()
-        @State private var progress: Double = 0
+        
         var body: some View {
             VStack(spacing: 20) {
                 VStack(spacing: 12) {
@@ -44,11 +44,24 @@ extension AppGroupMainView {
                         }
                         .foregroundStyle(Color.grey00)
                         Spacer()
+//                        if appGroupViewModel.currentActiveAppGroup == appGroup {
+//                            switch appGroupViewModel.brakeStatus {
+//                            case .none: Image.iconGroup
+//                            case .session:
+//                                Image.iconTimer
+//                            case .locked:
+//                                Image.iconCoolDown
+//                            }
+//                        } else {
+//                            Image.iconGroup
+//                        }
                         Button {
                             editButtonTapped()
                         } label: {
                             Image.iconCircleEdit
-                        }
+                        }.disabled(
+                            appGroupViewModel.brakeStatus != .none
+                        )
                     }
                     
                     HStack(spacing: 0) {
@@ -77,11 +90,14 @@ extension AppGroupMainView {
                         VStack(spacing: 27) {
                             BrakeTimerView(
                                 lineWidth: 7,
-                                progress: progress,
+                                progress: appGroupViewModel.sessionRestRatio,
                                 startColor: Color(hex: "#B6C1E0"),
                                 endColor: Color.brakeYellow
                             ) {
-                                BrakeTimerTextView(minutes: 23, seconds: 2)
+                                SessionTimerTextView(
+                                    minutes: appGroupViewModel.sessionRestTime / 60,
+                                    seconds: appGroupViewModel.sessionRestTime % 60
+                                )
                             }
                             .padding(.top, 12)
                             .padding(.horizontal, 18)
@@ -107,7 +123,7 @@ extension AppGroupMainView {
                         VStack(spacing: 27) {
                             BrakeTimerView(
                                 lineWidth: 7,
-                                progress: progress,
+                                progress: appGroupViewModel.sessionRestRatio,
                                 startColor: Color(hex: "#B6C1E0"),
                                 endColor: Color.brakeYellow
                             ) {
@@ -154,7 +170,7 @@ extension AppGroupMainView {
     }
 }
 
-fileprivate struct BrakeTimerTextView: View {
+fileprivate struct SessionTimerTextView: View {
     let minutes: Int
     let seconds: Int
     var body: some View {
