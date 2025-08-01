@@ -13,7 +13,8 @@ import CoreAppScreenTimeInterface
 public struct BreakTimeManager: BreakTimeProtocol {
 
     private let center = DeviceActivityCenter()
-
+    private let startTimeKey = "BreakTimeManager.startTime"
+    private let endTimeKey = "BreakTimeManager.endTime"
     public init() { }
 
     // 휴식 스케줄 추가 (분 단위로 받음)
@@ -34,12 +35,14 @@ public struct BreakTimeManager: BreakTimeProtocol {
         ]
         
         // 현재 시간부터 시작
+        let startDate: Date = Date()
+        UserDefaults.standard.set(startDate.timeIntervalSince1970, forKey: startTimeKey)
         let startTime = Calendar.current.dateComponents(dateComponents, from: .now)
 
         // 종료 시간 계산 (크로스데이 허용)
-        let endDate = Calendar.current.date(byAdding: .minute, value: minutes, to: .now) ?? .now
+        let endDate: Date = Calendar.current.date(byAdding: .minute, value: minutes, to: .now) ?? .now
+        UserDefaults.standard.set(endDate.timeIntervalSince1970, forKey: endTimeKey)
         let endTime = Calendar.current.dateComponents(dateComponents, from: endDate)
-
         let breakSchedule = DeviceActivitySchedule(
             intervalStart: startTime,
             intervalEnd: endTime,
@@ -54,5 +57,12 @@ public struct BreakTimeManager: BreakTimeProtocol {
         center.stopBrakeTime()
     }
     
-    
+    public func getStartDate() -> Date {
+        let dateInterval = UserDefaults.standard.double(forKey: startTimeKey)
+        return Date(timeIntervalSince1970: dateInterval)
+    }
+    public func getEndDate() -> Date {
+        let dateInterval = UserDefaults.standard.double(forKey: endTimeKey)
+        return Date(timeIntervalSince1970: dateInterval)
+    }
 }

@@ -57,6 +57,11 @@ public struct AppGroupMainView: View {
                     message: appGroupMainViewModel.toastMessage,
                     bottomPadding: 60
                 )
+                .fullScreenCover(isPresented:  $viewModel.timerSettingPresent, content: {
+                    TimerSettingView { selectedTime in
+                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
+                    }
+                })
                 .fullScreenCover(
                     isPresented: $viewModel.addGroupPresent
                 ) {
@@ -200,4 +205,3 @@ fileprivate extension AppGroupMainView {
         )
     }
 }
-
