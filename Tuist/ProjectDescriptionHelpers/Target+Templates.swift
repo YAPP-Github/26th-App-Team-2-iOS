@@ -205,11 +205,13 @@ public extension Target {
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).ShieldConfigurationExtension"
             newFactory.sources = .shieldConfigurationExtensionSources
             newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
+            newFactory.infoPlist = "Extensions/ShieldConfigurationExtension/Info.plist"
         case .ShieldActionConfigurationExtension:
             newFactory.product = .appExtension
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)ShieldActionConfigurationExtension" : factory.name
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).ShieldActionConfigurationExtension"
             newFactory.sources = .shieldActionConfigurationExtensionSources
+            newFactory.infoPlist = "Extensions/ShieldActionConfigurationExtension/Info.plist"
         case .DeviceActivityMonitorExtension:
             newFactory.product = .appExtension
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)DeviceActivityMonitorExtension" : factory.name
