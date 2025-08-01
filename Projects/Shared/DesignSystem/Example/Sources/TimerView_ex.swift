@@ -7,7 +7,7 @@
 
 import SwiftUI
 import SharedDesignSystem
-
+extension Image: @retroactive AppGroupImagesProtocol { }
 struct TimerView_ex: View {
     @State private var progress: CGFloat = 0
     @State private var coolDownProgress: CGFloat = 0
@@ -47,17 +47,24 @@ struct TimerView_ex: View {
                     startColor: Color(hex: "#F0F4FF"),
                     endColor: Color(hex: "#8E97B0")
                 ) {
-                    HStack(spacing: 4) {
-                        ( Text(String(format: "%02d", 54))
-                            .foregroundStyle(Color.grey00)
-                          +
-                          Text("분").foregroundStyle(Color.grey500)
-                        )
-                        ( Text(String(format: "%02d", 54)).foregroundStyle(Color.grey00)
-                          +
-                          Text("초").foregroundStyle(Color.grey500)
-                        )
-                    }.font(.pretendard(size: 14, type: .bold))
+                    VStack(spacing: 12) {
+                        Image.appGroup.lockTimer
+                            .resizable()
+                            .aspectRatio(1, contentMode: .fit)
+                            .frame(width: 110)
+                        HStack(spacing: 4) {
+                            ( Text(String(format: "%02d", 54))
+                                .foregroundStyle(Color.grey00)
+                              +
+                              Text("분").foregroundStyle(Color.grey500)
+                            )
+                            ( Text(String(format: "%02d", 54)).foregroundStyle(Color.grey00)
+                              +
+                              Text("초").foregroundStyle(Color.grey500)
+                            )
+                        }.font(.pretendard(size: 14, type: .bold))
+                    }
+                    
                 }
                 .padding(32)
                 .onAppear() {

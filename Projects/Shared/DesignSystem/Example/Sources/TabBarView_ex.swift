@@ -23,6 +23,7 @@ struct BrakeTabBarView_ex: View {
                 case .dashboard:
                     Color.insightBlue
                         .ignoresSafeArea()
+                        
                 case .myInfo:
                     Color.guideGreen
                         .ignoresSafeArea()
@@ -56,3 +57,5 @@ struct BrakeTabBarView_ex: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 }
+
+
