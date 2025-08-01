@@ -30,9 +30,7 @@ let appTargets: [Target] = [
                 .target(name: "BrakeShieldActionConfigurationExtension-Debug"),
                 .feature
             ],
-            
             settings: Project.Environment.debugTargetSettings
-            
         )
     ),
     .app(
@@ -97,11 +95,7 @@ let appTargets: [Target] = [
         deploymentTarget: .debug,
         factory: .init(
             dependencies: [
-                .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage),
-                .core(interface: .AppScreenTime),
-                .core(implements: .AppScreenTime),
-                .shared(implements: .Util)
+                .domain,
             ],
             settings: Project.Environment.debugTargetSettings
         )
@@ -111,11 +105,7 @@ let appTargets: [Target] = [
         deploymentTarget: .release,
         factory: .init(
             dependencies: [
-                .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage),
-                .core(interface: .AppScreenTime),
-                .core(implements: .AppScreenTime),
-                .shared(implements: .Util)
+                .domain,
             ],
             settings: Project.Environment.releaseTargetSettings
         )
@@ -125,11 +115,7 @@ let appTargets: [Target] = [
         deploymentTarget: .debug,
         factory: .init(
             dependencies: [
-                .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage),
-                .core(interface: .AppScreenTime),
-                .core(implements: .AppScreenTime),
-                .shared(implements: .Util)
+                .domain
             ],
             settings: Project.Environment.debugTargetSettings
         )
@@ -139,11 +125,7 @@ let appTargets: [Target] = [
         deploymentTarget: .release,
         factory: .init(
             dependencies: [
-                .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage),
-                .core(interface: .AppScreenTime),
-                .core(implements: .AppScreenTime),
-                .shared(implements: .Util)
+                .domain
             ],
             settings: Project.Environment.releaseTargetSettings
         )
@@ -153,11 +135,7 @@ let appTargets: [Target] = [
         deploymentTarget: .debug,
         factory: .init(
             dependencies: [
-                .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage),
-                .core(interface: .AppScreenTime),
-                .core(implements: .AppScreenTime),
-                .shared(implements: .Util)
+                .domain
             ],
             settings: Project.Environment.debugTargetSettings
         )
@@ -167,11 +145,7 @@ let appTargets: [Target] = [
         deploymentTarget: .release,
         factory: .init(
             dependencies: [
-                .core(interface: .LocalStorage),
-                .core(implements: .LocalStorage),
-                .core(interface: .AppScreenTime),
-                .core(implements: .AppScreenTime),
-                .shared(implements: .Util)
+                .domain
             ],
             settings: Project.Environment.releaseTargetSettings
         )
