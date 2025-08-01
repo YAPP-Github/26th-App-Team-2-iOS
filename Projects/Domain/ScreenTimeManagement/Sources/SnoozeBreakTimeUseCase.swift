@@ -9,6 +9,9 @@ import Foundation
 import DomainScreenTimeManagementInterface
 import Core
 
+/// 휴식 시간을 스누즈(일시 중지)하는 UseCase
+/// - 사용처: DeviceActivityMonitorExtension에서 휴식 시간이 시작될 때
+/// - 기능: 15분간의 스누즈 시간을 설정하고, 모든 앱 차단을 일시적으로 해제
 public struct SnoozeBreakTimeUseCase: SnoozeBreakTimeUseCaseProtocol {
     
     private let appScheduleStorage: AppScheduleStorageProtocol

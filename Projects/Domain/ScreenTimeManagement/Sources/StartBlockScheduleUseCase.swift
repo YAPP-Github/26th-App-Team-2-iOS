@@ -9,6 +9,9 @@ import Foundation
 import DomainScreenTimeManagementInterface
 import Core
 
+/// 앱 차단 스케줄을 시작하는 UseCase
+/// - 사용처: ContentView에서 앱 차단을 시작할 때
+/// - 기능: 차단 스케줄을 시작하고 알림 트리거를 활성화하여 사용자에게 차단 알림을 제공
 public struct StartBlockScheduleUseCase: StartBlockScheduleUseCaseProtocol {
 
     private let appScheduleStorage: AppScheduleStorageProtocol

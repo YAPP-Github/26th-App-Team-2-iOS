@@ -9,6 +9,9 @@ import Foundation
 import DomainScreenTimeManagementInterface
 import Core
 
+/// 앱 차단 스케줄을 조회하는 UseCase
+/// - 사용처: ContentView에서 기존 차단 스케줄을 확인할 때
+/// - 기능: 특정 앱의 차단 스케줄을 조회하여 Domain Entity로 변환하여 반환
 public struct FetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol {
     
     private let blockScheduleManager: BlockScheduleProtocol

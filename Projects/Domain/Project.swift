@@ -16,7 +16,7 @@ let targets: [Target] = [
             .domain(implements: .User),
             .domain(implements: .OAuth),
             .domain(implements: .ScreenTimeManagement),
-            .domain(interface: .Shared),
+            .domain(implements: .Shared),
             .core
         ],
         settings: .settings(configurations: [

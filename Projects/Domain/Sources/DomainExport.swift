@@ -12,4 +12,4 @@
 @_exported import DomainShared
 @_exported import DomainSharedInterface
 @_exported import DomainScreenTimeManagementInterface
-@_exported import DomainScreeTimeManagement
+@_exported import DomainScreenTimeManagement
