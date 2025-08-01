@@ -8,11 +8,20 @@
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
-import CoreLocalStorageInterface
-import CoreLocalStorage
+
+import SharedDesignSystem
+import Core
+import DomainScreenTimeManagementInterface
+import DomainScreenTimeManagement
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
-    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
+    
+    override init() {
+        let container = DIContainer()
+        self.getBlockingStatusUseCase = container.makeGetBlockingStatusUseCase()
+        super.init()
+    }
 
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
@@ -43,17 +52,21 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
+        let status = getBlockingStatusUseCase.execute(tokenName: tokenName)
         let customIcon = getIconImage(by: status)
-        let customTitle = ShieldConfiguration.Label(
+        let titleLabel = ShieldConfiguration.Label(
             text: status.title,
-            color: .white
+            color: SharedDesignSystemAsset.Colors.grey100.color
+        )
+        let subtitleLabel = ShieldConfiguration.Label(
+            text: status.subtitle,
+            color: SharedDesignSystemAsset.Colors.grey300.color
         )
 
         let customPrimaryButtonLabel: ShieldConfiguration.Label?
         let primaryButton = ShieldConfiguration.Label(
             text: status.primaryButtonTitle,
-            color: .black
+            color: SharedDesignSystemAsset.Colors.grey850.color
         )
         switch status {
         case .unlockedTemporarily:
@@ -64,23 +77,23 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
         let customSecondaryButtonLabel = ShieldConfiguration.Label(
             text: status.secondaryButtonTitle,
-            color: .lightGray
+            color: SharedDesignSystemAsset.Colors.grey200.color
         )
 
         let shieldConfiguration = ShieldConfiguration(
             backgroundBlurStyle: .dark,
             backgroundColor: UIColor(red: 0.13, green: 0.14, blue: 0.16, alpha: 1.0),
             icon: customIcon,
-            title: customTitle,
-            subtitle: ShieldConfiguration.Label(text: "", color: .black),
+            title: titleLabel,
+            subtitle: subtitleLabel,
             primaryButtonLabel: customPrimaryButtonLabel,
-            primaryButtonBackgroundColor: UIColor.white,
+            primaryButtonBackgroundColor: SharedDesignSystemAsset.Colors.buttonYellow.color,
             secondaryButtonLabel: customSecondaryButtonLabel
         )
         return shieldConfiguration
     }
 
-    private func getIconImage(by status: BlockingStatus) -> UIImage {
+    private func getIconImage(by status: BlockingStatusEntity) -> UIImage {
         switch status {
         case .blocking:
             return UIImage(resource: .iconArrow)
@@ -88,7 +101,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return UIImage(resource: .iconWarning)
         case .extensionPrompt:
             return UIImage(resource: .illustrationBlock)
-        case .cooldownActive, .blockedAfterExtension:
+        case .sessionEnded, .cooldownActive:
             return UIImage(resource: .illustrationBlock)
         }
     }
