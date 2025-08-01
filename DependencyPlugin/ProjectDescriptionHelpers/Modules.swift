@@ -37,6 +37,7 @@ public extension ModulePath {
         case AppGroupFeature
         public static let name: String = "Feature"
         
+        case AppGroupFeature
         case Onboarding
     }
 }
