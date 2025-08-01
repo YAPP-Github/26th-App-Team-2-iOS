@@ -82,13 +82,10 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         case .blocking:
             completionHandler(.close)
         case .unlockedTemporarily:
-            // 다시 알림 보내기
-            scheduleNotification()
             appScheduleStorage.saveBlockingStatus(.blocking(tokenName: ""))
             completionHandler(.defer)
         case .extensionPrompt(let time, let count):
-            // 시간 더 연장 (최대 2회)
-            if count < 2 {
+            if count < 1 {
                 // 연장 횟수 증가
                 let newCount = count + 1
                 appScheduleStorage.saveExtensionCount(newCount)
@@ -137,7 +134,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         }
     }
     
-    /// 연장 시간이 모두 사용된 경우 호출 (5번: 세션 종료)
+    /// 연장 시간이 모두 사용된 경우 호출
     private func handleExtensionTimeExhausted(groupName: String, cooldownMinutes: Int) {
         let status = BlockingStatus.sessionEnded(
             time: cooldownMinutes,

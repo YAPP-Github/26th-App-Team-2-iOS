@@ -80,6 +80,7 @@ public enum BlockingStatus: Codable, Equatable {
         }
     }
 
+    // MARK: Example 용
     public var title: String {
         switch self {
         case .blocking(let name):

@@ -28,6 +28,7 @@ public struct CooldownStorage: CooldownStorageProtocol {
     // MARK: - CooldownStorageProtocol
     
     public func startCooldown(minutes: Int) {
+        guard isEmpty else { return }
         let cooldownEndTime = Date().addingTimeInterval(TimeInterval(minutes * 60))
         userDefaults?.set(cooldownEndTime, forKey: Keys.cooldownEndTime)
     }
@@ -67,4 +68,8 @@ public struct CooldownStorage: CooldownStorageProtocol {
         userDefaults?.removeObject(forKey: Keys.cooldownEndTime)
         userDefaults?.removeObject(forKey: Keys.cooldownGroup)
     }
-} 
+
+    private var isEmpty: Bool {
+        return getCooldownEndTime() == nil
+    }
+}
