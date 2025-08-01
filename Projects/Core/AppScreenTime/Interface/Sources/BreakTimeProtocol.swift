@@ -10,4 +10,7 @@ import Foundation
 public protocol BreakTimeProtocol {
     func createBreakTime(minutes: Int) throws
     func deleteBreakTime()
+    
+    func getStartDate() -> Date
+    func getEndDate() -> Date
 }
