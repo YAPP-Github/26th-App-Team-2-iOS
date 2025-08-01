@@ -7,17 +7,29 @@
 
 import Foundation
 import Domain
+import Core
 
-extension AppGroup: @retroactive Identifiable {
-    public var id: Int { self.groupID }
+extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
+    public var id: String {
+        "\(self.groupID)" + self.name + self.selection.applications.map(\.hashValue).map(String.init).joined()
+    }
+    public static func == (lhs: AppGroup, rhs: AppGroup) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
 @Observable
 public final class AppGroupMainViewModel {
-    
+    var brakeStatus: BrakeStatus = .none
     var addGroupPresent: Bool = false
+    
+    private var currentSchedule: BlockSchedule?
+    var currentActiveAppGroup: AppGroup? = nil
     var editAppGroup: AppGroup? = nil
     var toastMessage: String? = nil
+    
+    var sessionExitAlertPresent: Bool = false
+    
     var screenTimeAuthAlertPresent: Bool = false
     var screenTimeAuthErrorResult: ScreenTimeAuthorizationResult? = nil
     
@@ -27,6 +39,8 @@ public final class AppGroupMainViewModel {
     
     private let fetchAppGroupUseCase: FetchAppGroupUseCase
     private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
+    
+    private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
     
     public init(
         fetchAppGroupUseCase: FetchAppGroupUseCase,
@@ -65,18 +79,57 @@ public final class AppGroupMainViewModel {
     
     
     public func deleteCompleted(appGroup: AppGroup) {
+        if let currentSchedule {
+            blockScheduleManager.delete(currentSchedule)
+        }
+        self.currentSchedule = nil
         self.appGroups = []
         toast(message: "그룹이 삭제되었습니다.")
     }
     
     public func upsertCompleted(appGroup: AppGroup) {
         let message = appGroups.isEmpty ? "그룹이 추가되었습니다." : "그룹이 수정되었습니다."
+        do {
+            if let currentSchedule {
+                blockScheduleManager.delete(currentSchedule)
+            }
+            let schedule = BlockSchedule(
+                id: "\(appGroup.id)",
+                title: appGroup.name,
+                blockList: appGroup.selection,
+                startTime: BlockTime(hour: 00, minute: 00),
+                endTime: BlockTime(hour: 23, minute: 59)
+            )
+            self.currentSchedule = schedule
+            try blockScheduleManager.create(schedule)
+        } catch {
+            assertionFailure("앱 스케쥴 설정 실패: \(error)")
+        }
         self.appGroups = [appGroup]
+        
         toast(message: message)
+    }
+    
+    public func sessionExitButtonTapped() {
+        self.sessionExitAlertPresent = true
+    }
+    
+    /// 세션 종료하기 알림 버튼을 누름
+    public func sessionExitConfirmBtnTapped() {
+        self.sessionExitAlertPresent = false
+        self.brakeStatus = .locked
     }
 }
 
 fileprivate extension AppGroupMainViewModel {
+    
+    func sessionExit() async {
+        await MainActor.run { [weak self] in
+            guard let self else { return }
+            self.brakeStatus = .locked
+        }
+    }
+    
     func screenTimeAuthRequest() async {
         let result: ScreenTimeAuthorizationResult = await requestScreenTimeAuthUseCase.execute()
         await MainActor.run { [weak self] in
@@ -112,6 +165,7 @@ fileprivate extension AppGroupMainViewModel {
                 guard let self else { return }
                 if let appGroup {
                     appGroups = [appGroup]
+                    self.currentActiveAppGroup = appGroup
                 } else {
                     appGroups = []
                 }
