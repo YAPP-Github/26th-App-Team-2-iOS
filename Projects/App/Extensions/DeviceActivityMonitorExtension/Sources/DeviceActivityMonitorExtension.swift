@@ -9,7 +9,6 @@ import DeviceActivity
 import Foundation
 import ManagedSettings
 import DomainScreenTimeManagementInterface
-import DomainScreenTimeManagement
 
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
