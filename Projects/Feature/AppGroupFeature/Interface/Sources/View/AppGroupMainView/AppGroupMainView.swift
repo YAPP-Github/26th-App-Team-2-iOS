@@ -213,4 +213,3 @@ fileprivate extension AppGroupMainView {
         )
     }
 }
-

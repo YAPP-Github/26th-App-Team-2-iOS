@@ -171,7 +171,7 @@ extension AppGroupMainView {
     }
 }
 
-fileprivate struct BrakeTimerTextView: View {
+fileprivate struct SessionTimerTextView: View {
     let minutes: Int
     let seconds: Int
     var body: some View {
