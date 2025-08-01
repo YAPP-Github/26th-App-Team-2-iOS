@@ -20,6 +20,7 @@ extension AppGroupMainView {
         @Environment(AppGroupMainViewModel.self) var appGroupViewModel
         let appGroup: AppGroup
         
+        
         let editButtonTapped: () -> ()
         let sessionExitButtonTapped: () -> ()
         
@@ -170,7 +171,7 @@ extension AppGroupMainView {
     }
 }
 
-fileprivate struct SessionTimerTextView: View {
+fileprivate struct BrakeTimerTextView: View {
     let minutes: Int
     let seconds: Int
     var body: some View {

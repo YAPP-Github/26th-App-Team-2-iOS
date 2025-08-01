@@ -8,15 +8,7 @@
 import Foundation
 import Domain
 import Core
-import Core
 
-extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
-    public var id: String {
-        "\(self.groupID)" + self.name + self.selection.applications.map(\.hashValue).map(String.init).joined()
-    }
-    public static func == (lhs: AppGroup, rhs: AppGroup) -> Bool {
-        lhs.id == rhs.id
-    }
 extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
     public var id: String {
         "\(self.groupID)" + self.name + self.selection.applications.map(\.hashValue).map(String.init).joined()
@@ -296,6 +288,7 @@ public final class AppGroupMainViewModel {
         }
         
         self.appGroups = [appGroup]
+        
         
         toast(message: message)
     }

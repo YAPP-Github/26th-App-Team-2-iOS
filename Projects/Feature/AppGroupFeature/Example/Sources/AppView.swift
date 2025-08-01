@@ -28,9 +28,9 @@ struct FeatureAppGroupFeatureApp: App {
                     )
                 )
                 .safeAreaInset(edge: .bottom) {
-                    BrakeTabBarView(selectedTabBarItem: $selectedTab)
-                        .padding(.bottom, 16)
-                }
+                        BrakeTabBarView(selectedTabBarItem: $selectedTab)
+                            .padding(.bottom, 16)
+                    }
                     BrakeTabBarView(selectedTabBarItem: $selectedTab)
                         .padding(.bottom, 16)
                 }

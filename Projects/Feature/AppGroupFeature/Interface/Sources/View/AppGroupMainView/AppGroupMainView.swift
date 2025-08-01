@@ -43,6 +43,15 @@ public struct AppGroupMainView: View {
                 }, background: {
                     Color.black.opacity(0.5)
                 })
+                .alert(isPresented: $viewModel.sessionExitAlertPresent, content: {
+                    SessionExitAlertView {
+                        viewModel.sessionExitAlertPresent = false
+                    } exitAction: {
+                        viewModel.sessionExitConfirmBtnTapped()
+                    }
+                }, background: {
+                    Color.black.opacity(0.5)
+                })
                 .toast(
                     message: appGroupMainViewModel.toastMessage,
                     bottomPadding: 60
@@ -204,3 +213,4 @@ fileprivate extension AppGroupMainView {
         )
     }
 }
+
