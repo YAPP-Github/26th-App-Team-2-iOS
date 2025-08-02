@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SharedDesignSystem
-import SharedDesignSystem
 
 public struct SetNicknameView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
@@ -18,9 +17,6 @@ public struct SetNicknameView: View {
     
     public init() { }
     public var body: some View {
-        ZStack(alignment: .bottom) {
-            Color.grey900
-                .ignoresSafeArea()
         ZStack(alignment: .bottom) {
             Color.grey900
                 .ignoresSafeArea()
@@ -73,8 +69,16 @@ public struct SetNicknameView: View {
                             placeholderColor: .grey700,
                             cornerRadius: 16
                         )
-                    )
-                    .focused($nickNmaeFocusState)
+                        .autocorrectionDisabled()
+                        .focused($nickNmaeFocusState)
+
+                        if viewModel.isValid {
+                            Image.iconCheckGreen
+                                .frame(width: 24, height: 24)
+                                .padding(.trailing, 16)
+                        }
+                    }
+                    .padding(.horizontal, 16)
                     .onChange(of: setNicknameViewModel.nickname) { oldValue, newValue in
                         setNicknameViewModel.validNickname(newValue)
                     }
