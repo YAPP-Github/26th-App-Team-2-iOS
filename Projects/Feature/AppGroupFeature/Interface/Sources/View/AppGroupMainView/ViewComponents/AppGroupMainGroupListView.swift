@@ -12,7 +12,7 @@ import Domain
 extension AppGroupMainView {
     struct AppGroupMainGroupListView: View {
         @Environment(AppGroupMainViewModel.self) private var appGroupMainViewModel
-        @Environment(\.bottomInsetHeight) private var bottomInsetHeight
+        @Environment(\.tabBarInsetHeight) private var tabBarInsetHeight
         var body: some View {
             VStack(spacing: 0) {
                 Color.grey900.frame(height: 1)
@@ -32,7 +32,7 @@ extension AppGroupMainView {
                             }
                             .padding(.horizontal, 16)
                             
-                            Rectangle().fill(Color.clear).frame(height: bottomInsetHeight)
+                            Rectangle().fill(Color.clear).frame(height: tabBarInsetHeight)
                         }
                     }
                 }
