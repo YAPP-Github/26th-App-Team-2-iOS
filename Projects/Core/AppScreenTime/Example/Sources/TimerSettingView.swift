@@ -12,7 +12,7 @@ struct TimerSettingView: View {
     @State private var selectedMinutes: Int = 30
     
     // 10분부터 60분까지 5분 단위로 배열 생성
-    private let timeOptions = Array(stride(from: 10, through: 60, by: 5))
+    private let timeOptions = Array(stride(from: 15, through: 60, by: 5))
     
     // 값을 넘길 콜백
     var onSelect: (Int) -> Void

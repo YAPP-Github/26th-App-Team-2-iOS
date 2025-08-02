@@ -10,6 +10,8 @@ import Foundation
 public protocol BlockScheduleProtocol {
     func create(_ model: BlockSchedule) throws
     func delete(_ model: BlockSchedule)
-    func update(_ model: BlockSchedule) throws
-    func save(_ schedule: BlockSchedule) throws
+    func startBlockSchedule(_ schedule: BlockSchedule)
+    func endBlockSchedule(_ schedule: BlockSchedule)
+    func readAll() -> [BlockSchedule]
+    func read(_ id: String) -> BlockSchedule?
 }

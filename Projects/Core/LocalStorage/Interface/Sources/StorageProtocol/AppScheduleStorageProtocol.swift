@@ -12,16 +12,18 @@ import FamilyControls
 public protocol AppScheduleStorageProtocol {
     func saveSelectNotificationTrigger(_ isSelected: Bool)
     func getSelectedNotification() -> Bool
-    func saveBlockingStatus(_ isBlocked: Bool)
-    func getBlockingStatus() -> Bool
-    func saveLastBlockTime(_ date: Date)
-    func getLastBlockTime() -> Date?
-    func clearAllData()
+    func saveBlockingStatus(_ status: BlockingStatus)
+    func getBlockingStatus() -> BlockingStatus?
+    func saveExtensionCount(_ count: Int)
+    func getExtensionCount() -> Int
+    
+    // 연장 시간 관련 메서드들
+    func saveExtensionTime(_ minutes: Int)
+    func getExtensionTime() -> Int
 
     // BlockSchedule 저장/로드 메서드들 (Data 기반으로 변경)
     func saveBlockScheduleData(_ data: Data, forId id: String)
     func getBlockScheduleData(forId id: String) -> Data?
     func getAllBlockScheduleIds() -> [String]
     func deleteBlockSchedule(id: String)
-    func clearAllBlockSchedules()
 }

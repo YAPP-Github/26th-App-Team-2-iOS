@@ -8,11 +8,20 @@
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
-import CoreLocalStorageInterface
-import CoreLocalStorage
+
+import SharedDesignSystem
+import Core
+import DomainScreenTimeManagementInterface
+import DomainScreenTimeManagement
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
-    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
+    
+    override init() {
+        let container = DIContainer()
+        self.getBlockingStatusUseCase = container.makeGetBlockingStatusUseCase()
+        super.init()
+    }
 
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
@@ -20,7 +29,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for applications shielded because of their category.
         guard let displayName = application.localizedDisplayName,
               let categoryName = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 앱")
@@ -29,7 +37,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
-        // Customize the shield as needed for web domains.
         guard let displayName = webDomain.domain else {
             return setShieldConfig("알 수 없는 웹사이트")
         }
@@ -37,7 +44,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for web domains shielded because of their category.
         guard let displayName = webDomain.domain,
               let categoryName = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 웹사이트")
@@ -45,42 +51,58 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return setShieldConfig("\(categoryName) - \(displayName)")
     }
 
-    private func isNotificationArrived() -> Bool {
-        // AppScheduleStorage를 사용하여 알림 상태 확인
-        return appScheduleStorage.getBlockingStatus()
-    }
-
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        let isNotiArrived = isNotificationArrived()
-
-        let customIcon = UIImage(resource: isNotiArrived ? .iconArrow : .iconWarning)
-        let customTitle = ShieldConfiguration.Label(
-            text: isNotiArrived ? "알림을 눌러 사용 시간을 설정해주세요" : "\(tokenName)을 꼭 사용하실건가요?",
-            color: .white
+        let status = getBlockingStatusUseCase.execute(tokenName: tokenName)
+        let customIcon = getIconImage(by: status)
+        let titleLabel = ShieldConfiguration.Label(
+            text: status.title,
+            color: SharedDesignSystemAsset.Colors.grey100.color
         )
+        let subtitleLabel = ShieldConfiguration.Label(
+            text: status.subtitle,
+            color: SharedDesignSystemAsset.Colors.grey300.color
+        )
+
+        let customPrimaryButtonLabel: ShieldConfiguration.Label?
+        let primaryButton = ShieldConfiguration.Label(
+            text: status.primaryButtonTitle,
+            color: SharedDesignSystemAsset.Colors.grey850.color
+        )
+        switch status {
+        case .unlockedTemporarily:
+            customPrimaryButtonLabel = nil
+        default:
+            customPrimaryButtonLabel = primaryButton
+        }
+
         let customSecondaryButtonLabel = ShieldConfiguration.Label(
-            text: isNotiArrived ? "다시 알림 보내기" : "안하기",
-            color: .lightGray
+            text: status.secondaryButtonTitle,
+            color: SharedDesignSystemAsset.Colors.grey200.color
         )
-
-        let topButton = ShieldConfiguration.Label(
-            text: "사용하기",
-            color: .black
-        )
-        let customPrimaryButtonLabel: ShieldConfiguration.Label? = isNotiArrived ? nil :topButton
 
         let shieldConfiguration = ShieldConfiguration(
             backgroundBlurStyle: .dark,
             backgroundColor: UIColor(red: 0.13, green: 0.14, blue: 0.16, alpha: 1.0),
             icon: customIcon,
-            title: customTitle,
-            subtitle: ShieldConfiguration.Label(text: "", color: .black),
+            title: titleLabel,
+            subtitle: subtitleLabel,
             primaryButtonLabel: customPrimaryButtonLabel,
-            primaryButtonBackgroundColor: UIColor.white,
+            primaryButtonBackgroundColor: SharedDesignSystemAsset.Colors.buttonYellow.color,
             secondaryButtonLabel: customSecondaryButtonLabel
         )
         return shieldConfiguration
     }
+
+    private func getIconImage(by status: BlockingStatusEntity) -> UIImage {
+        switch status {
+        case .blocking:
+            return UIImage(resource: .iconArrow)
+        case .unlockedTemporarily:
+            return UIImage(resource: .iconWarning)
+        case .extensionPrompt:
+            return UIImage(resource: .illustrationBlock)
+        case .sessionEnded, .cooldownActive:
+            return UIImage(resource: .illustrationBlock)
+        }
+    }
 }
-
-

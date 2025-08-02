@@ -11,3 +11,5 @@
 @_exported import DomainOAuthInterface
 @_exported import DomainShared
 @_exported import DomainSharedInterface
+@_exported import DomainScreenTimeManagementInterface
+@_exported import DomainScreenTimeManagement

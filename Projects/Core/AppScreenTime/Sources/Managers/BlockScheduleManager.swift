@@ -39,17 +39,6 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
         managedSettingsManager.clearBlockList(for: schedule)
     }
 
-    // 차단 앱 스케줄 업데이트
-    public func update(_ schedule: BlockSchedule) throws {
-        delete(schedule)
-        try create(schedule)
-    }
-    
-    // 스케줄 활성화/비활성화에 따른 블록 리스트 관리
-    public func updateBlockListBasedOnState(for model: BlockSchedule, isActive: Bool) {
-        managedSettingsManager.updateBlockListBasedOnState(for: model, isActive: isActive)
-    }
-    
     public func startBlockSchedule(_ schedule: BlockSchedule) {
         // 블록 리스트 적용
         managedSettingsManager.updateBlockList(for: schedule)
@@ -61,33 +50,8 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
         
         // 2. 추가적으로 모든 블록 리스트를 해제하는 방법도 시도
         managedSettingsManager.clearAllBlockListsForRest(schedules: [])
-        
-        // 3. 차단 상태도 해제
-        appScheduleStorage.saveBlockingStatus(false)
     }
-    
-    // 모든 블록 스케줄 업데이트
-    public func update() {
-        // 저장된 모든 스케줄에 대해 블록 리스트 적용
-        // 실제 구현에서는 저장된 스케줄들을 불러와서 적용
-        managedSettingsManager.updateAllBlockLists(schedules: [])
-    }
-    
-    // BlockSchedule을 DeviceActivityName으로부터 생성
-    public func read(_ id: String) -> BlockSchedule? {
-        // AppScheduleStorage에서 저장된 BlockSchedule Data 조회 후 디코딩
-        guard let data = appScheduleStorage.getBlockScheduleData(forId: id) else {
-            return nil
-        }
-        
-        do {
-            let decoder = JSONDecoder()
-            return try decoder.decode(BlockSchedule.self, from: data)
-        } catch {
-            return nil
-        }
-    }
-    
+
     // 모든 BlockSchedule 조회
     public func readAll() -> [BlockSchedule] {
         let allIds = appScheduleStorage.getAllBlockScheduleIds()
@@ -97,9 +61,24 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
 
         return schedules
     }
-    
+
+    // BlockSchedule을 DeviceActivityName으로부터 생성
+    public func read(_ id: String) -> BlockSchedule? {
+        // AppScheduleStorage에서 저장된 BlockSchedule Data 조회 후 디코딩
+        guard let data = appScheduleStorage.getBlockScheduleData(forId: id) else {
+            return nil
+        }
+
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode(BlockSchedule.self, from: data)
+        } catch {
+            return nil
+        }
+    }
+
     // BlockSchedule 저장
-    public func save(_ schedule: BlockSchedule) throws {
+    private func save(_ schedule: BlockSchedule) throws {
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(schedule)
@@ -107,11 +86,6 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
         } catch {
             throw error
         }
-    }
-    
-    // BlockSchedule 삭제
-    public func remove(_ id: String) {
-        appScheduleStorage.deleteBlockSchedule(id: id)
     }
 
 }

@@ -14,7 +14,7 @@ import CoreAppScreenTimeInterface
 // ManagedSettingsStore 관리자
 // BlockSchedule의 블록 리스트를 관리
 // 휴식 시 블록 리스트를 비워줌
-public struct ManagedSettingsStoreManager {
+public struct ManagedSettingsStoreManager: ManagedSettingsStoreProtocol {
 
     public init() { }
 
@@ -29,23 +29,7 @@ public struct ManagedSettingsStoreManager {
         let center = center(for: schedule)
         center.clearShield()
     }
-    
-    // 스케줄의 상태를 통해 블록 리스트 업데이트
-    public func updateBlockListBasedOnState(for schedule: BlockSchedule, isActive: Bool) {
-        if isActive {
-            updateBlockList(for: schedule)
-        } else {
-            clearBlockList(for: schedule)
-        }
-    }
-    
-    // 모든 스케줄의 블록 리스트 업데이트
-    public func updateAllBlockLists(schedules: [BlockSchedule]) {
-        schedules.forEach { schedule in
-            updateBlockList(for: schedule)
-        }
-    }
-    
+
     // 모든 스케줄의 블록 리스트 삭제
     public func clearAllBlockLists(schedules: [BlockSchedule]) {
         schedules.forEach { schedule in
