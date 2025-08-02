@@ -44,7 +44,12 @@ public struct BrakeTappableText: View {
         let res = text.components(separatedBy: " ").map { $0 + " " }.flatMap({ word in
             for tappableWord in tappableWords.keys {
                 if word.contains(tappableWord) {
-                    return [tappableWord,  String(word.split(separator: tappableWord)[0])]
+                    let splitWords = word.split(separator: tappableWord)
+                    if splitWords.count > 1 {
+                        return [tappableWord,  String(splitWords[0])]
+                    } else {
+                        return [tappableWord]
+                    }
                 }
             }
             return [word]

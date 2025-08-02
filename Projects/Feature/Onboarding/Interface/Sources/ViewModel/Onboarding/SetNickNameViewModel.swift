@@ -57,19 +57,15 @@ public final class SetNicknameViewModel {
     public func confirmDeleteUserButtonTapped() {
         Task {
             do {
-                do {
-                    try await logInCancelUseCase.execute()
-                    await MainActor.run { [weak self] in
-                        guard let self else { return }
-                        logInCancelCompleted()
-                    }
-                } catch {
-#if DEBUG
-                    print("로그아웃 유즈케이스 실패: \(error)")
-#endif
+                try await logInCancelUseCase.execute()
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    logInCancelCompleted()
                 }
             } catch {
-                
+#if DEBUG
+                print("로그아웃 유즈케이스 실패: \(error)")
+#endif
             }
         }
     }

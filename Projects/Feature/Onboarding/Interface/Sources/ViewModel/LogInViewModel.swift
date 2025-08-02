@@ -18,7 +18,7 @@ struct LinkInfoItem: Identifiable {
 
 @Observable
 public final class LogInViewModel {
-    var linkInfoItem: LinkInfoItem? = nil
+    var linkInfoItem: LinkInfoItem?
     var kakaoLogInShow: Bool = false
     var loading: Bool = false
     
@@ -86,14 +86,14 @@ public final class LogInViewModel {
     
     public func privacyInfoButtonTapped() {
         self.linkInfoItem = LinkInfoItem(
-            title: "brake.site",
+            title: "개인정보처리방침",
             url: URL(string: Constant.WebURLLinks.privacyPolicy)
         )
     }
     
     public func termsOfServiceButtonTapped() {
         self.linkInfoItem = LinkInfoItem(
-            title: "brake.site",
+            title: "서비스 이용약관",
             url: URL(string: Constant.WebURLLinks.termsOfService)
         )
     }
