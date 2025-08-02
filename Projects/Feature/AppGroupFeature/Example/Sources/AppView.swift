@@ -12,9 +12,7 @@ import SharedDesignSystem
 
 @main
 struct FeatureAppGroupFeatureApp: App {
-    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
     @Environment(\.appGroupDIContainer) var diContainer
     @State private var selectedTab: TabItemType = .dashboard
     var body: some Scene {
@@ -33,8 +31,6 @@ struct FeatureAppGroupFeatureApp: App {
                         BrakeTabBarView(selectedTabBarItem: $selectedTab)
                             .padding(.bottom, 16)
                     }
-                    BrakeTabBarView(selectedTabBarItem: $selectedTab)
-                        .padding(.bottom, 16)
                 }
         }
     }
