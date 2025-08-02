@@ -51,7 +51,7 @@ public struct BrakeNavigationView<TitleView: View, LeadingView: View, TrailingVi
     }
     
     public init(
-         title: @autoclosure () -> TitleView,
+        @ViewBuilder title: () -> TitleView,
         @ViewBuilder leading: () -> LeadingView,
         @ViewBuilder trailing: () -> TrailingView
     ) {
@@ -61,7 +61,7 @@ public struct BrakeNavigationView<TitleView: View, LeadingView: View, TrailingVi
     }
     
     public init(
-        title: @autoclosure () -> TitleView,
+        @ViewBuilder title: () -> TitleView,
         @ViewBuilder trailing: () -> TrailingView
     ) where LeadingView == EmptyView {
         self.title = title()
@@ -70,7 +70,7 @@ public struct BrakeNavigationView<TitleView: View, LeadingView: View, TrailingVi
     }
     
     public init(
-        title: @autoclosure () -> TitleView,
+        @ViewBuilder title: () -> TitleView,
         @ViewBuilder leading: () -> LeadingView
     ) where TrailingView == EmptyView {
         self.title = title()

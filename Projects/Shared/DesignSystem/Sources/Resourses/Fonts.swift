@@ -23,6 +23,7 @@ public extension Font {
         case medium
         case semiBold
         case thin
+        case regular
 
         public var fontConvertible: SharedDesignSystemFontConvertible {
             switch self {
@@ -42,6 +43,8 @@ public extension Font {
                 return SharedDesignSystemFontFamily.Pretendard.semiBold
             case .thin:
                 return SharedDesignSystemFontFamily.Pretendard.thin
+            case .regular:
+                return SharedDesignSystemFontFamily.Pretendard.regular
             }
         }
     }

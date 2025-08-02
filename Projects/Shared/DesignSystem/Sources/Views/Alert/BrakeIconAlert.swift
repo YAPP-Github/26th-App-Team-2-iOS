@@ -51,6 +51,8 @@ public struct BrakeIconAlert: View {
                     .lineLimit(nil)
             }
             .padding(.horizontal, 16)
+
+            Spacer(minLength: 16)
         } else {
             Spacer(minLength: 17)
             Text(title)
