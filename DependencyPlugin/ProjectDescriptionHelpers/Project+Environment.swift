@@ -11,7 +11,7 @@ import ProjectDescription
 public extension Project {
     enum Environment {
         public static let deploymentTarget = DeploymentTargets.iOS("17.2")
-        public static let currentAppVersion: String = "0.0.0"
+        public static let currentAppVersion: String = "1.0.0"
         
         /// 앱 이름, 타겟 이름 - 스키마 대응
         public static let appName = "Brake"
