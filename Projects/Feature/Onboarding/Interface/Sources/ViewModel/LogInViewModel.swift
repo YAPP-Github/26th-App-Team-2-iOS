@@ -7,6 +7,7 @@
 
 import Foundation
 import Domain
+import SharedUtil
 
 struct LinkInfoItem: Identifiable {
     var id: String { title }
@@ -86,14 +87,14 @@ public final class LogInViewModel {
     public func privacyInfoButtonTapped() {
         self.linkInfoItem = LinkInfoItem(
             title: "brake.site",
-            url: URL(string: Constants.WebURLLinks.privacyPolicy)
+            url: URL(string: Constant.WebURLLinks.privacyPolicy)
         )
     }
     
     public func termsOfServiceButtonTapped() {
         self.linkInfoItem = LinkInfoItem(
             title: "brake.site",
-            url: URL(string: Constants.WebURLLinks.termsOfService)
+            url: URL(string: Constant.WebURLLinks.termsOfService)
         )
     }
     
