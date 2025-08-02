@@ -22,12 +22,13 @@ public struct OnboardingCompletedView: View {
                     Text("반가워요!")
                         .font(.pretendard(size: 28, type: .bold))
                     Text("목표를 세우고 지키는\n새로운 일상을 경험해보세요")
-                            .font(.pretendard(size: 20, type: .semiBold))
-                            .lineSpacing(6)
-                            .multilineTextAlignment(.center)
+                        .font(.pretendard(size: 20, type: .semiBold))
+                        .lineSpacing(6)
+                        .multilineTextAlignment(.center)
                 }
                 .foregroundStyle(.white)
                 .padding(.top, 24)
+                
                 Spacer()
             }
             .alert(
@@ -40,15 +41,6 @@ public struct OnboardingCompletedView: View {
                     Text("다시 시도해주세요.")
                 }
             )
-            VStack {
-                Spacer()
-                Image.onboarding.coolDown
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fit)
-                    .padding(.horizontal, 48)
-                Spacer()
-            }
-        
             
             LargeButtonView(buttonType: .confirm, title: "시작하기", isActive: true) {
                 viewModel.startBtnTapped()
@@ -58,20 +50,34 @@ public struct OnboardingCompletedView: View {
         .toolbar(.hidden, for: .navigationBar)
     }
     
-    @ViewBuilder var background: some View {
-        Color.grey900.ignoresSafeArea()
-        GeometryReader { proxy in
-            LinearGradient(
-                stops: [
-                    .init(color: Color(red: 192 / 255, green: 219 / 255, blue: 255 / 255), location: 0),
-                    .init(color: Color(red: 192 / 255, green: 219 / 255, blue: 255 / 255).opacity(0.28), location: 0.56),
-                    .init(color: Color(red: 192 / 255, green: 219 / 255, blue: 255 / 255).opacity(0), location: 1)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            ).opacity(0.15)
-                .frame(height: proxy.size.height * 0.5)
-        }
-        .ignoresSafeArea(.all)
+    @ViewBuilder
+    private var background: some View {
+        ZStack(alignment: .bottom) {
+            Color.grey900
+            Image.onboarding.welcome
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+            GeometryReader { proxy in
+                VStack {
+                    LinearGradient(stops: [
+                        .init(color: Color(hex: "#C0DBFF").opacity(1), location: 0),
+                        .init(color: Color(hex: "#C0DBFF").opacity(0.28), location: 0.58),
+                        .init(color: Color(hex: "#C0DBFF").opacity(0), location: 1),
+                    ], startPoint: .top, endPoint: .bottom)
+                    .opacity(0.15)
+                    .frame(height: proxy.size.height * 0.4)
+                    Spacer()
+                    LinearGradient(
+                        stops: [
+                            .init(color: Color.black, location: 0),
+                            .init(color: Color.black.opacity(0), location: 1)
+                        ],
+                        startPoint: .bottom,
+                        endPoint: .top
+                    )
+                    .frame(height: proxy.size.height * 0.4)
+                }
+            }
+        }.ignoresSafeArea()
     }
 }

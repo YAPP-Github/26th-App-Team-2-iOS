@@ -21,6 +21,8 @@ public struct OnboardingImages {
     public let timeSetting: Image = SharedDesignSystemAsset.Images.onboardingTimeSetting.swiftUIImage
     public let screentime: Image = SharedDesignSystemAsset.Images.onboardingAuthScreentime.swiftUIImage
     public let notification: Image = SharedDesignSystemAsset.Images.onboardingAuthNotification.swiftUIImage
+    public let welcome: Image = SharedDesignSystemAsset.Images.onboardingWelcome.swiftUIImage
+    public let login: Image = SharedDesignSystemAsset.Images.onboardingLogin.swiftUIImage
     
     init() { }
 }

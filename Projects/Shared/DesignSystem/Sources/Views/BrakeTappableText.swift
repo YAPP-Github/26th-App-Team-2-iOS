@@ -1,5 +1,5 @@
 //
-//  TappableText.swift
+//  BrakeTappableText.swift
 //  FeatureOnboardingInterface
 //
 //  Created by Greem on 7/30/25.
@@ -8,9 +8,16 @@
 import Foundation
 import SwiftUI
 
-public struct TappableText: View {
-    public let text: String
-    public let tappableWords: [String: () -> Void]
+public struct BrakeTappableText: View {
+    private let text: String
+    private let tappableWords: [String: () -> Void]
+    public init(
+        text: String,
+        tappableWords: [String : () -> Void]
+    ) {
+        self.text = text
+        self.tappableWords = tappableWords
+    }
     public var body: some View {
         HStack(spacing: 0) {
             ForEach(words, id: \.self) { word in

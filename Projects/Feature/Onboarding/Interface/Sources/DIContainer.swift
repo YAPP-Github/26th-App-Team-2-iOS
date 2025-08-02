@@ -113,7 +113,7 @@ public final class ProductionDIContainer: DIContainerProtocol {
         userProfileService: userProfileService
     )
     
-    public lazy var logInCancelUseCase: LogInCancelUseCase = LogInCancelUseCase(oAuthService: oAuthLogInService)
+    public lazy var logInCancelUseCase: LogInCancelUseCase = LogInCancelUseCase(userProfileService: userProfileService)
     
     public lazy var appleLogInUseCase: AppleLogInUseCase = AppleLogInUseCase(
         oAuthService: oAuthLogInService,

@@ -18,7 +18,7 @@ extension LoginView {
             VStack(spacing: 25) {
                 VStack(spacing: 0) {
                     Text("아래 버튼으로 로그인 시,")
-                    TappableText(
+                    BrakeTappableText(
                         text: "개인정보처리방침 및 이용약관에 동의하는 것으로 간주합니다.",
                         tappableWords: [
                             "개인정보처리방침": {

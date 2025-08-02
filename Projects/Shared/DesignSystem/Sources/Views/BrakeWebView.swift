@@ -1,7 +1,7 @@
 import SwiftUI
 import WebKit
 
-public struct WebView: UIViewRepresentable {
+public struct BrakeWebView: UIViewRepresentable {
     public typealias UIViewType = WKWebView
     let url: URL
 

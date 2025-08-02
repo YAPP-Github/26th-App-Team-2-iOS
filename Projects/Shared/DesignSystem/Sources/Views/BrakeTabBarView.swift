@@ -9,13 +9,10 @@ import SwiftUI
 
 
 public struct BrakeTabBarView: View {
-
     @Binding private var selectedTabBarItem: TabItemType
-
     public init(selectedTabBarItem: Binding<TabItemType>) {
         self._selectedTabBarItem = selectedTabBarItem
     }
-
     public var body: some View {
         HStack(spacing: 48) {
             ForEach(TabItemType.allCases) { item in
@@ -41,3 +38,5 @@ public struct BrakeTabBarView: View {
         .clipShape(RoundedRectangle(cornerRadius: 60))
     }
 }
+
+

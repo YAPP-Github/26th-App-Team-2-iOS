@@ -11,15 +11,22 @@ import SharedDesignSystem
 
 public struct LoginView: View {
     @Environment(LogInViewModel.self) var logInViewModel
-    @State private var linkInfoItem: LinkInfoItem? = nil
     @State private var kakaoLogInShow: Bool = false
     @State private var loading: Bool = false
     
     public init() { }
     
     public var body: some View {
+        @Bindable var viewModel = logInViewModel
         ZStack {
             Color.grey900.ignoresSafeArea()
+            VStack {
+                Image.onboarding.login
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .ignoresSafeArea()
+                Spacer()
+            }
             VStack(spacing: 16) {
                 Spacer()
                 LoginFooterView {
@@ -28,24 +35,19 @@ public struct LoginView: View {
                 } appleLogInButtonTapped: {
                     logInViewModel.appleLogInBtnTapped()
                 } privacyInfoButtonTapped: {
-                    self.linkInfoItem = LinkInfoItem(
-                        title: "brake.site",
-                        url: URL(string: Constants.WebURLLinks.privacyPolicy)
-                        )
+                    self.logInViewModel.privacyInfoButtonTapped()
                 } termsOfServiceButtonTapped: {
-                    self.linkInfoItem = LinkInfoItem(
-                        title: "brake.site",
-                        url: URL(string: Constants.WebURLLinks.termsOfService)
-                        )
+                    self.logInViewModel.termsOfServiceButtonTapped()
                 }
                 .padding([.horizontal, .bottom], 16)
             }
-            VStack(spacing: 8) {
-                Text("계획한 만큼만 앱을 사용하도록\n도와드릴게요")
-                    .font(.pretendard(size: 22, type: .semiBold))
-                    .foregroundStyle(.white)
-                    .multilineTextAlignment(.center)
+            VStack(alignment: .center, spacing: 0) {
+                Text("계획한 만큼만 앱을 사용하도록").frame(height: 33)
+                Text("도와드릴게요")
+                    .frame(height: 33)
             }
+            .font(.pretendard(size: 22, type: .semiBold))
+            .foregroundStyle(.white)
             
             if logInViewModel.loading {
                 ProgressView()
@@ -71,37 +73,35 @@ public struct LoginView: View {
                 }
             }
         )
-        .fullScreenCover(item: self.$linkInfoItem, content: { linkInfoItem in
+        .fullScreenCover(
+            item: $viewModel.linkInfoItem,
+            content: { linkInfoItem in
             NavigationView {
                 if let url = linkInfoItem.url {
-                    WebView(url: url)
+                    BrakeWebView(url: url)
                     .ignoresSafeArea(.container, edges: .bottom)
                     .navigationTitle(linkInfoItem.title)
                     .navigationBarTitleDisplayMode(.inline)
-                    .toolbar(content: {
+                    .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
-                            Button("완료") { self.linkInfoItem = nil }
+                            Button("완료") { viewModel.linkInfoItem = nil }
                         }
-                    })
+                    }
                 } else {
                     Text("잘못된 URL입니다")
                         .navigationTitle("오류")
                         .navigationBarTitleDisplayMode(.inline)
-                        .toolbar(content: {
+                        .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                Button("완료") { self.linkInfoItem = nil }
+                                Button("완료") { viewModel.linkInfoItem = nil }
                             }
-                        })
+                        }
                 }
             }
         })
     }
 }
 
-private struct LinkInfoItem: Identifiable {
-    var id: String { title }
-    let title: String
-    let url: URL?
-}
+
 
 

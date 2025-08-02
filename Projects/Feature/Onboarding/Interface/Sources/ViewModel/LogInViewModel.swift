@@ -8,16 +8,18 @@
 import Foundation
 import Domain
 
-public protocol LogInViewModelDelegate: AnyObject {
-    func logInCompleted()
+struct LinkInfoItem: Identifiable {
+    var id: String { title }
+    let title: String
+    let url: URL?
 }
 
 
 @Observable
 public final class LogInViewModel {
-    
+    var linkInfoItem: LinkInfoItem? = nil
     var kakaoLogInShow: Bool = false
-    var loading: Bool = false 
+    var loading: Bool = false
     
     private let appleLogInUseCase: AppleLogInUseCase
     private let kakaoLogInUseCase: KakaoLogInUseCase
@@ -79,7 +81,20 @@ public final class LogInViewModel {
         }
     }
     
-    func kakaoLogInFailed() {
-        
+    func kakaoLogInFailed() { }
+    
+    public func privacyInfoButtonTapped() {
+        self.linkInfoItem = LinkInfoItem(
+            title: "brake.site",
+            url: URL(string: Constants.WebURLLinks.privacyPolicy)
+        )
     }
+    
+    public func termsOfServiceButtonTapped() {
+        self.linkInfoItem = LinkInfoItem(
+            title: "brake.site",
+            url: URL(string: Constants.WebURLLinks.termsOfService)
+        )
+    }
+    
 }

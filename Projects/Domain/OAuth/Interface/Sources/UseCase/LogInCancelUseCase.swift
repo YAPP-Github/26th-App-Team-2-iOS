@@ -11,16 +11,15 @@ import DomainSharedInterface
 
 
 public struct LogInCancelUseCase {
-    private let oAuthService: OAuthServiceProtocol
+    private let userProfileService: UserProfileProtocol
     
     public init(
-        oAuthService: OAuthServiceProtocol
-        // MARK: -- 앱 그룹 기록 삭제하는 코드도 추가해야한다.
+        userProfileService: UserProfileProtocol
     ) {
-        self.oAuthService = oAuthService
+        self.userProfileService = userProfileService
     }
     
     public func execute() async throws {
-        try await oAuthService.logInCancel()
+        try await userProfileService.deleteUser()
     }
 }

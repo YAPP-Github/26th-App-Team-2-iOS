@@ -17,7 +17,6 @@ public protocol OAuthServiceProtocol {
     var onboardingState: OnboardingStateProtocol { get }
     
     func login(oAuthType: OAuthType, authorizationCode: String) async throws
-    func logInCancel() async throws 
 }
 
 public final class OAuthLogInService {

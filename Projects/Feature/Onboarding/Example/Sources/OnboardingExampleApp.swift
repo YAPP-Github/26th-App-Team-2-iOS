@@ -26,7 +26,6 @@ struct OnboardingExampleApp: App {
                         onboardingStateUseCase: diContainer.onboardingStateUseCase
                     )
                 )
-                
         }
     }
     

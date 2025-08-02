@@ -61,13 +61,6 @@ public struct UserNotificationAuthView: View {
             .padding(.bottom, 16)
         }
         .toolbar(.hidden, for: .navigationBar)
-//        VStack(spacing: 20) {
-//            Button {
-//                userNotificationAuthViewModel.authorizationButtonTapped()
-//            } label: {
-//                Text("알림 노티피케이션 권한").font(.title)
-//            }
-//        }
         .alert(
             userNotificationAuthViewModel.notoficationAuthFailedResult?.alertTitle ?? "",
             isPresented: .init(get: {
