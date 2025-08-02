@@ -36,7 +36,7 @@ struct FeatureAppGroupFeatureApp: App {
                 }
         }
     }
-}
+
 
 struct BrakeTabView: View {
     @Environment(\.appGroupDIContainer) var diContainer

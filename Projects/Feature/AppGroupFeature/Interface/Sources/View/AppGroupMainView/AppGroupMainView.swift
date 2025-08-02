@@ -11,16 +11,6 @@ import SharedDesignSystem
 import FamilyControls
 
 // MARK: - Custom Environment Key
-public struct BottomInsetHeightKey: EnvironmentKey {
-    public static let defaultValue: CGFloat = 0
-}
-
-extension EnvironmentValues {
-    public var bottomInsetHeight: CGFloat {
-        get { self[BottomInsetHeightKey.self] }
-        set { self[BottomInsetHeightKey.self] = newValue }
-    }
-}
 
 public struct AppGroupMainView: View {
     @Environment(\.appGroupDIContainer) private var diContainer
