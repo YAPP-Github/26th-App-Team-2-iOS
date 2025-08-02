@@ -43,6 +43,10 @@ public extension Image {
     static let iconGroup: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
     static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
     static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
+    static let iconCoolDown: Image = SharedDesignSystemAsset.Images.iconCooldown.swiftUIImage
+    static let iconGroup: Image = SharedDesignSystemAsset.Images.iconGroup.swiftUIImage
+    static let iconTimer: Image = SharedDesignSystemAsset.Images.iconTimer.swiftUIImage
+    static let iconProfile: Image = SharedDesignSystemAsset.Images.iconProfile.swiftUIImage
 }
 
 
