@@ -8,6 +8,32 @@
 import SwiftUI
 
 
+public struct BrakeTabView<Content: View> : View {
+    @Binding private var selectedTab: TabItemType
+    @State private var tabBarInsetHeight: CGFloat = 0
+    private let content: (TabItemType) -> Content
+    
+    
+    public init(
+        selectedTab: Binding<TabItemType>,
+        content: @escaping (TabItemType) -> Content
+    ) {
+        self._selectedTab = selectedTab
+        self.content = content
+    }
+    
+    public var body: some View {
+        GeometryReader { geometry in
+            self.content(selectedTab)
+                .environment(\.tabBarInsetHeight, tabBarInsetHeight)
+                .onAppear { tabBarInsetHeight = geometry.safeAreaInsets.bottom }
+        }.safeAreaInset(edge: .bottom) {
+            BrakeTabBarView(selectedTabBarItem: $selectedTab)
+                .padding(.bottom, 16)
+        }
+    }
+}
+
 public struct BrakeTabBarView: View {
 
     @Binding private var selectedTabBarItem: TabItemType
@@ -41,3 +67,16 @@ public struct BrakeTabBarView: View {
         .clipShape(RoundedRectangle(cornerRadius: 60))
     }
 }
+
+public struct TabBarInsetHeightKey: EnvironmentKey {
+    public static let defaultValue: CGFloat = 0
+}
+
+extension EnvironmentValues {
+    public var tabBarInsetHeight: CGFloat {
+        get { self[TabBarInsetHeightKey.self] }
+        set { self[TabBarInsetHeightKey.self] = newValue }
+    }
+}
+
+

@@ -46,26 +46,3 @@ struct FeatureAppGroupFeatureApp: App {
         }
     }
 }
-
-struct BrakeTabView<Content: View>: View {
-    @Binding var selectedTab: TabItemType
-    @State private var bottomInsetHeight: CGFloat = 0
-    
-    private let content: (TabItemType) -> Content
-    
-    init(selectedTab: Binding<TabItemType> ,content: @escaping (TabItemType) -> Content) {
-        self._selectedTab = selectedTab
-        self.content = content
-    }
-    
-    var body: some View {
-        GeometryReader { geometry in
-            self.content(selectedTab)
-                .environment(\.bottomInsetHeight, bottomInsetHeight)
-                .onAppear { bottomInsetHeight = geometry.safeAreaInsets.bottom }
-        }.safeAreaInset(edge: .bottom) {
-            BrakeTabBarView(selectedTabBarItem: $selectedTab)
-                .padding(.bottom, 16)
-        }
-    }
-}
