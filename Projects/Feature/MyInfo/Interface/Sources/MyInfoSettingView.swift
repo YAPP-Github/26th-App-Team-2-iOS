@@ -11,31 +11,104 @@ import SharedDesignSystem
 
 public struct MyInfoSettingView: View {
 
-    @State private var userName: String
-    @State private var appVersion: String
+    @Environment(MyInfoSettingViewModel.self) private var viewModel
 
-    private let feedbackSubject = PassthroughSubject<SettingAction, Never>()
-    private let legalSubject = PassthroughSubject<SettingAction, Never>()
-    private let accountSubject = PassthroughSubject<SettingAction, Never>()
-
-    public init(userName: String, appVersion: String) {
-        self.userName = userName
-        self.appVersion = appVersion
-    }
+    public init() { }
 
     public var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 사용자 프로필 섹션
-                userProfileSection
-
-                // 메뉴 아이템들
-                menuItemsSection
-
-                Spacer()
+                // 상단 컨텐츠 영역
+                // 선택된 탭에 따라 다른 색상의 배경
+                ZStack {
+                    switch viewModel.selectedTab {
+                    case .report:
+                        Color.brakeYellowDark
+                            .ignoresSafeArea()
+                    case .dashboard:
+                        Color.insightBlue
+                            .ignoresSafeArea()
+                    case .myInfo:
+                        VStack {
+                            userProfileSection
+                                .padding(.top, 87)
+                            // 메뉴 아이템들
+                            menuItemsSection
+                            Spacer()
+                        }
+                        .ignoresSafeArea()
+                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    // 하단 탭바
+                    VStack {
+                        BrakeTabBarView(selectedTabBarItem: .init(get: {
+                            viewModel.selectedTab
+                        }, set: { item in
+                            viewModel.selectedTab = item
+                        }))
+                        .padding(.bottom, 16)
+                    }
+                }
+            }
+            .onAppear {
+                viewModel.onAppear()
             }
             .background(Color.grey900)
             .navigationBarHidden(true)
+            .navigationDestination(isPresented: .init(get: {
+                viewModel.showEditProfile
+            }, set: { isPresented in
+                viewModel.showEditProfile = isPresented
+            })) {
+                EditProfileView(
+                    nickname: .init(
+                        get: {
+                            viewModel.nickname
+                        },
+                        set: { nickname in
+                            viewModel.nickname = nickname
+                        })
+                )
+                .environment(viewModel)
+            }
+            .brakePopUp(
+                isPresented: .init(get: {
+                    viewModel.showWithdrawalAlert
+                }, set: { isPresented in
+                    viewModel.showWithdrawalAlert = isPresented
+                }),
+                title: "정말 탈퇴하시겠어요?",
+                message: "탈퇴하면 모든 계정 정보와 이용 기록이 삭제되며, 복구할 수 없습니다.",
+                icon: Image.iconConfettiThunder,
+                alertType: .doubleButton,
+                primaryButtonTitle: "탈퇴",
+                secondaryButtonTitle: "취소",
+                primaryAction: {
+                    viewModel.confirmWithdrawal()
+                },
+                secondaryAction: {
+                    viewModel.cancelWithdrawal()
+                }
+            )
+            .brakePopUp(
+                isPresented: .init(get: {
+                    viewModel.showLogoutAlert
+                }, set: { isPresented in
+                    viewModel.showLogoutAlert = isPresented
+                }),
+                title: "로그아웃 하시겠습니까?",
+                alertType: .doubleButton,
+                primaryButtonTitle: "로그아웃",
+                secondaryButtonTitle: "취소",
+                primaryAction: {
+                    viewModel.confirmLogout()
+                },
+                secondaryAction: {
+                    viewModel.cancelLogout()
+                }
+            )
+            .toast(message: viewModel.showToast ? viewModel.toastMessage : nil)
         }
     }
 
@@ -54,14 +127,14 @@ public struct MyInfoSettingView: View {
             }
             .mask(Circle())
 
-            Text(userName)
+            Text(viewModel.nickname)
                 .font(.pretendard(size: 22, type: .semiBold))
                 .foregroundColor(.grey00)
 
             Spacer()
 
             Button("수정") {
-
+                viewModel.showEditProfile = true
             }
             .font(.pretendard(size: 14, type: .semiBold))
             .foregroundColor(.grey500)
@@ -75,59 +148,27 @@ public struct MyInfoSettingView: View {
     private var menuItemsSection: some View {
         VStack(spacing: 16) {
             FeedbackSectionView(
-                feedbackSubject: feedbackSubject
+                feedbackSubject: viewModel.feedbackSubject
             )
 
             LegalSectionView(
-                appVersion: appVersion,
-                legalSubject: legalSubject
+                appVersion: viewModel.appVersion,
+                legalSubject: viewModel.legalSubject
             )
 
             AccountSectionView(
-                accountSubject: accountSubject
+                accountSubject: viewModel.accountSubject
             )
         }
         .padding(.horizontal, 20)
-        .onReceive(feedbackSubject) { action in
-            handleMenuTap(action: action)
+        .onReceive(viewModel.feedbackSubject) { action in
+            viewModel.handleMenuTap(action: action)
         }
-        .onReceive(legalSubject) { action in
-            handleMenuTap(action: action)
+        .onReceive(viewModel.legalSubject) { action in
+            viewModel.handleMenuTap(action: action)
         }
-        .onReceive(accountSubject) { action in
-            handleMenuTap(action: action)
-        }
-    }
-
-    // MARK: - 메뉴 탭 핸들러
-    private func handleMenuTap(action: SettingAction) {
-        switch action {
-        case .feedback:
-            // 의견 남기기 액션
-            break
-        case .contact:
-            // 문의하기 액션
-            break
-        case .privacyPolicy:
-            // 개인정보 처리방침 액션
-            break
-        case .termsOfService:
-            // 서비스 약관 액션
-            break
-        case .logout:
-            // 로그아웃 액션
-            break
-        case .withdraw:
-            // 회원탈퇴 액션
-            break
-        case .none:
-            // 액션 없음
-            break
+        .onReceive(viewModel.accountSubject) { action in
+            viewModel.handleMenuTap(action: action)
         }
     }
-}
-
-#Preview {
-    MyInfoSettingView(userName: "카피바라", appVersion: "1.0.0")
-        .preferredColorScheme(.dark)
 }

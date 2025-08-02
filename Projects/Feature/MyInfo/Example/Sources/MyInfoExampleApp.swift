@@ -10,14 +10,25 @@ import FeatureMyInfoInterface
 import SharedUtil
 import Domain
 
+
 @main
 struct MyInfoExampleApp: App {
+
+    @Environment(\.diContainer) var diContainer
 
     init() { }
 
     var body: some Scene {
         WindowGroup {
-            MyInfoSettingView(userName: "카피바라", appVersion: "1.0.0")
+            MyInfoSettingView()
+                .environment(
+                    MyInfoSettingViewModel(
+                        fetchUserNicknameUseCase: diContainer.fetchUserNicknameUseCase,
+                        userSetNicknameUseCase: diContainer.userSetNicknameUseCase,
+                        deleteUserUseCase: diContainer.deleteUserUseCase,
+                        oAuthLogoutUseCase: diContainer.oAuthLogoutUseCase
+                    )
+                )
         }
     }
 } 
