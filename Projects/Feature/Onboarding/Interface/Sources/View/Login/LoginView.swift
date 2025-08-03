@@ -84,7 +84,7 @@ public struct LoginView: View {
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .topBarLeading) {
-                            Button("완료") { viewModel.linkInfoItem = nil }
+                            Button("완료") {  viewModel.webCompletedButtonTapped() }
                         }
                     }
                 } else {
@@ -93,7 +93,7 @@ public struct LoginView: View {
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                Button("완료") { viewModel.linkInfoItem = nil }
+                                Button("완료") { viewModel.webCompletedButtonTapped() }
                             }
                         }
                 }

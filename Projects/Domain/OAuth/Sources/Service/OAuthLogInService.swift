@@ -24,21 +24,21 @@ extension OAuthServiceProtocol {
             deviceName: getDeviceIdentifier()
         )
         let endPoint = BrakeRouter.AuthEndPoint<BrakeResponse<AuthLogInResponse>>.logIn(loginRequest)
-        let response: BrakeResponse<AuthLogInResponse>
+        let authLogInResponse: BrakeResponse<AuthLogInResponse>
         do {
-            response = try await networkProvider.request(endPoint)
+            authLogInResponse = try await networkProvider.request(endPoint)
         } catch {
             print("로그인 응답 오류: \(error)")
             throw error
         }
-        let state: String = response.data.memberState
+        let state: String = authLogInResponse.data.memberState
         guard let stateType = MemberStateType(rawValue: state) else {
             assertionFailure("멤버 타입 변환 오류 \(state)")
             throw AuthError.unknownMemberType
         }
         
-        let accessToken = AccessToken(token: response.data.accessToken)
-        let refreshToken = RefreshToken(token: response.data.refreshToken)
+        let accessToken = AccessToken(token: authLogInResponse.data.accessToken)
+        let refreshToken = RefreshToken(token: authLogInResponse.data.refreshToken)
 #if DEBUG
         print("유저 토큰 반환: \n accessToken \(accessToken) \n refreshToken \(refreshToken)")
 #endif

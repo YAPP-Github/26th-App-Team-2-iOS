@@ -38,14 +38,9 @@ public final class SetNicknameViewModel {
         if nickname.count > 10 {
             nickname = String(nickname.prefix(10))
         }
+        self.nickname = nickname
         // 모든 언어의 문자, 숫자만 허용 (공백, 특수문자 불가)
-        let regex = "^[\\p{L}\\p{N}]{2,10}$"
-        if let _ = nickname.range(of: regex, options: [.regularExpression]),
-           nickname.count <= 10 {
-            isValid = true
-        } else {
-            isValid = false
-        }
+        isValid = nickname.isValidNickName
     }
     public func nicknameCompletedBtnTapped() {
         userNicknameCreated(nickname)

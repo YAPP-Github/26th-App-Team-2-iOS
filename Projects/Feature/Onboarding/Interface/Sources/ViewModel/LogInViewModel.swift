@@ -9,11 +9,25 @@ import Foundation
 import Domain
 import SharedUtil
 
-struct LinkInfoItem: Identifiable {
+enum LinkInfoItem: Identifiable {
+    case termsOfService
+    case privacyPolicy
     var id: String { title }
-    let title: String
-    let url: URL?
+    var title: String {
+        switch self {
+        case .privacyPolicy: "개인정보처리방침"
+        case .termsOfService: "서비스 이용약관"
+        }
+    }
+    var url: URL? {
+        switch self {
+        case .privacyPolicy: URL(string: Constant.WebURLLinks.privacyPolicy)
+        case .termsOfService: URL(string: Constant.WebURLLinks.termsOfService)
+        }
+    }
 }
+
+
 
 
 @Observable
@@ -85,17 +99,13 @@ public final class LogInViewModel {
     func kakaoLogInFailed() { }
     
     public func privacyInfoButtonTapped() {
-        self.linkInfoItem = LinkInfoItem(
-            title: "개인정보처리방침",
-            url: URL(string: Constant.WebURLLinks.privacyPolicy)
-        )
+        self.linkInfoItem = .privacyPolicy
     }
     
     public func termsOfServiceButtonTapped() {
-        self.linkInfoItem = LinkInfoItem(
-            title: "서비스 이용약관",
-            url: URL(string: Constant.WebURLLinks.termsOfService)
-        )
+        self.linkInfoItem = .termsOfService
     }
-    
+    public func webCompletedButtonTapped() {
+        self.linkInfoItem = nil
+    }
 }
