@@ -84,6 +84,10 @@ public struct MyInfoSettingView: View {
                 alertType: .doubleButton,
                 primaryButtonTitle: "탈퇴",
                 secondaryButtonTitle: "취소",
+                primaryBackgroundColor: .buttonYellow,
+                primaryTextColor: .grey900,
+                secondaryBackgroundColor: .grey800,
+                secondaryTextColor: .grey00,
                 primaryAction: {
                     viewModel.confirmWithdrawal()
                 },
@@ -101,6 +105,10 @@ public struct MyInfoSettingView: View {
                 alertType: .doubleButton,
                 primaryButtonTitle: "로그아웃",
                 secondaryButtonTitle: "취소",
+                primaryBackgroundColor: .buttonYellow,
+                primaryTextColor: .grey900,
+                secondaryBackgroundColor: .grey800,
+                secondaryTextColor: .grey00,
                 primaryAction: {
                     viewModel.confirmLogout()
                 },

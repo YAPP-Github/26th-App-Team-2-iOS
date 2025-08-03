@@ -144,7 +144,7 @@ public struct EditProfileView: View {
             .foregroundColor(.grey900)
             .frame(maxWidth: .infinity)
             .frame(height: 54)
-            .background(isNicknameValid ? Color.grey00 : Color.grey700)
+            .background(isNicknameValid ? Color.buttonYellow : Color.grey700)
             .cornerRadius(16)
             .padding(.horizontal, 16)
             .padding(.bottom, 10)
