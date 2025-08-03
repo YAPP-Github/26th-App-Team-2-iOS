@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol CreateBreakTimeUseCaseProtocol {
-    func execute(by minutes: Int) throws
+    func execute(by minutes: Int) async throws
 }
