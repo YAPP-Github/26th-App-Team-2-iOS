@@ -21,37 +21,14 @@ public struct MyInfoSettingView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 // 상단 컨텐츠 영역
-                // 선택된 탭에 따라 다른 색상의 배경
-                ZStack {
-                    switch myInfoSettingViewModel.selectedTab {
-                    case .report:
-                        Color.brakeYellowDark
-                            .ignoresSafeArea()
-                    case .dashboard:
-                        Color.insightBlue
-                            .ignoresSafeArea()
-                    case .myInfo:
-                        VStack {
-                            userProfileSection
-                                .padding(.top, 87)
-                            // 메뉴 아이템들
-                            menuItemsSection
-                            Spacer()
-                        }
-                        .ignoresSafeArea()
-                    }
+                VStack {
+                    userProfileSection
+                        .padding(.top, 87)
+                    // 메뉴 아이템들
+                    menuItemsSection
+                    Spacer()
                 }
-                .safeAreaInset(edge: .bottom) {
-                    // 하단 탭바
-                    VStack {
-                        BrakeTabBarView(selectedTabBarItem: .init(get: {
-                            myInfoSettingViewModel.selectedTab
-                        }, set: { item in
-                            myInfoSettingViewModel.selectedTab = item
-                        }))
-                        .padding(.bottom, 16)
-                    }
-                }
+                .ignoresSafeArea()
             }
             .onAppear {
                 myInfoSettingViewModel.onAppear()

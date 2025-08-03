@@ -48,7 +48,7 @@ public struct BrakeToastView: View {
 public extension View {
     func toast(
         message: String?,
-        bottomPadding: CGFloat = 56
+        bottomPadding: CGFloat = 0
     ) -> some View {
         self.modifier(
             ToastMessageModifier(
