@@ -44,11 +44,14 @@ public extension Image {
     static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
     static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
     static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
+    static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
 }
 
 public struct AppGroupImages {
     public let mainEmpty: Image = SharedDesignSystemAsset.Images.appgroupMainEmpty.swiftUIImage
     public let mainFull: Image = SharedDesignSystemAsset.Images.appgroupMainList.swiftUIImage
+    
+    public let lockTimer: Image = SharedDesignSystemAsset.Images.appgroupLockTimer.swiftUIImage
     
     public let lockTimer: Image = SharedDesignSystemAsset.Images.appgroupLockTimer.swiftUIImage
 }
