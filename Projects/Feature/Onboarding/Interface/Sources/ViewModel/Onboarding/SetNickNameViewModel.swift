@@ -15,9 +15,8 @@ public final class SetNicknameViewModel {
     public var resetLogInPresent: Bool = false
     
     
-    @ObservationIgnored public let userNicknameCreated: (String) -> ()
-    
-    @ObservationIgnored public let logInCancelCompleted: () -> ()
+    private let userNicknameCreated: (String) -> ()
+    private let logInCancelCompleted: () -> ()
     
     private let logInCancelUseCase: LogInCancelUseCase
     
