@@ -87,7 +87,8 @@ public final class ProductionDIContainer: DIContainerProtocol {
     public lazy var userProfileService: UserProfileProtocol = UserProfileService(
         networkProvider: networkProvider,
         onboardingState: onboardingStateService,
-        userStorage: userStorage
+        userStorage: userStorage,
+        tokenStorage: tokenStorage
     )
     
     // MARK: -- Domain UseCase

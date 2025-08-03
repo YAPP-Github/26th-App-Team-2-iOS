@@ -77,7 +77,7 @@ public struct LoginView: View {
             item: $viewModel.linkInfoItem,
             content: { linkInfoItem in
             NavigationView {
-                if let url = linkInfoItem.url {
+                if let url = URL(string: linkInfoItem.url) {
                     BrakeWebView(url: url)
                     .ignoresSafeArea(.container, edges: .bottom)
                     .navigationTitle(linkInfoItem.title)

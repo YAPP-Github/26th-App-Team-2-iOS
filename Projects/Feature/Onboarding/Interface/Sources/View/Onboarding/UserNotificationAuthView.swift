@@ -19,7 +19,9 @@ public struct UserNotificationAuthView: View {
         ZStack(alignment: .bottom) {
             Color.grey900.ignoresSafeArea()
             VStack(spacing: 0) {
-                BrakeNavigationView(title: EmptyView(), leading: {
+                BrakeNavigationView(title: {
+                    EmptyView()
+                }, leading: {
                     BrakeNavigationButton(type: .back) {
                         dismiss()
                     }

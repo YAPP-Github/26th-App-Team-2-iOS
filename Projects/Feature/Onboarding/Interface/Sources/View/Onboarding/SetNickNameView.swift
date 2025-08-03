@@ -24,7 +24,9 @@ public struct SetNicknameView: View {
                 .onTapGesture { nickNmaeFocusState = false }
             VStack(spacing: 0) {
                 @Bindable var viewModel = setNicknameViewModel
-                BrakeNavigationView(title: EmptyView(), leading: {
+                BrakeNavigationView(title: {
+                    EmptyView()
+                }, leading: {
                     BrakeNavigationButton(type: .back) {
                         self.setNicknameViewModel.backButtonTapped()
                     }

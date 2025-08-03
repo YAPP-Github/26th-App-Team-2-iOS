@@ -43,4 +43,16 @@ public actor KeyChainTokenStorage: TokenStorageProtocol {
     public func delete(for key: String) async throws -> Bool {
         return try keychain.delete(key: key)
     }
+    
+    public func deleteAllTokens() async throws {
+        // Keychain에서 모든 토큰 키들을 삭제
+        // Bundle에서 실제 키값들을 가져와서 삭제
+        let tokenKeyHolder = BundleTokenKeyHolder()
+        
+        let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
+        try keychain.delete(key: accessTokenKey)
+
+        let refreshTokenKey = try tokenKeyHolder.fetchRefreshTokenKey()
+        try keychain.delete(key: refreshTokenKey)
+    }
 }

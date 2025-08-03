@@ -41,13 +41,13 @@ extension OAuthServiceProtocol {
         let refreshToken = RefreshToken(token: authLogInResponse.data.refreshToken)
 #if DEBUG
         print("유저 토큰 반환: \n accessToken \(accessToken) \n refreshToken \(refreshToken)")
-#endif
+        #endif
         let accessTokenKey = try self.tokenKeyHolder.fetchAccessTokenKey()
         let refreshTokenKey = try self.tokenKeyHolder.fetchRefreshTokenKey()
         
         try await tokenStorage.save(token: accessToken, for: accessTokenKey)
         try await tokenStorage.save(token: refreshToken, for: refreshTokenKey)
-        
+
         self.onboardingState.setMemberState(stateType)
     }
     

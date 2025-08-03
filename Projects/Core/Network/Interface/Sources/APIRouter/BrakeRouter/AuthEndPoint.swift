@@ -14,28 +14,28 @@ public extension BrakeRouter {
         
         case refresh(AuthRefreshRequest)
         case logIn(AuthLogInRequest)
-        case logOut(accessToken: String)
-        
+        case logout(AuthLogoutRequest)
+
         public var path: String {
             switch self {
             case .refresh:
                 return "/auth/refresh"
             case .logIn:
                 return "/auth/login"
-            case .logOut:
+            case .logout:
                 return "/auth/logout"
             }
         }
         
         public var httpMethod: HTTPMethod {
             switch self {
-            case .refresh, .logIn, .logOut: .post
+            case .refresh, .logIn, .logout: .post
             }
         }
         
         public var queryParameters: Encodable? {
             switch self {
-            case .refresh, .logIn, .logOut: nil
+            case .refresh, .logIn, .logout: nil
             }
         }
         
@@ -43,7 +43,7 @@ public extension BrakeRouter {
             switch self {
             case .refresh(let requestDTO): requestDTO
             case .logIn(let requestDTO): requestDTO
-            case .logOut(accessToken: let accessToken): ["accessToken": accessToken]
+            case .logout(let requestDTO): requestDTO
             }
         }
         

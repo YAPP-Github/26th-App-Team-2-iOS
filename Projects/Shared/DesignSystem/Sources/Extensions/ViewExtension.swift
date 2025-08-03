@@ -32,9 +32,13 @@ public extension View {
         alertType: BrakeAlertView.AlertType = .singleButton,
         primaryButtonTitle: String,
         secondaryButtonTitle: String? = nil,
+        primaryBackgroundColor: Color? = nil,
+        primaryTextColor: Color? = nil,
+        secondaryBackgroundColor: Color? = nil,
+        secondaryTextColor: Color? = nil,
+        showCloseButton: Bool = false,
         primaryAction: @escaping () -> Void,
         secondaryAction: (() -> Void)? = nil,
-        showCloseButton: Bool = false,
         closeAction: (() -> Void)? = nil
     ) -> some View {
         self.modifier(
@@ -46,9 +50,13 @@ public extension View {
                 alertType: alertType,
                 primaryButtonTitle: primaryButtonTitle,
                 secondaryButtonTitle: secondaryButtonTitle,
+                primaryBackgroundColor: primaryBackgroundColor,
+                primaryTextColor: primaryTextColor,
+                secondaryBackgroundColor: secondaryBackgroundColor,
+                secondaryTextColor: secondaryTextColor,
+                showCloseButton: showCloseButton,
                 primaryAction: primaryAction,
                 secondaryAction: secondaryAction,
-                showCloseButton: showCloseButton,
                 closeAction: closeAction
             )
         )

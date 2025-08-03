@@ -10,6 +10,7 @@ import Foundation
 public protocol UserStorageProtocol {
     func saveNickname(_ nickname: String)
     func getNickname() -> String?
+    func deleteNickname()
 }
 
 public final class UserDefaultsUserStorage {
@@ -26,5 +27,9 @@ extension UserDefaultsUserStorage: UserStorageProtocol {
     
     public func getNickname() -> String? {
         return UserDefaults.standard.string(forKey: self.NICKNAME)
+    }
+    
+    public func deleteNickname() {
+        UserDefaults.standard.removeObject(forKey: self.NICKNAME)
     }
 }

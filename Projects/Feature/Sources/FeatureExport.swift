@@ -7,3 +7,7 @@
 
 @_exported import FeatureOnboarding
 @_exported import FeatureOnboardingInterface
+@_exported import FeatureAppGroupFeatureInterface
+@_exported import FeatureAppGroupFeature
+@_exported import FeatureMyInfo
+@_exported import FeatureMyInfoInterface

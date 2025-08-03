@@ -14,9 +14,11 @@ extension UpsertAppGroupView {
         let cancelCompletion: () -> Void
         var body: some View {
             BrakeNavigationView(
-                title: Text(isCreating ? "앱 그룹 추가" : "앱 그룹 관리")
-                    .foregroundStyle(Color.grey100)
-                    .font(.pretendard(size: 16, type: .semiBold)),
+                title: {
+                    Text(isCreating ? "앱 그룹 추가" : "앱 그룹 관리")
+                        .foregroundStyle(Color.grey100)
+                        .font(.pretendard(size: 16, type: .semiBold))
+                },
                 trailing: {
                     BrakeNavigationButton(type: .cancel) {
                         cancelCompletion()
