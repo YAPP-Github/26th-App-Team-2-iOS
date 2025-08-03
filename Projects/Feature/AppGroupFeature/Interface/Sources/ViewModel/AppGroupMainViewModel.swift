@@ -87,7 +87,7 @@ public final class AppGroupMainViewModel {
             } catch {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-                    self.toast(message: "알림 설정에 실패했습니다.")
+                    self.toast(message: "알림 설정을 불러오는데 실패했습니다.")
                 }
             }
         }
