@@ -14,7 +14,7 @@ import DomainOAuthInterface
 @Observable
 public final class MyInfoSettingViewModel {
     
-    public var nickname: String = "카피바라"
+    public var nickname: String = ""
 
     public var appVersion: String {
         return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
