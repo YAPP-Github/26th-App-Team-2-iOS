@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SharedUtil
 
 public enum LegalSection: CaseIterable {
     case privacyPolicy
@@ -22,4 +23,15 @@ public enum LegalSection: CaseIterable {
             return "앱 버전 정보"
         }
     }
-} 
+
+    public var url: String {
+        switch self {
+        case .privacyPolicy:
+            return ExternalLink.privacyPolicy.url
+        case .termsOfService:
+            return ExternalLink.termsOfService.url
+        case .appVersion:
+            return ""
+        }
+    }
+}
