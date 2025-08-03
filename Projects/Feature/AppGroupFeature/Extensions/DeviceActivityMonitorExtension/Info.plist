@@ -19,7 +19,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.deviceactivity.monitor-extension</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>FeatureAppGroupFeatureDeviceActivityMonitorExtension.DeviceActivityMonitorExtension</string>
+		<string>CoreAppScreenTimeDeviceActivityMonitorExtension.DeviceActivityMonitorExtension</string>
 	</dict>
 	<key>APP_GROUP_NAME</key>
 	<string>$(APP_GROUP_NAME)</string>

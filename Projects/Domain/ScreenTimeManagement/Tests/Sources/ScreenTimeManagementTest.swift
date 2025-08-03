@@ -7,7 +7,7 @@
 import Testing
 
 struct ScreenTimeManagementTest {
-    init() async throws { ... }
+    init() async throws {  }
 
     @Test func myTest() {
 

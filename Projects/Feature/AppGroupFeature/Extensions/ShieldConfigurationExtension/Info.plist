@@ -7,7 +7,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.ManagedSettingsUI.shield-configuration-service</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>FeatureAppGroupFeatureShieldConfigurationExtension.ShieldConfigurationExtension</string>
+		<string>CoreAppScreenTimeShieldConfigurationExtension.ShieldConfigurationExtension</string>
 	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>

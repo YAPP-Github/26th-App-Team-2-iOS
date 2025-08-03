@@ -8,29 +8,30 @@
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
-import CoreAppScreenTimeInterface
 import CoreLocalStorageInterface
 import CoreLocalStorage
+import SharedDesignSystem
+import SwiftUICore
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
-
+    private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
+    
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
+
         return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for applications shielded because of their category.
         guard let displayName = application.localizedDisplayName,
-              let categoryName = category.localizedDisplayName else {
+              let _ = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 앱")
         }
-        return setShieldConfig("\(categoryName) - \(displayName)")
+        return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
-        // Customize the shield as needed for web domains.
         guard let displayName = webDomain.domain else {
             return setShieldConfig("알 수 없는 웹사이트")
         }
@@ -38,50 +39,124 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     public override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
-        // Customize the shield as needed for web domains shielded because of their category.
         guard let displayName = webDomain.domain,
-              let categoryName = category.localizedDisplayName else {
+              let _ = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 웹사이트")
         }
-        return setShieldConfig("\(categoryName) - \(displayName)")
+        return setShieldConfig(displayName)
     }
-
-    private func isNotificationArrived() -> Bool {
-        // AppScheduleStorage를 사용하여 알림 상태 확인
-        return appScheduleStorage.getBlockingStatus()
-    }
+    
+    // MARK: - App Name Management
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        let isNotiArrived = isNotificationArrived()
-
-        let customIcon = UIImage(resource: isNotiArrived ? .iconArrow : .iconWarning)
-        let customTitle = ShieldConfiguration.Label(
-            text: isNotiArrived ? "알림을 눌러 사용 시간을 설정해주세요" : "\(tokenName)을 꼭 사용하실건가요?",
-            color: .white
+        let status = getBlockingStatus(tokenName)
+        let customIcon = getIconImage(by: status)
+        let titleLabel = ShieldConfiguration.Label(
+            text: status.title,
+            color: SharedDesignSystemAsset.Colors.grey100.color
         )
+        let subtitleLabel = ShieldConfiguration.Label(
+            text: status.subtitle,
+            color: SharedDesignSystemAsset.Colors.grey300.color
+        )
+
+        let customPrimaryButtonLabel: ShieldConfiguration.Label?
+        let primaryButton = ShieldConfiguration.Label(
+            text: status.primaryButtonTitle,
+            color: SharedDesignSystemAsset.Colors.grey850.color
+        )
+        switch status {
+        case .unlockedTemporarily:
+            customPrimaryButtonLabel = nil
+        default:
+            customPrimaryButtonLabel = primaryButton
+        }
+
         let customSecondaryButtonLabel = ShieldConfiguration.Label(
-            text: isNotiArrived ? "다시 알림 보내기" : "안하기",
-            color: .lightGray
+            text: status.secondaryButtonTitle,
+            color: SharedDesignSystemAsset.Colors.grey200.color
         )
-
-        let topButton = ShieldConfiguration.Label(
-            text: "사용하기",
-            color: .black
-        )
-        let customPrimaryButtonLabel: ShieldConfiguration.Label? = isNotiArrived ? nil :topButton
 
         let shieldConfiguration = ShieldConfiguration(
             backgroundBlurStyle: .dark,
             backgroundColor: UIColor(red: 0.13, green: 0.14, blue: 0.16, alpha: 1.0),
             icon: customIcon,
-            title: customTitle,
-            subtitle: ShieldConfiguration.Label(text: "", color: .black),
+            title: titleLabel,
+            subtitle: subtitleLabel,
             primaryButtonLabel: customPrimaryButtonLabel,
-            primaryButtonBackgroundColor: UIColor.white,
+            primaryButtonBackgroundColor: SharedDesignSystemAsset.Colors.buttonYellow.color,
             secondaryButtonLabel: customSecondaryButtonLabel
         )
         return shieldConfiguration
     }
-}
 
+    private func getBlockingStatus(_ tokenName: String) -> BlockingStatus {
+        let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
+        let validatedStatus = validateAndFixStatus(status, tokenName: tokenName)
+
+        switch validatedStatus {
+        case .blocking:
+            return .blocking(tokenName: tokenName)
+        case .unlockedTemporarily:
+            return .unlockedTemporarily
+        case .extensionPrompt(let time, let count):
+            // 저장된 시간과 횟수를 그대로 사용
+            return .extensionPrompt(time: time, count: count)
+        case .sessionEnded(let time, let groupName):
+            // 저장된 시간과 그룹명을 그대로 사용
+            return .sessionEnded(time: time, groupName: groupName)
+        case .cooldownActive(_, let time, let groupName):
+            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName)
+        }
+    }
+    
+    /// 상태 검증 및 수정
+    private func validateAndFixStatus(_ status: BlockingStatus, tokenName: String) -> BlockingStatus {
+        switch status {
+        case .cooldownActive:
+            if !cooldownStorage.isInCooldown() {
+                // 쿨다운이 종료되었는데 아직 cooldownActive 상태라면 기본 차단 상태로 변경
+                appScheduleStorage.saveBlockingStatus(.blocking(tokenName: tokenName))
+                return .blocking(tokenName: tokenName)
+            }
+        case .sessionEnded:
+            startCooldownFromSessionEnd()
+        default:
+            break
+        }
+        
+        return status
+    }
  
+    private func getIconImage(by status: BlockingStatus) -> UIImage {
+        switch status {
+        case .blocking:
+            return UIImage(resource: .iconArrow)
+        case .unlockedTemporarily:
+            return UIImage(resource: .iconWarning)
+        case .extensionPrompt:
+            return UIImage(resource: .illustrationBlock)
+        case .sessionEnded, .cooldownActive:
+            return UIImage(resource: .illustrationBlock)
+        }
+    }
+
+    /// 세션 종료 후 쿨다운 시작
+    private func startCooldownFromSessionEnd() {
+        let cooldownMinutes = appScheduleStorage.getExtensionTime()
+
+        cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
+        cooldownStorage.startCooldown(minutes: cooldownMinutes)
+
+        // 쿨다운 상태로 변경
+        // TODO: GroupName 받는 스토리지 필요
+        appScheduleStorage.saveBlockingStatus(
+            .cooldownActive(
+                tokenName: "앱 그룹",
+                time: cooldownMinutes,
+                groupName: ""
+            )
+        )
+    }
+
+}

@@ -44,23 +44,6 @@ public extension Image {
     static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
     static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
     static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
-    static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
+    static let iconTimer: Image = SharedDesignSystemAsset.Images.iconTimer.swiftUIImage
+    static let iconCoolDown: Image = SharedDesignSystemAsset.Images.iconCooldown.swiftUIImage
 }
-
-public struct AppGroupImages {
-    public let mainEmpty: Image = SharedDesignSystemAsset.Images.appgroupMainEmpty.swiftUIImage
-    public let mainFull: Image = SharedDesignSystemAsset.Images.appgroupMainList.swiftUIImage
-    
-    public let lockTimer: Image = SharedDesignSystemAsset.Images.appgroupLockTimer.swiftUIImage
-    
-    public let lockTimer: Image = SharedDesignSystemAsset.Images.appgroupLockTimer.swiftUIImage
-}
-
-public protocol AppGroupImagesProtocol {
-    static var appGroup: AppGroupImages { get }
-}
-
-extension AppGroupImagesProtocol {
-    public static var appGroup: AppGroupImages { AppGroupImages() }
-}
-
