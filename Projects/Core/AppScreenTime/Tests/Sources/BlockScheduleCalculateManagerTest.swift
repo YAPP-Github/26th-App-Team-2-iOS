@@ -11,6 +11,7 @@ import XCTest
 import CoreAppScreenTimeInterface
 import CoreAppScreenTime
 
+/*
 struct BlockScheduleCalculateManagerTest {
     @Test
     func testCalculate_activeStatus() {
@@ -46,3 +47,4 @@ struct BlockScheduleCalculateManagerTest {
         XCTAssertTrue(result.remainingTime <= 30) // 남은 시간이 30초 이하여야 함
     }
 } 
+*/

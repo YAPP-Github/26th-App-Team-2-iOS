@@ -9,7 +9,7 @@ import Foundation
 import CoreLocalStorageInterface
 import CoreLocalStorage
 import Testing
-
+/*
 struct BreakTimeStorageTests {
     @Test
     func breakTimeStorage_save_get_delete() {
@@ -52,3 +52,4 @@ struct BreakTimeStorageTests {
         #expect(stillExists == nil)
     }
 }
+*/

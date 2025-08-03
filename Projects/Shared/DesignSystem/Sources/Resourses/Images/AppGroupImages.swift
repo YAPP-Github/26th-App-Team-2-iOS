@@ -19,5 +19,6 @@ extension AppGroupImagesProtocol {
 public struct AppGroupImages {
     public let mainEmpty: Image = SharedDesignSystemAsset.Images.appgroupMainEmpty.swiftUIImage
     public let mainFull: Image = SharedDesignSystemAsset.Images.appgroupMainList.swiftUIImage
+    public let lockTimer: Image = SharedDesignSystemAsset.Images.appgroupLockTimer.swiftUIImage
     init() { }
 }

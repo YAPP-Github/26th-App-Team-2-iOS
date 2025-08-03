@@ -437,7 +437,7 @@ fileprivate extension AppGroupMainViewModel {
         }
         
         // 모든 블록 스케줄 정리 (추가 안전장치)
-        appScheduleStorage.clearAllBlockSchedules()
+//        appScheduleStorage.clearAllBlockSchedules()
         
         // 현재 스케줄 참조 초기화
         self.currentSchedule = nil
