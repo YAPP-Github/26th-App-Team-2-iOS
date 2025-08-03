@@ -19,7 +19,7 @@ public struct DeleteUserUseCase: DeleteUserUseCaseProtocol {
     }
 
     public func execute() async throws {
-        try await userProfileService.delete()
+        try await userProfileService.deleteUser()
     }
 
 }
