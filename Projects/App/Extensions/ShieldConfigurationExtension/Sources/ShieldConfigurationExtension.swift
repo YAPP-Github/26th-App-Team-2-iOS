@@ -16,7 +16,7 @@ import DomainScreenTimeManagement
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
-    
+
     override init() {
         let container = DIContainer()
         self.getBlockingStatusUseCase = container.makeGetBlockingStatusUseCase()
@@ -33,7 +33,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
               let categoryName = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 앱")
         }
-        return setShieldConfig("\(categoryName) - \(displayName)")
+        return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {

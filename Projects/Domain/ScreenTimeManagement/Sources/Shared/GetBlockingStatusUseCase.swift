@@ -28,6 +28,7 @@ public struct GetBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol {
     public func execute(tokenName: String) -> BlockingStatusEntity {
         let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
         let validatedStatus = validateAndFixStatus(status, tokenName: tokenName)
+        appScheduleStorage.saveAppName(tokenName)
         return validatedStatus.toEntity()
     }
     

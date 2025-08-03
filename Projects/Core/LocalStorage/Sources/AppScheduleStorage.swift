@@ -19,6 +19,7 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
     }
     
     private enum Keys {
+        static let appName = "appName"
         static let isSelectedNotification = "isSelectedNotification"
         static let blockingStatus = "blockingStatus"
         static let allBlockScheduleIds = "allBlockScheduleIds"
@@ -29,6 +30,14 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
         static func blockSchedule(id: String) -> String {
             return "blockSchedule_\(id)"
         }
+    }
+
+    public func saveAppName(_ name: String) {
+        userDefaults?.set(name, forKey: Keys.appName)
+    }
+
+    public func getAppName() -> String? {
+        return userDefaults?.string(forKey: Keys.appName)
     }
 
     public func saveSelectNotificationTrigger(_ isSelected: Bool) {
