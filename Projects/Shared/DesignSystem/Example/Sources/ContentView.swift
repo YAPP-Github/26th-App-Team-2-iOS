@@ -22,7 +22,6 @@ struct ContentView: View {
                     NavigationLink("TabBarView_ex") {
                         BrakeTabBarView_ex()
                     }
-
                     NavigationLink("BrakeNavigationView_ex") {
                         BrakeNavigationView_ex()
                     }
@@ -35,6 +34,12 @@ struct ContentView: View {
                     }
                     NavigationLink("BrakePopUpView_ex") {
                         BrakePopUpView_ex()
+                    }
+                    NavigationLink("BrakeTappableText_ex") {
+                        TappableText_ex()
+                    }
+                    NavigationLink("BrakeWebView_ex") {
+                        WebView_ex()
                     }
                 } header: {
                     Text("Custom Views")

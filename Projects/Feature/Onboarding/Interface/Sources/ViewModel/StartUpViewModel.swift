@@ -49,4 +49,14 @@ public class StartUpViewModel {
     public func onboardingCompleted() {
         self.userLogInState = .brakeAvailable
     }
+    
+    public func logInCancelCompleted() {
+        Task {
+            let autoLogInResult: UserLogInStateType = await autoLogInUseCase.execute()
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                self.userLogInState = autoLogInResult
+            }
+        }
+    }
 }

@@ -97,7 +97,6 @@ public struct BrakeNavigationView<TitleView: View, LeadingView: View, TrailingVi
         })
         .padding(.horizontal, 20)
         .frame(height: 56)
-        .background(Color.grey900)
     }
 }
 

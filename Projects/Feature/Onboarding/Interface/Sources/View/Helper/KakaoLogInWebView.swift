@@ -92,7 +92,6 @@ struct KakaoWebView: UIViewRepresentable {
             
             let urlString = url.absoluteString
             
-            print("카카오 urlString \(urlString)")
             
             // 카카오톡 URL Scheme 처리
             if urlString.hasPrefix("kakao") && !inAppLoaded {

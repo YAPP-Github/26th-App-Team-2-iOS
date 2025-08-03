@@ -10,8 +10,8 @@ import SwiftUI
 
 public extension Color {
     static let brakeYellowDark: Color = SharedDesignSystemAsset.Colors.brakeYellowDark.swiftUIColor
-    static let brakeYellow = SharedDesignSystemAsset.Colors.brakeYellow.swiftUIColor
-    static let buttonYellow = SharedDesignSystemAsset.Colors.buttonYellow.swiftUIColor
+    static let brakeYellow: Color = SharedDesignSystemAsset.Colors.brakeYellow.swiftUIColor
+    static let kakaoYellow: Color = SharedDesignSystemAsset.Colors.kakaoYellow.swiftUIColor
     static let error: Color = SharedDesignSystemAsset.Colors.error.swiftUIColor
     static let grey100: Color = SharedDesignSystemAsset.Colors.grey100.swiftUIColor
     static let grey200: Color = SharedDesignSystemAsset.Colors.grey200.swiftUIColor
@@ -30,13 +30,15 @@ public extension Color {
     static let insightBlueDark: Color = SharedDesignSystemAsset.Colors.insightBlueDark.swiftUIColor
     static let insightBlueLight: Color = SharedDesignSystemAsset.Colors.insightBlueLight.swiftUIColor
     static let brakeWhite: Color = SharedDesignSystemAsset.Colors.white.swiftUIColor
+    
+    
     static let brakeDark: Color = SharedDesignSystemAsset.Colors.brakeDark.swiftUIColor
     static let grey00: Color = SharedDesignSystemAsset.Colors.grey00.swiftUIColor
 }
 
 
 public extension Color {
-    public init(hex: String) {
+    init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int = UInt64()
         Scanner(string: hex).scanHexInt64(&int)

@@ -16,7 +16,6 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             guard let accessToken: AccessToken = try await self.tokenStorage.read(key: fetchedAccessTokenKey) else {
                 return urlRequest
             }
-            
             var request = urlRequest
             request.setValue("Bearer \(accessToken.token)", forHTTPHeaderField: "Authorization")
             return request

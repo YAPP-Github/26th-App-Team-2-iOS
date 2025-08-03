@@ -13,6 +13,8 @@ import Core
 
 extension UserProfileService: @retroactive UserProfileProtocol {
     
+    
+    
     public func setUserNickname(_ nickname: String) async throws {
         
         let setMemberNameRequest = SetMemberNameRequest(nickname: nickname)
@@ -49,5 +51,10 @@ extension UserProfileService: @retroactive UserProfileProtocol {
         self.onboardingState.setMemberState(memberStateType)
         
         return nickname
+    }
+    
+    public func deleteUser() async throws {
+        let deleteUserEndPoint = BrakeRouter.MemberEndPoint<EmptyData>.delete
+        _ = try await networkProvider.request(deleteUserEndPoint)
     }
 }

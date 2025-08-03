@@ -1,7 +1,7 @@
 import SwiftUI
 import WebKit
 
-public struct WebView: UIViewRepresentable {
+public struct BrakeWebView: UIViewRepresentable {
     public typealias UIViewType = WKWebView
     let url: URL
 
@@ -11,7 +11,9 @@ public struct WebView: UIViewRepresentable {
 
     public func makeUIView(context: Context) -> WKWebView {
         let webview = WKWebView()
-        webview.backgroundColor = .white
+        webview.backgroundColor = .black
+        webview.scrollView.backgroundColor = .black
+        webview.scrollView.contentInsetAdjustmentBehavior = .never
         webview.load(URLRequest(url: url))
         return webview
     }

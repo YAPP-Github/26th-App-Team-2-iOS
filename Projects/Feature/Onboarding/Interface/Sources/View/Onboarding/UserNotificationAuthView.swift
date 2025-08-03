@@ -6,36 +6,61 @@
 //
 
 import SwiftUI
+import SharedDesignSystem
 import Domain
 
 public struct UserNotificationAuthView: View {
+    @Environment(\.dismiss) var dismiss
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(UserNotificationAuthViewModel.self) var userNotificationAuthViewModel
     public init() { }
     
     public var body: some View {
-        VStack(spacing: 20) {
-            Button {
+        ZStack(alignment: .bottom) {
+            Color.grey900.ignoresSafeArea()
+            VStack(spacing: 0) {
+                BrakeNavigationView(title: EmptyView(), leading: {
+                    BrakeNavigationButton(type: .back) {
+                        dismiss()
+                    }
+                })
+                
+                VStack(alignment: .center, spacing: 16) {
+                    VStack(alignment: .center, spacing: 0) {
+                        Text("알림 타임 권한을").frame(height: 33)
+                        Text("허용해주세요.").frame(height: 33)
+                    }
+                    .foregroundStyle(.white)
+                    .font(.pretendard(size: 22, type: .semiBold))
+                    Text("정확한 타이머 알림을 받아보세요.")
+                        .foregroundStyle(Color.grey200)
+                        .font(.pretendard(size: 16, type: .medium))
+                }
+                .padding(.top, 47)
+                Spacer()
+            }
+            
+            GeometryReader { proxy in
+                ZStack {
+                    Color.clear
+                    Image.onboarding.notification
+                        .resizable()
+                        .frame(width: proxy.size.width * 0.8373)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            
+            
+            LargeButtonView(
+                buttonType: .confirm,
+                title: "허용하기",
+                isActive: true
+            ) {
                 userNotificationAuthViewModel.authorizationButtonTapped()
-            } label: {
-                Text("알림 노티피케이션 권한").font(.title)
             }
-            VStack(spacing: 8) {
-                Text("테스트 처리 뷰")
-                Button("userRestricted") {
-                    self.userNotificationAuthViewModel.notoficationAuthFailedResult = .userRestricted
-                    self.userNotificationAuthViewModel.notificationAuthFiledPresent = true
-                }
-                Button("Denied") {
-                    self.userNotificationAuthViewModel.notoficationAuthFailedResult = .denied
-                    self.userNotificationAuthViewModel.notificationAuthFiledPresent = true
-                }
-                Button("unknown error") {
-                    self.userNotificationAuthViewModel.notoficationAuthFailedResult = .unknownError
-                    self.userNotificationAuthViewModel.notificationAuthFiledPresent = true
-                }
-            }
+            .padding(.bottom, 16)
         }
+        .toolbar(.hidden, for: .navigationBar)
         .alert(
             userNotificationAuthViewModel.notoficationAuthFailedResult?.alertTitle ?? "",
             isPresented: .init(get: {

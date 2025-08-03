@@ -7,17 +7,34 @@
 
 import Foundation
 import Domain
+import SharedUtil
 
-public protocol LogInViewModelDelegate: AnyObject {
-    func logInCompleted()
+enum LinkInfoItem: Identifiable {
+    case termsOfService
+    case privacyPolicy
+    var id: String { title }
+    var title: String {
+        switch self {
+        case .privacyPolicy: "개인정보처리방침"
+        case .termsOfService: "서비스 이용약관"
+        }
+    }
+    var url: URL? {
+        switch self {
+        case .privacyPolicy: URL(string: Constant.WebURLLinks.privacyPolicy)
+        case .termsOfService: URL(string: Constant.WebURLLinks.termsOfService)
+        }
+    }
 }
+
+
 
 
 @Observable
 public final class LogInViewModel {
-    
+    var linkInfoItem: LinkInfoItem?
     var kakaoLogInShow: Bool = false
-    var loading: Bool = false 
+    var loading: Bool = false
     
     private let appleLogInUseCase: AppleLogInUseCase
     private let kakaoLogInUseCase: KakaoLogInUseCase
@@ -79,7 +96,16 @@ public final class LogInViewModel {
         }
     }
     
-    func kakaoLogInFailed() {
-        
+    func kakaoLogInFailed() { }
+    
+    public func privacyInfoButtonTapped() {
+        self.linkInfoItem = .privacyPolicy
+    }
+    
+    public func termsOfServiceButtonTapped() {
+        self.linkInfoItem = .termsOfService
+    }
+    public func webCompletedButtonTapped() {
+        self.linkInfoItem = nil
     }
 }

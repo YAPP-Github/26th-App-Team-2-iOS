@@ -11,6 +11,7 @@ import Core
 public protocol UserProfileProtocol {
     func setUserNickname(_ nickname: String) async throws
     func getUserNickname() async throws -> String
+    func deleteUser() async throws
 }
 
 

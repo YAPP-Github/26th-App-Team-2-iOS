@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import SharedDesignSystem
+
+extension Image: @retroactive OnboardingImagesProtocol { }
 
 public struct OnboardingView: View {
     
@@ -20,6 +23,10 @@ public struct OnboardingView: View {
             SetNicknameView()
                 .environment(
                     SetNicknameViewModel(
+                        logInCancelUseCase: self.diContainer.logInCancelUseCase,
+                        logInCancelCompleted: {
+                            startUpViewModel.logInCancelCompleted()
+                        },
                         userNicknameCreated: { nickname in
                             onboardingManager.nickname = nickname
                             onboardingManager.goToOnboardingInfo()
@@ -32,6 +39,10 @@ public struct OnboardingView: View {
                         SetNicknameView()
                             .environment(
                                 SetNicknameViewModel(
+                                    logInCancelUseCase: self.diContainer.logInCancelUseCase,
+                                    logInCancelCompleted: {
+                                        startUpViewModel.logInCancelCompleted()
+                                    },
                                     userNicknameCreated: { nickname in
                                         onboardingManager.nickname = nickname
                                         onboardingManager.goToOnboardingInfo()

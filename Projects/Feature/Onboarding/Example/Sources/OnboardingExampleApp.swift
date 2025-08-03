@@ -28,6 +28,7 @@ struct OnboardingExampleApp: App {
                 )
         }
     }
+    
 }
 
 struct StartUpView: View {
@@ -35,6 +36,7 @@ struct StartUpView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     var body: some View {
         ZStack {
+            Color.grey900.ignoresSafeArea()
             switch startUpViewModel.userLogInState {
             case .unknown:
                 EmptyView()
@@ -44,7 +46,7 @@ struct StartUpView: View {
                         LogInViewModel(
                             appleLogInUseCase: diContainer.appleLogInUseCase,
                             kakaoLogInUseCase: diContainer.kakaoLogInUseCase,
-                            logInCompleted: self.startUpViewModel.logInCompleted
+                            logInCompleted: startUpViewModel.logInCompleted
                         )
                     )
             case .onboardingRequired:
