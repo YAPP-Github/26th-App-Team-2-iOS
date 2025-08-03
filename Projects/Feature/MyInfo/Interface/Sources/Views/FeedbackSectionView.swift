@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 import SharedDesignSystem
+import SharedUtil
 
 public struct FeedbackSectionView: View {
     private let feedbackSubject: PassthroughSubject<SettingAction, Never>
@@ -20,7 +21,7 @@ public struct FeedbackSectionView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            menuItem(title: FeedbackSection.feedback.title, showChevron: true) {
+            menuItem(title: ExternalLink.feedback.title, showChevron: true) {
                 feedbackSubject.send(.feedback)
             }
             
@@ -28,7 +29,7 @@ public struct FeedbackSectionView: View {
                 .frame(height: 2)
                 .background(Color.grey800)
             
-            menuItem(title: FeedbackSection.contact.title, showChevron: true) {
+            menuItem(title: ExternalLink.contactUs.title, showChevron: true) {
                 feedbackSubject.send(.contact)
             }
         }

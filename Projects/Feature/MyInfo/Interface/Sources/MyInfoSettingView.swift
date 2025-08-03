@@ -11,17 +11,19 @@ import SharedDesignSystem
 
 public struct MyInfoSettingView: View {
 
-    @Environment(MyInfoSettingViewModel.self) private var viewModel
+    @Environment(MyInfoSettingViewModel.self) private var myInfoSettingViewModel
 
     public init() { }
 
     public var body: some View {
+        @Bindable var viewModel = myInfoSettingViewModel
+
         NavigationStack {
             VStack(spacing: 0) {
                 // 상단 컨텐츠 영역
                 // 선택된 탭에 따라 다른 색상의 배경
                 ZStack {
-                    switch viewModel.selectedTab {
+                    switch myInfoSettingViewModel.selectedTab {
                     case .report:
                         Color.brakeYellowDark
                             .ignoresSafeArea()
@@ -43,40 +45,40 @@ public struct MyInfoSettingView: View {
                     // 하단 탭바
                     VStack {
                         BrakeTabBarView(selectedTabBarItem: .init(get: {
-                            viewModel.selectedTab
+                            myInfoSettingViewModel.selectedTab
                         }, set: { item in
-                            viewModel.selectedTab = item
+                            myInfoSettingViewModel.selectedTab = item
                         }))
                         .padding(.bottom, 16)
                     }
                 }
             }
             .onAppear {
-                viewModel.onAppear()
+                myInfoSettingViewModel.onAppear()
             }
             .background(Color.grey900)
             .navigationBarHidden(true)
             .navigationDestination(isPresented: .init(get: {
-                viewModel.showEditProfile
+                myInfoSettingViewModel.showEditProfile
             }, set: { isPresented in
-                viewModel.showEditProfile = isPresented
+                myInfoSettingViewModel.showEditProfile = isPresented
             })) {
                 EditProfileView(
                     nickname: .init(
                         get: {
-                            viewModel.nickname
+                            myInfoSettingViewModel.nickname
                         },
                         set: { nickname in
-                            viewModel.nickname = nickname
+                            myInfoSettingViewModel.nickname = nickname
                         })
                 )
-                .environment(viewModel)
+                .environment(myInfoSettingViewModel)
             }
             .brakePopUp(
                 isPresented: .init(get: {
-                    viewModel.showWithdrawalAlert
+                    myInfoSettingViewModel.showWithdrawalAlert
                 }, set: { isPresented in
-                    viewModel.showWithdrawalAlert = isPresented
+                    myInfoSettingViewModel.showWithdrawalAlert = isPresented
                 }),
                 title: "정말 탈퇴하시겠어요?",
                 message: "탈퇴하면 모든 계정 정보와 이용 기록이 삭제되며, 복구할 수 없습니다.",
@@ -89,17 +91,17 @@ public struct MyInfoSettingView: View {
                 secondaryBackgroundColor: .grey800,
                 secondaryTextColor: .grey00,
                 primaryAction: {
-                    viewModel.confirmWithdrawal()
+                    myInfoSettingViewModel.confirmWithdrawal()
                 },
                 secondaryAction: {
-                    viewModel.cancelWithdrawal()
+                    myInfoSettingViewModel.cancelWithdrawal()
                 }
             )
             .brakePopUp(
                 isPresented: .init(get: {
-                    viewModel.showLogoutAlert
+                    myInfoSettingViewModel.showLogoutAlert
                 }, set: { isPresented in
-                    viewModel.showLogoutAlert = isPresented
+                    myInfoSettingViewModel.showLogoutAlert = isPresented
                 }),
                 title: "로그아웃 하시겠습니까?",
                 alertType: .doubleButton,
@@ -110,13 +112,39 @@ public struct MyInfoSettingView: View {
                 secondaryBackgroundColor: .grey800,
                 secondaryTextColor: .grey00,
                 primaryAction: {
-                    viewModel.confirmLogout()
+                    myInfoSettingViewModel.confirmLogout()
                 },
                 secondaryAction: {
-                    viewModel.cancelLogout()
+                    myInfoSettingViewModel.cancelLogout()
                 }
             )
-            .toast(message: viewModel.showToast ? viewModel.toastMessage : nil)
+            .fullScreenCover(
+                item: $viewModel.linkInfoItem,
+                content: { linkInfoItem in
+                NavigationView {
+                    if let url = URL(string: linkInfoItem.url) {
+                        BrakeWebView(url: url)
+                        .ignoresSafeArea(.container, edges: .bottom)
+                        .navigationTitle(linkInfoItem.title)
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Button("완료") {  viewModel.webCompletedButtonTapped() }
+                            }
+                        }
+                    } else {
+                        Text("잘못된 URL입니다")
+                            .navigationTitle("오류")
+                            .navigationBarTitleDisplayMode(.inline)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarLeading) {
+                                    Button("완료") { viewModel.webCompletedButtonTapped() }
+                                }
+                            }
+                    }
+                }
+            })
+            .toast(message: myInfoSettingViewModel.showToast ? myInfoSettingViewModel.toastMessage : nil)
         }
     }
 
@@ -135,14 +163,14 @@ public struct MyInfoSettingView: View {
             }
             .mask(Circle())
 
-            Text(viewModel.nickname)
+            Text(myInfoSettingViewModel.nickname)
                 .font(.pretendard(size: 22, type: .semiBold))
                 .foregroundColor(.grey00)
 
             Spacer()
 
             Button("수정") {
-                viewModel.showEditProfile = true
+                myInfoSettingViewModel.showEditProfile = true
             }
             .font(.pretendard(size: 14, type: .semiBold))
             .foregroundColor(.grey500)
@@ -156,27 +184,28 @@ public struct MyInfoSettingView: View {
     private var menuItemsSection: some View {
         VStack(spacing: 16) {
             FeedbackSectionView(
-                feedbackSubject: viewModel.feedbackSubject
+                feedbackSubject: myInfoSettingViewModel.feedbackSubject
             )
 
             LegalSectionView(
-                appVersion: viewModel.appVersion,
-                legalSubject: viewModel.legalSubject
+                appVersion: myInfoSettingViewModel.appVersion,
+                legalSubject: myInfoSettingViewModel.legalSubject
             )
 
             AccountSectionView(
-                accountSubject: viewModel.accountSubject
+                accountSubject: myInfoSettingViewModel.accountSubject
             )
         }
         .padding(.horizontal, 20)
-        .onReceive(viewModel.feedbackSubject) { action in
-            viewModel.handleMenuTap(action: action)
+        .onReceive(myInfoSettingViewModel.feedbackSubject) { action in
+            myInfoSettingViewModel.handleMenuTap(action: action)
         }
-        .onReceive(viewModel.legalSubject) { action in
-            viewModel.handleMenuTap(action: action)
+        .onReceive(myInfoSettingViewModel.legalSubject) { action in
+            myInfoSettingViewModel.handleMenuTap(action: action)
         }
-        .onReceive(viewModel.accountSubject) { action in
-            viewModel.handleMenuTap(action: action)
+        .onReceive(myInfoSettingViewModel.accountSubject) { action in
+            myInfoSettingViewModel.handleMenuTap(action: action)
         }
     }
+    
 }

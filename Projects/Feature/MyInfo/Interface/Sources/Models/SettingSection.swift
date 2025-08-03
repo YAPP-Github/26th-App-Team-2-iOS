@@ -14,5 +14,4 @@ public enum SettingAction {
     case termsOfService
     case logout
     case withdraw
-    case none
 }

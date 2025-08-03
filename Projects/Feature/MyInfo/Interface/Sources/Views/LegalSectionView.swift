@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import SharedUtil
 
 public struct LegalSectionView: View {
     private let appVersion: String
@@ -22,7 +23,7 @@ public struct LegalSectionView: View {
 
     public var body: some View {
         VStack(spacing: 0) {
-            menuItem(title: LegalSection.privacyPolicy.title, showChevron: true) {
+            menuItem(title: ExternalLink.privacyPolicy.title, showChevron: true) {
                 legalSubject.send(.privacyPolicy)
             }
             
@@ -30,7 +31,7 @@ public struct LegalSectionView: View {
                 .frame(height: 2)
                 .background(Color.grey800)
             
-            menuItem(title: LegalSection.termsOfService.title, showChevron: true) {
+            menuItem(title: ExternalLink.termsOfService.title, showChevron: true) {
                 legalSubject.send(.termsOfService)
             }
             
@@ -38,7 +39,7 @@ public struct LegalSectionView: View {
                 .frame(height: 2)
                 .background(Color.grey800)
             
-            menuItem(title: LegalSection.appVersion.title, showChevron: false, subtitle: appVersion) {
+            menuItem(title: ExternalLink.appVersion.title, showChevron: false, subtitle: appVersion) {
                 // 액션 없음
             }
         }

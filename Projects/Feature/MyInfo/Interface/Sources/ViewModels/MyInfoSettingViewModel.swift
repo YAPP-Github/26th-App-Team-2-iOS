@@ -10,10 +10,12 @@ import Combine
 import SharedDesignSystem
 import DomainUserInterface
 import DomainOAuthInterface
+import SharedUtil
 
 @Observable
 public final class MyInfoSettingViewModel {
-    
+    var linkInfoItem: ExternalLink?
+
     public var nickname: String = ""
 
     public var appVersion: String {
@@ -24,6 +26,7 @@ public final class MyInfoSettingViewModel {
     public var showLogoutAlert = false
     
     public var selectedTab: TabItemType = .report
+
     public var showEditProfile = false
     
     // MARK: - Toast States
@@ -58,19 +61,17 @@ public final class MyInfoSettingViewModel {
     public func handleMenuTap(action: SettingAction) {
         switch action {
         case .feedback:
-            break
+            linkInfoItem = .feedback
         case .contact:
-            break
+            linkInfoItem = .contactUs
         case .privacyPolicy:
-            break
+            linkInfoItem = .privacyPolicy
         case .termsOfService:
-            break
+            linkInfoItem = .termsOfService
         case .logout:
             showLogoutAlert = true
         case .withdraw:
             showWithdrawalAlert = true
-        case .none:
-            break
         }
     }
     
@@ -100,6 +101,10 @@ public final class MyInfoSettingViewModel {
         try await userSetNicknameUseCase.execute(nickname: newNickname)
         // 성공 시 닉네임 업데이트
         self.nickname = newNickname
+    }
+
+    public func webCompletedButtonTapped() {
+        self.linkInfoItem = nil
     }
 
     private func logout() {

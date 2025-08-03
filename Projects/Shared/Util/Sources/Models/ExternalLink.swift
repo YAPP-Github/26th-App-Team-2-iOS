@@ -12,6 +12,7 @@ public enum ExternalLink: Identifiable {
     case contactUs
     case privacyPolicy
     case termsOfService
+    case appVersion
 
     public var id: String { title }
 
@@ -25,6 +26,8 @@ public enum ExternalLink: Identifiable {
             return "" //TODO: 추후 추가 예정
         case .contactUs:
             return "" //TODO: 추후 추가 예정
+        case .appVersion:
+            return ""
         }
     }
 
@@ -38,6 +41,8 @@ public enum ExternalLink: Identifiable {
             return "의견 남기기"
         case .contactUs:
             return "문의하기"
+        case .appVersion:
+            return "앱 버전 정보"
         }
     }
 
