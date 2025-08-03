@@ -31,7 +31,9 @@ public struct OnboardingInfoView: View {
         ZStack {
             Color.grey900.ignoresSafeArea()
             VStack(spacing: 0) {
-                BrakeNavigationView(title: EmptyView(), leading: {
+                BrakeNavigationView(title: {
+                    EmptyView()
+                }, leading: {
                     BrakeNavigationButton(type: .back) {
                         dismiss()
                     }
