@@ -8,7 +8,15 @@
 import Foundation
 import Domain
 import Core
+import Core
 
+extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
+    public var id: String {
+        "\(self.groupID)" + self.name + self.selection.applications.map(\.hashValue).map(String.init).joined()
+    }
+    public static func == (lhs: AppGroup, rhs: AppGroup) -> Bool {
+        lhs.id == rhs.id
+    }
 extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
     public var id: String {
         "\(self.groupID)" + self.name + self.selection.applications.map(\.hashValue).map(String.init).joined()
@@ -56,6 +64,8 @@ public final class AppGroupMainViewModel {
     
     // 앱 정보 저장
     var selectedAppName: String = ""
+    
+    var toastMessage: String? = nil
 
     private var toastTask: Task<(), any Error>?
 
@@ -78,6 +88,25 @@ public final class AppGroupMainViewModel {
 
 //    private let startBlockScheduleUseCase: StartBlockScheduleUseCaseProtocol
 //    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
+    private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
+    private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
+    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
+    private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
+    
+    
+    private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
+    private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
+    private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
+    
+    
+    private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
+    private let breakTimeManager: BreakTimeManager = BreakTimeManager()
+    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    
+    private let timerActor: TimerActor = TimerActor()
+    private var timerTask: Task<(), Never>?
+    
+    
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
     private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol

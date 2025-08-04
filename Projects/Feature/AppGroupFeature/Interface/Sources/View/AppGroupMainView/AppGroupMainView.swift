@@ -20,10 +20,12 @@ public struct AppGroupMainView: View {
     public var body: some View {
         NavigationStack {
             @Bindable var viewModel: AppGroupMainViewModel = appGroupMainViewModel
+            @Bindable var viewModel: AppGroupMainViewModel = appGroupMainViewModel
             ZStack {
                 Color.grey900.ignoresSafeArea()
                 // 두 뷰를 모두 렌더링하되 opacity로 부드럽게 전환
                 Group {
+                    if viewModel.appGroups.isEmpty {
                     if viewModel.appGroups.isEmpty {
                         AppGroupMainEmptyAppGroupView {
                             appGroupMainViewModel.addButtonTapped()
@@ -54,6 +56,12 @@ public struct AppGroupMainView: View {
                     message: appGroupMainViewModel.toastMessage,
                     bottomPadding: 60
                 )
+                .fullScreenCover(isPresented:  $viewModel.timerSettingPresent, content: {
+                    TimerSettingView { selectedTime in
+                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
+                    }
+                })
+                .fullScreenCover(isPresented: $viewModel.addGroupPresent) {
                 .fullScreenCover(isPresented:  $viewModel.timerSettingPresent, content: {
                     TimerSettingView { selectedTime in
                         viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
