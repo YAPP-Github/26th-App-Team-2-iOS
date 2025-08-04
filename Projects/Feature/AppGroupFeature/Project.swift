@@ -69,9 +69,7 @@ let project = Project.makeModule(
                 infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
                 entitlements: "Extensions/DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements",
                 dependencies: [
-                    .domain,
-                    .feature(interface: .AppGroupFeature),
-                    .feature(implements: .AppGroupFeature)
+                    .domain
                 ],
                 settings: Project.Environment.projectSettings
             )
@@ -83,9 +81,7 @@ let project = Project.makeModule(
                 infoPlist: "Extensions/ShieldConfigurationExtension/Info.plist",
                 entitlements: "Extensions/ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements",
                 dependencies: [
-                    .domain,
-                    .feature(interface: .AppGroupFeature),
-                    .feature(implements: .AppGroupFeature)
+                    .domain
                 ],
                 settings: Project.Environment.projectSettings
             )
@@ -97,9 +93,7 @@ let project = Project.makeModule(
                 infoPlist: "Extensions/ShieldActionConfigurationExtension/Info.plist",
                 entitlements: "Extensions/ShieldActionConfigurationExtension/ShieldActionConfigurationExtension.entitlements",
                 dependencies: [
-                    .domain,
-                    .feature(interface: .AppGroupFeature),
-                    .feature(implements: .AppGroupFeature)
+                    .domain
                 ],
                 settings: Project.Environment.projectSettings
             )

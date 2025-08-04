@@ -5,37 +5,31 @@
 //  Created by Derrick kim on 7/11/25.
 //
 
+
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
-
+import CoreLocalStorageInterface
+import CoreLocalStorage
 import SharedDesignSystem
-import Core
-import DomainScreenTimeManagementInterface
-import DomainScreenTimeManagement
+import SwiftUICore
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
-    private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
+    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     
-    override init() {
-        print("ShieldConfigurationExtension 불림!!")
-        let container = DIContainer()
-        self.getBlockingStatusUseCase = container.makeGetBlockingStatusUseCase()
-        super.init()
-    }
-
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
-        print("🔐 ShieldConfigurationExtension - beginRequest called")
         let displayName = application.localizedDisplayName ?? "앱"
+
         return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
         guard let displayName = application.localizedDisplayName,
-              let categoryName = category.localizedDisplayName else {
+              let _ = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 앱")
         }
-        return setShieldConfig("\(categoryName) - \(displayName)")
+        return setShieldConfig(displayName)
     }
 
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
@@ -47,14 +41,16 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
     public override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
         guard let displayName = webDomain.domain,
-              let categoryName = category.localizedDisplayName else {
+              let _ = category.localizedDisplayName else {
             return setShieldConfig("알 수 없는 웹사이트")
         }
-        return setShieldConfig("\(categoryName) - \(displayName)")
+        return setShieldConfig(displayName)
     }
+    
+    // MARK: - App Name Management
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        let status = getBlockingStatusUseCase.execute(tokenName: tokenName)
+        let status = getBlockingStatus(tokenName)
         let customIcon = getIconImage(by: status)
         let titleLabel = ShieldConfiguration.Label(
             text: status.title,
@@ -95,7 +91,45 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         return shieldConfiguration
     }
 
-    private func getIconImage(by status: BlockingStatusEntity) -> UIImage {
+    private func getBlockingStatus(_ tokenName: String) -> BlockingStatus {
+        let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
+        let validatedStatus = validateAndFixStatus(status, tokenName: tokenName)
+
+        switch validatedStatus {
+        case .blocking:
+            return .blocking(tokenName: tokenName)
+        case .unlockedTemporarily:
+            return .unlockedTemporarily
+        case .extensionPrompt(let time, let count):
+            // 저장된 시간과 횟수를 그대로 사용
+            return .extensionPrompt(time: time, count: count)
+        case .sessionEnded(let time, let groupName):
+            // 저장된 시간과 그룹명을 그대로 사용
+            return .sessionEnded(time: time, groupName: groupName)
+        case .cooldownActive(_, let time, let groupName):
+            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName)
+        }
+    }
+    
+    /// 상태 검증 및 수정
+    private func validateAndFixStatus(_ status: BlockingStatus, tokenName: String) -> BlockingStatus {
+        switch status {
+        case .cooldownActive:
+            if !cooldownStorage.isInCooldown() {
+                // 쿨다운이 종료되었는데 아직 cooldownActive 상태라면 기본 차단 상태로 변경
+                appScheduleStorage.saveBlockingStatus(.blocking(tokenName: tokenName))
+                return .blocking(tokenName: tokenName)
+            }
+        case .sessionEnded:
+            startCooldownFromSessionEnd()
+        default:
+            break
+        }
+        
+        return status
+    }
+ 
+    private func getIconImage(by status: BlockingStatus) -> UIImage {
         switch status {
         case .blocking:
             return UIImage(resource: .iconArrow)
@@ -107,4 +141,24 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return UIImage(resource: .illustrationBlock)
         }
     }
+
+    /// 세션 종료 후 쿨다운 시작
+    private func startCooldownFromSessionEnd() {
+        let cooldownMinutes = appScheduleStorage.getExtensionTime()
+
+        cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
+        cooldownStorage.startCooldown(minutes: cooldownMinutes)
+
+        // 쿨다운 상태로 변경
+        // TODO: GroupName 받는 스토리지 필요
+        appScheduleStorage.saveBlockingStatus(
+            .cooldownActive(
+                tokenName: "앱 그룹",
+                time: cooldownMinutes,
+                groupName: ""
+            )
+        )
+    }
+
 }
+
