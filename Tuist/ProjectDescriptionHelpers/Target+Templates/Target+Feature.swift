@@ -88,7 +88,7 @@ public extension Target {
         
         newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(module.rawValue).ShieldConfigurationExtension"
         newFactory.settings = Project.Environment.projectSettings
-        newFactory.resources = ["Extensions/ShieldConfigurationExtension/Sources/Images.xcassets/**"]
+        newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
 
         return make(factory: newFactory)
     }
@@ -102,7 +102,7 @@ public extension Target {
         newFactory.name = !factory.name.isEmpty ? factory.name : ModulePath.Feature.name + module.rawValue + "ShieldConfigurationExtension"
         newFactory.sources = .shieldConfigurationExtensionSources
         newFactory.product = .appExtension
-        newFactory.resources = ["Extensions/ShieldConfigurationExtension/Sources/Images.xcassets/**"]
+        newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
         newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug))-\(module.rawValue).ShieldConfigurationExtension"
         newFactory.settings = Project.Environment.projectSettings
 
