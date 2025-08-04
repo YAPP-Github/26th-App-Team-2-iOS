@@ -11,6 +11,7 @@ import SharedDesignSystem
 public struct AppBrakeTimeSettingView: View {
 
     @Environment(AppGroupMainViewModel.self) private var viewModel
+    @GestureState private var dragState: CGSize = .zero
 
     public init() {}
 
@@ -77,6 +78,10 @@ public struct AppBrakeTimeSettingView: View {
                     }
                     .gesture(
                         DragGesture()
+                            .updating($dragState) { value, state, _ in
+                                state = value.translation
+                                handleDragUpdate(value: value)
+                            }
                             .onEnded { value in
                                 handleSwipe(value: value)
                             }
@@ -115,6 +120,24 @@ public struct AppBrakeTimeSettingView: View {
                     .environment(viewModel)
                     .transition(.opacity)
                     .animation(.easeInOut(duration: 0.3), value: viewModel.brakeTimeSettingCompletePresent)
+            }
+        }
+    }
+
+    private func handleDragUpdate(value: DragGesture.Value) {
+        let threshold: CGFloat = 80
+        let currentIndex = viewModel.timeOptions.firstIndex(of: viewModel.selectedMinutes) ?? 0
+
+        // 위로 드래그 (이전 값)
+        if value.translation.height > threshold && currentIndex > 0 {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                viewModel.updateSelectedTime(to: currentIndex - 1)
+            }
+        }
+        // 아래로 드래그 (다음 값)
+        else if value.translation.height < -threshold && currentIndex < viewModel.timeOptions.count - 1 {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                viewModel.updateSelectedTime(to: currentIndex + 1)
             }
         }
     }
