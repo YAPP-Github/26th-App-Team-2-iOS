@@ -22,7 +22,6 @@ public struct AppGroupMainView: View {
             @Bindable var viewModel: AppGroupMainViewModel = appGroupMainViewModel
             ZStack {
                 Color.grey900.ignoresSafeArea()
-                
                 // 두 뷰를 모두 렌더링하되 opacity로 부드럽게 전환
                 Group {
                     if viewModel.appGroups.isEmpty {

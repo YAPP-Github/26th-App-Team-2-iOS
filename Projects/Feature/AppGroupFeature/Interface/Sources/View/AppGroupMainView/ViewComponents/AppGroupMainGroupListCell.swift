@@ -28,7 +28,7 @@ extension AppGroupMainView {
                 VStack(spacing: 12) {
                     HStack {
                         HStack {
-                            if appGroupViewModel.currentActiveAppGroup == appGroup {
+                            if appGroupViewModel.currentActiveAppGroup?.groupID == appGroup.groupID {
                                 switch appGroupViewModel.brakeStatus {
                                 case .none: Image.iconGroupSetting
                                 case .session:
@@ -44,17 +44,6 @@ extension AppGroupMainView {
                         }
                         .foregroundStyle(Color.grey00)
                         Spacer()
-//                        if appGroupViewModel.currentActiveAppGroup == appGroup {
-//                            switch appGroupViewModel.brakeStatus {
-//                            case .none: Image.iconGroup
-//                            case .session:
-//                                Image.iconTimer
-//                            case .locked:
-//                                Image.iconCoolDown
-//                            }
-//                        } else {
-//                            Image.iconGroup
-//                        }
                         Button {
                             editButtonTapped()
                         } label: {
@@ -82,7 +71,7 @@ extension AppGroupMainView {
                         Spacer()
                     }.padding(.leading, 8)
                 }
-                if appGroupViewModel.currentActiveAppGroup == appGroup {
+                if appGroupViewModel.currentActiveAppGroup?.groupID == appGroup.groupID {
                     switch appGroupViewModel.brakeStatus {
                     case .none: EmptyView()
                     case .session:
