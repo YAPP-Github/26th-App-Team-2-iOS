@@ -20,13 +20,16 @@ struct FeatureAppGroupFeatureApp: App {
                 .environment(
                     AppGroupMainViewModel(
                         fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
-                        requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase
+                        requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
+                        createBreakTimeUseCase: diContainer.createBreakTimeUseCase,
+                        fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
+                        fetchAppNameUseCase: diContainer.fetchAppNameUseCase
                     )
                 )
                 .safeAreaInset(edge: .bottom) {
-                BrakeTabBarView(selectedTabBarItem: $selectedTab)
-                    .padding(.bottom, 16)
-            }
+                    BrakeTabBarView(selectedTabBarItem: $selectedTab)
+                        .padding(.bottom, 16)
+                }
         }
     }
 }
@@ -52,7 +55,7 @@ struct BrakeTabView: View {
                     Spacer()
                 }
             }
-            
+
         }
     }
 }

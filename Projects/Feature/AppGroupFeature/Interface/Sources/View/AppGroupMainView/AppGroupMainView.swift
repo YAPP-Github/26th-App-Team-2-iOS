@@ -48,6 +48,15 @@ public struct AppGroupMainView: View {
                         UpsertAppGroupView()
                             .environment(updateUpsertAppGroupViewModel(appGroup: appGroup))
                     })
+                .fullScreenCover(
+                    isPresented: .init(get: {
+                        viewModel.appBrakeTimeSettingPresent
+                    }, set: { isPresented in
+                        viewModel.appBrakeTimeSettingPresent = isPresented
+                    })
+                ) {
+                    AppBrakeTimeSettingView()
+                }
             }
         }
         .brakePopUp(
