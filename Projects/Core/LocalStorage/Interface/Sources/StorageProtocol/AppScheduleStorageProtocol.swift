@@ -28,4 +28,11 @@ public protocol AppScheduleStorageProtocol {
     func getBlockScheduleData(forId id: String) -> Data?
     func getAllBlockScheduleIds() -> [String]
     func deleteBlockSchedule(id: String)
+    
+    
+    func getBreakStartDate() -> Date
+    func setBreakStartDate(date: Date)
+    
+    func getBreakEndDate() -> Date
+    func setBreakEndDate(date: Date)
 }

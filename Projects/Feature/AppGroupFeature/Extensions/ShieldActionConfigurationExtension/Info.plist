@@ -19,7 +19,7 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.ManagedSettings.shield-action-service</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>CoreAppScreenTimeShieldActionConfigurationExtension.ShieldActionConfigurationExtension</string>
+		<string>FeatureAppGroupFeatureShieldActionConfigurationExtension.ShieldActionConfigurationExtension</string>
 	</dict>
 	<key>APP_GROUP_NAME</key>
 	<string>$(APP_GROUP_NAME)</string>
