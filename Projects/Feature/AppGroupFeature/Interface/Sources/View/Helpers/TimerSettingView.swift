@@ -26,7 +26,9 @@ public struct TimerSettingView: View {
         ZStack {
             Color.grey900.ignoresSafeArea()
             VStack(spacing: 0) {
-                BrakeNavigationView(title: EmptyView(), trailing: {
+                BrakeNavigationView(title: {
+                    EmptyView()
+                }, trailing: {
                     BrakeNavigationButton(type: .cancel) {
                         dismiss()
                     }

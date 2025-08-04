@@ -20,12 +20,10 @@ public struct AppGroupMainView: View {
     public var body: some View {
         NavigationStack {
             @Bindable var viewModel: AppGroupMainViewModel = appGroupMainViewModel
-            @Bindable var viewModel: AppGroupMainViewModel = appGroupMainViewModel
             ZStack {
                 Color.grey900.ignoresSafeArea()
                 // 두 뷰를 모두 렌더링하되 opacity로 부드럽게 전환
                 Group {
-                    if viewModel.appGroups.isEmpty {
                     if viewModel.appGroups.isEmpty {
                         AppGroupMainEmptyAppGroupView {
                             appGroupMainViewModel.addButtonTapped()
@@ -43,29 +41,15 @@ public struct AppGroupMainView: View {
                 }, background: {
                     Color.black.opacity(0.5)
                 })
-                .alert(isPresented: $viewModel.sessionExitAlertPresent, content: {
-                    SessionExitAlertView {
-                        viewModel.sessionExitAlertPresent = false
-                    } exitAction: {
-                        viewModel.sessionExitConfirmBtnTapped()
-                    }
-                }, background: {
-                    Color.black.opacity(0.5)
-                })
                 .toast(
                     message: appGroupMainViewModel.toastMessage,
                     bottomPadding: 60
                 )
                 .fullScreenCover(isPresented:  $viewModel.timerSettingPresent, content: {
-                    TimerSettingView { selectedTime in
-                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
-                    }
-                })
-                .fullScreenCover(isPresented: $viewModel.addGroupPresent) {
-                .fullScreenCover(isPresented:  $viewModel.timerSettingPresent, content: {
-                    TimerSettingView { selectedTime in
-                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
-                    }
+//                    TimerSettingView { selectedTime in
+//                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
+//                    }
+                    AppBrakeTimeSettingView()
                 })
                 .fullScreenCover(isPresented: $viewModel.addGroupPresent) {
                     UpsertAppGroupView()
@@ -76,20 +60,14 @@ public struct AppGroupMainView: View {
                     content: { appGroup in
                         UpsertAppGroupView()
                             .environment(updateUpsertAppGroupViewModel(appGroup: appGroup))
-                    })
-                .fullScreenCover(
-                    isPresented: .init(get: {
-                        viewModel.appBrakeTimeSettingPresent
-                    }, set: { isPresented in
-                        viewModel.appBrakeTimeSettingPresent = isPresented
-                    })
-                ) {
-                    AppBrakeTimeSettingView()
-                }
+                    }
+                )
+//                .fullScreenCover(isPresented: $viewModel.appBrakeTimeSettingPresent) {
+//                    AppBrakeTimeSettingView()
+//                }
             }
             
         }
-        
         .brakePopUp(
             isPresented: Binding(
                 get: { appGroupMainViewModel.screenTimeAuthAlertPresent } ,
@@ -121,6 +99,8 @@ public struct AppGroupMainView: View {
         
     }
 }
+
+
 
 
 extension AppGroupMainView {
@@ -206,6 +186,7 @@ fileprivate extension AppGroupMainView {
             }
         )
     }
+    
     func updateUpsertAppGroupViewModel(appGroup: AppGroup) -> UpsertAppGroupViewModel {
         UpsertAppGroupViewModel(
             appGroup: appGroup,

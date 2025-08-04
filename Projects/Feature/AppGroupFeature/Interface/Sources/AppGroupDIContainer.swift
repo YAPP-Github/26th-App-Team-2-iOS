@@ -18,15 +18,9 @@ public protocol AppGroupDIContainerProtocol {
     var appScheduleStorage: AppScheduleStorageProtocol { get }
     
     var blockSchedule: BlockScheduleProtocol { get }
-    var appScheduleStorage: AppScheduleStorageProtocol { get }
     var breakTime: BreakTimeProtocol { get }
     var managedSetting: ManagedSettingsStoreProtocol { get }
     
-    
-    var blockSchedule: BlockScheduleProtocol { get }
-    var appScheduleStorage: AppScheduleStorageProtocol { get }
-    var breakTime: BreakTimeProtocol { get }
-    var managedSetting: ManagedSettingsStoreProtocol { get }
     
     
     // MARK: - Domain - Service
@@ -46,16 +40,6 @@ public protocol AppGroupDIContainerProtocol {
     var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol { get }
     var fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol { get }
     var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol { get }
-    var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol { get }
-    var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol { get }
-    var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol { get }
-    var coolDownStorage: CooldownStorageProtocol { get }
-    
-    var createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol { get }
-    var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol { get }
-    var fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol { get }
-    var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol { get }
-    var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol { get }
     var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol { get }
     var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol { get }
 }
@@ -70,27 +54,20 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     private(set) lazy var coolDownStorage: CooldownStorageProtocol = CooldownStorage()
     
     
-    private(set) lazy var blockSchedule: BlockScheduleProtocol = BlockScheduleManager()
-    private(set) lazy var appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
-    private(set) lazy var breakTime: BreakTimeProtocol = BreakTimeManager()
-    private(set) lazy var managedSetting: ManagedSettingsStoreProtocol = ManagedSettingsStoreManager()
-    private(set) lazy var coolDownStorage: CooldownStorageProtocol = CooldownStorage()
-    
     /// 해결 과제:
     /// 1. SwiftData를 MainActor에서 실행함에 따른 Actor 의존성 전파
     /// 2. ModelContext try 생성에 따른 AppGroupStorage 생성자 throws 처리
-    @MainActor private(set) private(set) lazy var appGroupStorage: AppGroupStorageProtocol? = AppGroupStorage()
+    @MainActor private(set) lazy var appGroupStorage: AppGroupStorageProtocol? = AppGroupStorage()
     @MainActor lazy var breakTimeManager: BreakTimeProtocol = BreakTimeManager()
-    @MainActor lazy var appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
 
-    @MainActor private(set) private(set) lazy var appGroupService: AppGroupProtocol = AppGroupService(appGroupStorage: appGroupStorage)
+    @MainActor private(set) lazy var appGroupService: AppGroupProtocol = AppGroupService(appGroupStorage: appGroupStorage)
 
-    @MainActor private(set) private(set) lazy var fetchAppGroupUseCase: FetchAppGroupUseCase = FetchAppGroupUseCase(appGroupService: appGroupService)
+    @MainActor private(set) lazy var fetchAppGroupUseCase: FetchAppGroupUseCase = FetchAppGroupUseCase(appGroupService: appGroupService)
 
-    @MainActor private(set) private(set) lazy var upsertAppGroupUseCase: UpsertAppGroupUseCase = UpsertAppGroupUseCase(appGroupService: appGroupService)
+    @MainActor private(set) lazy var upsertAppGroupUseCase: UpsertAppGroupUseCase = UpsertAppGroupUseCase(appGroupService: appGroupService)
 
-    @MainActor private(set) private(set) lazy var deleteAppGroupUseCase: DeleteAppGroupUseCase = DeleteAppGroupUseCase(appGroupService: appGroupService)
-    @MainActor private(set) private(set) lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
+    @MainActor private(set) lazy var deleteAppGroupUseCase: DeleteAppGroupUseCase = DeleteAppGroupUseCase(appGroupService: appGroupService)
+    @MainActor private(set) lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
     @MainActor lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(breakTimeManager: breakTimeManager, appScheduleStorage: appScheduleStorage)
     @MainActor lazy var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol = FetchSelectedNotificationUseCase(appScheduleStorage: appScheduleStorage)
     @MainActor lazy var fetchAppNameUseCase: FetchAppNameUseCaseProtocol = FetchAppNameUseCase(appScheduleStorage: appScheduleStorage)
@@ -103,33 +80,6 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     
     private(set) lazy var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol = EndBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     
-    private(set) lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(
-        breakTimeManager: breakTime,
-        appScheduleStorage: appScheduleStorage
-    )
-    private(set) lazy var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol = EndBreakTimeUseCase(
-        appScheduleStorage: appScheduleStorage,
-        blockScheduleManager: blockSchedule,
-        managedSettingsManager: managedSetting,
-        cooldownStorage: coolDownStorage
-    )
-    private(set) lazy var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol = GetBlockingStatusUseCase(
-        appScheduleStorage: appScheduleStorage,
-        cooldownStorage: coolDownStorage
-    )
-    
-    private(set) lazy var createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol = CreateBlockScheduleUseCase(blockScheduleManager: blockSchedule)
-    
-    private(set) lazy var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol = DeleteBlockScheduleUseCase(blockScheduleManager: blockSchedule)
-    
-    private(set) lazy var fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol = FetchBlockScheduleUseCase(blockScheduleManager: blockSchedule)
-    
-    private(set) lazy var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol = EndBlockScheduleUseCase(blockScheduleManager: blockSchedule)
-    
-    private(set) lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(
-        breakTimeManager: breakTime,
-        appScheduleStorage: appScheduleStorage
-    )
     private(set) lazy var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol = EndBreakTimeUseCase(
         appScheduleStorage: appScheduleStorage,
         blockScheduleManager: blockSchedule,

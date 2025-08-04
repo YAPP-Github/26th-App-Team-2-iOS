@@ -17,13 +17,6 @@ extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
     public static func == (lhs: AppGroup, rhs: AppGroup) -> Bool {
         lhs.id == rhs.id
     }
-extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
-    public var id: String {
-        "\(self.groupID)" + self.name + self.selection.applications.map(\.hashValue).map(String.init).joined()
-    }
-    public static func == (lhs: AppGroup, rhs: AppGroup) -> Bool {
-        lhs.id == rhs.id
-    }
 }
 
 @Observable
@@ -47,107 +40,79 @@ public final class AppGroupMainViewModel {
     
     var editAppGroup: AppGroup? = nil
     var addGroupPresent: Bool = false
-    
-    private var currentSchedule: BlockSchedule?
-    var currentActiveAppGroup: AppGroup? = nil
-    var editAppGroup: AppGroup? = nil
     var appBrakeTimeSettingPresent: Bool = false
     var toastMessage: String? = nil
     
-    var sessionExitAlertPresent: Bool = false
     
     var screenTimeAuthAlertPresent: Bool = false
     var brakeTimeSettingCompletePresent: Bool = false
     var screenTimeAuthErrorResult: ScreenTimeAuthorizationResult? = nil
     
-    var toastMessage: String? = nil
-    
     // 앱 정보 저장
     var selectedAppName: String = ""
     
-    var toastMessage: String? = nil
 
     private var toastTask: Task<(), any Error>?
 
     private(set) var appGroups: [AppGroup] = []
 
+    private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
+    private let breakTimeManager: BreakTimeManager = BreakTimeManager()
+    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    
+    private let timerActor: TimerActor = TimerActor()
+    private var timerTask: Task<(), Never>?
+    
     private let fetchAppGroupUseCase: FetchAppGroupUseCase
     private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
-    private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
     private let fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol
+    
     private let fetchAppNameUseCase: FetchAppNameUseCaseProtocol
-    
-    private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
-    
-    private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
-    private let breakTimeManager: BreakTimeManager = BreakTimeManager()
-    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
-    
-    private let timerActor: TimerActor = TimerActor()
-    private var timerTask: Task<(), Never>?
 
-//    private let startBlockScheduleUseCase: StartBlockScheduleUseCaseProtocol
-//    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
     private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
-    
-    
     private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
-    private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
+    
     private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
-    
-    
-    private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
-    private let breakTimeManager: BreakTimeManager = BreakTimeManager()
-    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
-    
-    private let timerActor: TimerActor = TimerActor()
-    private var timerTask: Task<(), Never>?
-    
-    
-    private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
-    private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
-    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
-    private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
-    
-    
-    private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
     private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
-    private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
+    
     
     
     public init(
         fetchAppGroupUseCase: FetchAppGroupUseCase,
         requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
+        fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol,
+        fetchAppNameUseCase: FetchAppNameUseCaseProtocol,
+        
         createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol,
         deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
         fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol,
         endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol,
+        getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol,
+        endBreakTimeUseCase: EndBreakTimeUseCaseProtocol,
         createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
-        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
-        createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol,
-        fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol,
-        fetchAppNameUseCase: FetchAppNameUseCaseProtocol
     ) {
         self.fetchAppGroupUseCase = fetchAppGroupUseCase
         self.requestScreenTimeAuthUseCase = requestScreenTimeAuthUseCase
+        self.fetchSelectedNotificationUseCase = fetchSelectedNotificationUseCase
+        self.fetchAppNameUseCase = fetchAppNameUseCase
+        
+        
         self.createBlockScheduleUseCase = createBlockScheduleUseCase
         self.deleteBlockScheduleUseCase = deleteBlockScheduleUseCase
         self.fetchBlockScheduleUseCase = fetchBlockScheduleUseCase
         self.endBlockScheduleUseCase = endBlockScheduleUseCase
-        self.createBreakTimeUseCase = createBreakTimeUseCase
-        self.createBreakTimeUseCase = createBreakTimeUseCase
-        self.fetchSelectedNotificationUseCase = fetchSelectedNotificationUseCase
-        self.fetchAppNameUseCase = fetchAppNameUseCase
-        self.endBreakTimeUseCase = endBreakTimeUseCase
         self.getBlockingStatusUseCase = getBlockingStatusUseCase
+        
+        self.endBreakTimeUseCase = endBreakTimeUseCase
+        self.createBreakTimeUseCase = createBreakTimeUseCase
     }
     
     // MARK: - 생명주기 메서드
 
-//    
+//
     public func onAppear() {
         Task(priority: .high) {
             
@@ -368,7 +333,7 @@ public final class AppGroupMainViewModel {
     public func sessionTimerSettingCompletion(selectedTime: Int) {
         do {
 //            try self.breakTimeManager.createBreakTime(minutes: selectedTime)
-            try createBreakTimeUseCase.execute(by: selectedTime)
+//            try createBreakTimeUseCase.execute(by: selectedTime)
             self.brakeStatus = .session
             self.currentActiveAppGroup = appGroups.first
             self.sessionStart(seconds: selectedTime * 60)

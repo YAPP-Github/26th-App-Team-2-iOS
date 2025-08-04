@@ -15,51 +15,17 @@ enum BrakeStatus: Int {
     case locked
     case none
 }
-enum BrakeStatus: Int {
-    case session
-    case locked
-    case none
-}
+
 extension AppGroupMainView {
     struct AppGroupListCell: View {
         @Environment(AppGroupMainViewModel.self) var appGroupViewModel
-        @Environment(AppGroupMainViewModel.self) var appGroupViewModel
         let appGroup: AppGroup
-        
         
         let editButtonTapped: () -> ()
         let sessionExitButtonTapped: () -> ()
         
-        let sessionExitButtonTapped: () -> ()
         
         var body: some View {
-            VStack(spacing: 20) {
-                VStack(spacing: 12) {
-                    HStack {
-                        HStack {
-                            if appGroupViewModel.currentActiveAppGroup?.groupID == appGroup.groupID {
-                                switch appGroupViewModel.brakeStatus {
-                                case .none: Image.iconGroupSetting
-                                case .session:
-                                    Image.iconGroupTimer
-                                case .locked:
-                                    Image.iconGroupCoolDown
-                                }
-                            } else {
-                                Image.iconGroupSetting
-                            }
-                            Text(appGroup.name)
-                                .font(.pretendard(size: 16, type: .medium))
-                        }
-                        .foregroundStyle(Color.grey00)
-                        Spacer()
-                        Button {
-                            editButtonTapped()
-                        } label: {
-                            Image.iconCircleEdit
-                        }.disabled(
-                            appGroupViewModel.brakeStatus != .none
-                        )
             VStack(spacing: 20) {
                 VStack(spacing: 12) {
                     HStack {
@@ -195,38 +161,6 @@ extension AppGroupMainView {
     }
 }
 
-fileprivate struct SessionTimerTextView: View {
-    let minutes: Int
-    let seconds: Int
-    var body: some View {
-        VStack(alignment: .center, spacing: 0) {
-            Text("남은 사용 시간")
-                .foregroundStyle(Color.grey400)
-                .font(.pretendard(size: 14, type: .medium))
-                .multilineTextAlignment(.center)
-                .frame(height: 21)
-            HStack(spacing: 3.5) {
-                if minutes > 0 {
-                    HStack(alignment: .lastTextBaseline, spacing: 5) {
-                        Text(String(format: "%02d", minutes))
-                            .foregroundStyle(Color.grey00)
-                            .font(.pretendard(size: 45, type: .medium))
-                        Text("분").foregroundStyle(Color.grey300)
-                            .font(.pretendard(size: 14, type: .medium))
-                    }
-                }
-                HStack(alignment: .lastTextBaseline, spacing: 5) {
-                    Text(String(format: "%02d", seconds))
-                        .foregroundStyle(Color.grey00)
-                        .font(.pretendard(size: 45, type: .medium))
-                    Text("초").foregroundStyle(Color.grey300)
-                        .font(.pretendard(size: 14, type: .medium))
-                }
-                
-            }.frame(height: 54)
-        }
-    }
-}
 
 fileprivate struct SessionTimerTextView: View {
     let minutes: Int

@@ -40,13 +40,10 @@ public extension Image {
     static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
     static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
     static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
-    static let iconGroup: Image = SharedDesignSystemAsset.Images.iconGroup.swiftUIImage
     static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
     static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
     static let illustBlock: Image = SharedDesignSystemAsset.Images.illustBlock.swiftUIImage
     static let iconPolygon: Image = SharedDesignSystemAsset.Images.iconPolygon.swiftUIImage
-    static let iconCoolDown: Image = SharedDesignSystemAsset.Images.iconCooldown.swiftUIImage
-    static let iconTimer: Image = SharedDesignSystemAsset.Images.iconTimer.swiftUIImage
     static let iconProfile: Image = SharedDesignSystemAsset.Images.iconProfile.swiftUIImage
     static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
     static let iconGroupTimer: Image = SharedDesignSystemAsset.Images.iconGroupTimer.swiftUIImage
