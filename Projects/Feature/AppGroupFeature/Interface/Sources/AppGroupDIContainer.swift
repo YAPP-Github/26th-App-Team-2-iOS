@@ -18,6 +18,8 @@ public protocol AppGroupDIContainerProtocol {
     var blockSchedule: BlockScheduleProtocol { get }
     var appScheduleStorage: AppScheduleStorageProtocol { get }
     var breakTime: BreakTimeProtocol { get }
+    var managedSetting: ManagedSettingsStoreProtocol { get }
+    
     
     // MARK: - Domain - Service
     var appGroupService: AppGroupProtocol { get }
@@ -27,18 +29,25 @@ public protocol AppGroupDIContainerProtocol {
     var upsertAppGroupUseCase: UpsertAppGroupUseCase { get }
     var deleteAppGroupUseCase: DeleteAppGroupUseCase { get }
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
+    var coolDownStorage: CooldownStorageProtocol { get }
     
     var createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol { get }
     var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol { get }
     var fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol { get }
     var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol { get }
     var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol { get }
+    var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol { get }
+    var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol { get }
 }
 
 final class AppGroupDIManager: AppGroupDIContainerProtocol {
+    
     private(set) lazy var blockSchedule: BlockScheduleProtocol = BlockScheduleManager()
     private(set) lazy var appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private(set) lazy var breakTime: BreakTimeProtocol = BreakTimeManager()
+    private(set) lazy var managedSetting: ManagedSettingsStoreProtocol = ManagedSettingsStoreManager()
+    private(set) lazy var coolDownStorage: CooldownStorageProtocol = CooldownStorage()
+    
     /// 해결 과제:
     /// 1. SwiftData를 MainActor에서 실행함에 따른 Actor 의존성 전파
     /// 2. ModelContext try 생성에 따른 AppGroupStorage 생성자 throws 처리
@@ -64,6 +73,16 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     private(set) lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(
         breakTimeManager: breakTime,
         appScheduleStorage: appScheduleStorage
+    )
+    private(set) lazy var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol = EndBreakTimeUseCase(
+        appScheduleStorage: appScheduleStorage,
+        blockScheduleManager: blockSchedule,
+        managedSettingsManager: managedSetting,
+        cooldownStorage: coolDownStorage
+    )
+    private(set) lazy var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol = GetBlockingStatusUseCase(
+        appScheduleStorage: appScheduleStorage,
+        cooldownStorage: coolDownStorage
     )
 }
 

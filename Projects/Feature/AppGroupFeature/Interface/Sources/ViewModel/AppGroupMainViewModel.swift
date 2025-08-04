@@ -20,8 +20,9 @@ extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
 
 @Observable
 public final class AppGroupMainViewModel {
+    
     var brakeStatus: BrakeStatus {
-        get { BrakeStatus(rawValue:  UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
+        get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
     }
     
@@ -56,17 +57,16 @@ public final class AppGroupMainViewModel {
     private let timerActor: TimerActor = TimerActor()
     private var timerTask: Task<(), Never>?
     
-//    private let startBlockScheduleUseCase: StartBlockScheduleUseCaseProtocol
-//    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
+    
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
-//    private let startBlockSchudeleUseCase: StartBlockScheduleUseCase = StartBlockScheduleUseCase(
-//        appScheduleStorage: AppScheduleStorage(),
-//        blockScheduleManager: BlockScheduleManager()
-//    )
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
     private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
+    
+    
+    private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
     private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
+    private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
     
     
     public init(
@@ -76,7 +76,9 @@ public final class AppGroupMainViewModel {
         deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
         fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol,
         endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol,
-        createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
+        createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol,
+        endBreakTimeUseCase: EndBreakTimeUseCaseProtocol,
+        getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
     ) {
         self.fetchAppGroupUseCase = fetchAppGroupUseCase
         self.requestScreenTimeAuthUseCase = requestScreenTimeAuthUseCase
@@ -85,12 +87,15 @@ public final class AppGroupMainViewModel {
         self.fetchBlockScheduleUseCase = fetchBlockScheduleUseCase
         self.endBlockScheduleUseCase = endBlockScheduleUseCase
         self.createBreakTimeUseCase = createBreakTimeUseCase
+        self.endBreakTimeUseCase = endBreakTimeUseCase
+        self.getBlockingStatusUseCase = getBlockingStatusUseCase
     }
     
     // MARK: - 생명주기 메서드
 //    
     public func onAppear() {
         Task(priority: .high) {
+            
             await refreshAppGroups()
         }
         refreshSessionTimer()
@@ -98,16 +103,29 @@ public final class AppGroupMainViewModel {
     
     public func sceneActive() {
         Task(priority: .background) { await screenTimeAuthRequest() }
-
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
-               let scheudle = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
+               let schedule = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
+                let status = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
+                print("현재 상태: \(status)")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-                    self.currentSchedule = scheudle
+                    self.currentSchedule = schedule
+//                    switch status {
+//                    case .blocking:
+//                        self.brakeStatus = .none
+//                    case .unlockedTemporarily:
+//                        self.brakeStatus = .session
+//                    case .extensionPrompt(let time, let count):
+//                        self.brakeStatus = .session
+//                    case .sessionEnded(let time, let groupName):
+//                        self.brakeStatus = .none
+//                    case .cooldownActive(let tokenName, let time, let groupName):
+//                        self.brakeStatus = .locked
+//                    }
                 }
             } else {
-                print("스켜쥴 fetch 실패")
+                print("스케쥴 fetch 실패")
             }
             await refreshAppGroups()
             await MainActor.run { [weak self] in
@@ -199,11 +217,19 @@ public final class AppGroupMainViewModel {
     }
     
     private func sessionEnd() {
-        self.breakTimeManager.deleteBreakTime()
-        self.currentActiveAppGroup = nil
-        appScheduleStorage.saveSelectNotificationTrigger(false)
-        self.brakeStatus = .none
-        self.sessionExitAlertPresent = false
+        do {
+            guard let currentSchedule else {
+                assertionFailure("현재 스케쥴이 없는데 부름!!")
+                return
+            }
+            try self.endBreakTimeUseCase.execute()
+            self.currentActiveAppGroup = nil
+            appScheduleStorage.saveSelectNotificationTrigger(false)
+            self.brakeStatus = .none
+            self.sessionExitAlertPresent = false
+        } catch {
+            print("끝내는데 오류가 발생함: \(error.localizedDescription)")
+        }
     }
     
     private func sessionStart(seconds: Int) {
@@ -232,6 +258,8 @@ public final class AppGroupMainViewModel {
             let start = self.breakTimeManager.getStartDate()
             let end = self.breakTimeManager.getEndDate()
             print("정한 시간: ", end.timeIntervalSince1970 - start.timeIntervalSince1970)
+            print("end: \(end) | start: \(start) | 현재: \(Date.now)")
+            print("break 상태: \(brakeStatus)")
             switch self.brakeStatus {
             case .session, .locked:
                 await timerActor.stop()

@@ -25,6 +25,9 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
         static let extensionCount = "extensionCount"
         static let extensionTime = "extensionTime"
         static let extensionGroupName = "extensionGroupName"
+        
+        static let startBrakeDate = "startBrakeDate"
+        static let endBrakeDate = "endBrakeDate"
 
         static func blockSchedule(id: String) -> String {
             return "blockSchedule_\(id)"
@@ -109,5 +112,26 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
     
     public func getExtensionTime() -> Int {
         return userDefaults?.integer(forKey: Keys.extensionTime) ?? 15 // 기본값 15분
+    }
+    
+    // MARK: -- 타이머 시간 관련 메서드들
+    
+    public func getBreakStartDate() -> Date {
+        let dateInterval = userDefaults?.double(forKey: Keys.startBrakeDate) ?? 0
+        return Date(timeIntervalSince1970:  dateInterval)
+    }
+    public func setBreakStartDate(date: Date) {
+        let startInterval = date.timeIntervalSince1970
+        userDefaults?.set(startInterval, forKey: Keys.startBrakeDate)
+    }
+    
+    public func getBreakEndDate() -> Date {
+        let dateInterval = userDefaults?.double(forKey: Keys.endBrakeDate) ?? 0
+        return Date(timeIntervalSince1970: dateInterval)
+    }
+    
+    public func setBreakEndDate(date: Date) {
+        let endInterval = date.timeIntervalSince1970
+        userDefaults?.set(endInterval, forKey: Keys.endBrakeDate)
     }
 }

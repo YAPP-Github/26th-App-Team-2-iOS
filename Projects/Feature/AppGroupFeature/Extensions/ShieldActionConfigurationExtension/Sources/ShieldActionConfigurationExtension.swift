@@ -44,7 +44,6 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
 
     private func primaryButtonPressedAction(completionHandler: @escaping (ShieldActionResponse) -> Void) {
         let status = appScheduleStorage.getBlockingStatus()
-        
         switch status {
         case .blocking:
             // 노티피케이션 요청
