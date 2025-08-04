@@ -28,12 +28,7 @@ struct FeatureAppGroupFeatureApp: App {
                         }
                     case .dashboard:
                         AppGroupMainView()
-                            .environment(
-                                AppGroupMainViewModel(
-                                    fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
-                                    requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase
-                                )
-                            )
+                        
                     case .myInfo:
                         VStack {
                             Spacer()
@@ -42,7 +37,19 @@ struct FeatureAppGroupFeatureApp: App {
                         }
                     }
                 }
+                
             }
+            .environment(
+                AppGroupMainViewModel(
+                    fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
+                    requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
+                    createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
+                    deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
+                    fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
+                    endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
+                    createBreakTimeUseCase: diContainer.createBreakTimeUseCase
+                )
+            )
         }
     }
 }
