@@ -14,22 +14,22 @@ public protocol UserProfileProtocol {
     func deleteUser() async throws
 }
 
-
 public final class UserProfileService {
     public let networkProvider: NetworkProviderProtocol
     public let onboardingState: OnboardingStateProtocol
     public let userStorage: UserStorageProtocol
+    public let tokenStorage: TokenStorageProtocol
     
     
     public init(
         networkProvider: NetworkProviderProtocol,
         onboardingState: OnboardingStateProtocol,
-        userStorage: UserStorageProtocol
+        userStorage: UserStorageProtocol,
+        tokenStorage: TokenStorageProtocol
     ) {
         self.networkProvider = networkProvider
         self.onboardingState = onboardingState
         self.userStorage = userStorage
+        self.tokenStorage = tokenStorage
     }
 }
-
-

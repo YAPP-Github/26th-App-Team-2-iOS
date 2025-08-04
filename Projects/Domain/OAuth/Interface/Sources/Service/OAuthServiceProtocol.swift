@@ -24,8 +24,6 @@ public final class OAuthLogInService {
     public let tokenStorage: TokenStorageProtocol
     public let tokenKeyHolder: TokenKeyHolderProtocol
     public let onboardingState: OnboardingStateProtocol
-    
-
 
     public init(
         networkProvider: NetworkProviderProtocol,

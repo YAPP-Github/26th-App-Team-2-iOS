@@ -34,6 +34,7 @@ public extension Color {
     
     static let brakeDark: Color = SharedDesignSystemAsset.Colors.brakeDark.swiftUIColor
     static let grey00: Color = SharedDesignSystemAsset.Colors.grey00.swiftUIColor
+    static let buttonYellow: Color = SharedDesignSystemAsset.Colors.buttonYellow.swiftUIColor
 }
 
 

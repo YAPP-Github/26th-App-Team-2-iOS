@@ -15,4 +15,6 @@ public protocol TokenStorageProtocol {
     
     @discardableResult
     func delete(for key: String) async throws -> Bool
+    
+    func deleteAllTokens() async throws
 }

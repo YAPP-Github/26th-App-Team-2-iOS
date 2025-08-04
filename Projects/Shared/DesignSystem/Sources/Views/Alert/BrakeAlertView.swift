@@ -19,6 +19,12 @@ public struct BrakeAlertView: View {
     private let alertType: AlertType
     private let showCloseButton: Bool
     private let closeAction: (() -> Void)?
+    
+    // 버튼 색상들
+    private let primaryBackgroundColor: Color?
+    private let primaryTextColor: Color?
+    private let secondaryBackgroundColor: Color?
+    private let secondaryTextColor: Color?
 
     public enum AlertType {
         case singleButton
@@ -36,9 +42,13 @@ public struct BrakeAlertView: View {
         alertType: AlertType = .singleButton,
         primaryButtonTitle: String,
         secondaryButtonTitle: String? = nil,
+        primaryBackgroundColor: Color? = nil,
+        primaryTextColor: Color? = nil,
+        secondaryBackgroundColor: Color? = nil,
+        secondaryTextColor: Color? = nil,
+        showCloseButton: Bool = false,
         primaryAction: @escaping () -> Void,
         secondaryAction: (() -> Void)? = nil,
-        showCloseButton: Bool = false,
         closeAction: (() -> Void)? = nil
     ) {
         self.title = title
@@ -47,9 +57,13 @@ public struct BrakeAlertView: View {
         self.alertType = alertType
         self.primaryButtonTitle = primaryButtonTitle
         self.secondaryButtonTitle = secondaryButtonTitle
+        self.primaryBackgroundColor = primaryBackgroundColor
+        self.primaryTextColor = primaryTextColor
+        self.secondaryBackgroundColor = secondaryBackgroundColor
+        self.secondaryTextColor = secondaryTextColor
+        self.showCloseButton = showCloseButton
         self.primaryAction = primaryAction
         self.secondaryAction = secondaryAction
-        self.showCloseButton = showCloseButton
         self.closeAction = closeAction
     }
 
@@ -73,7 +87,11 @@ public struct BrakeAlertView: View {
                             primaryButtonTitle: primaryButtonTitle,
                             secondaryButtonTitle: secondaryButtonTitle,
                             primaryAction: primaryAction,
-                            secondaryAction: secondaryAction
+                            secondaryAction: secondaryAction,
+                            primaryBackgroundColor: primaryBackgroundColor ?? .brakeWhite,
+                            primaryTextColor: primaryTextColor ?? .grey900,
+                            secondaryBackgroundColor: secondaryBackgroundColor ?? .grey800,
+                            secondaryTextColor: secondaryTextColor ?? .brakeWhite
                         )
                     } else if alertType == .confirmDoubleButton,
                         let secondaryButtonTitle = secondaryButtonTitle {
@@ -82,10 +100,10 @@ public struct BrakeAlertView: View {
                              secondaryButtonTitle: secondaryButtonTitle,
                              primaryAction: primaryAction,
                              secondaryAction: secondaryAction,
-                             primaryBackgroundColor: .brakeYellow,
-                             primaryTextColor: .grey900,
-                             secondaryBackgroundColor: .grey800,
-                             secondaryTextColor: .grey00
+                             primaryBackgroundColor: primaryBackgroundColor ?? .brakeYellow,
+                             primaryTextColor: primaryTextColor ?? .grey900,
+                             secondaryBackgroundColor: secondaryBackgroundColor ?? .grey800,
+                             secondaryTextColor: secondaryTextColor ?? .grey00
                          )
                     } else {
                         // 단일 버튼
@@ -94,10 +112,10 @@ public struct BrakeAlertView: View {
                         } label: {
                             Text(primaryButtonTitle)
                                 .font(.pretendard(size: 16, type: .semiBold))
-                                .foregroundStyle(Color.grey900)
+                                .foregroundStyle(primaryTextColor ?? Color.grey900)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 48)
-                                .background(Color.brakeWhite)
+                                .background(primaryBackgroundColor ?? Color.brakeWhite)
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }

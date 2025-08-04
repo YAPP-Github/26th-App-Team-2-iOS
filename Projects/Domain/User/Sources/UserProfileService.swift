@@ -9,8 +9,6 @@ import Foundation
 import DomainUserInterface
 import Core
 
-
-
 extension UserProfileService: @retroactive UserProfileProtocol {
     
     
@@ -54,7 +52,12 @@ extension UserProfileService: @retroactive UserProfileProtocol {
     }
     
     public func deleteUser() async throws {
-        let deleteUserEndPoint = BrakeRouter.MemberEndPoint<EmptyData>.delete
-        _ = try await networkProvider.request(deleteUserEndPoint)
+        let deleteEndPoint = BrakeRouter.MemberEndPoint<BrakeResponse<EmptyData>>.delete
+        let _: BrakeResponse<EmptyData> = try await networkProvider.request(deleteEndPoint)
+        
+        // 회원탈퇴 성공 시 로컬 데이터 정리
+        userStorage.deleteNickname()
+        try await tokenStorage.deleteAllTokens()
     }
+
 }

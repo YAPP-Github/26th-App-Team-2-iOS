@@ -15,7 +15,8 @@ let targets: [Target] = [
             dependencies: [
                 .domain,
                 .feature(implements: .Onboarding),
-                .feature(implements: .AppGroupFeature)
+                .feature(implements: .AppGroupFeature),
+                .feature(implements: .MyInfo),
             ],
             settings: .settings(configurations: [
                 .build(.debug),

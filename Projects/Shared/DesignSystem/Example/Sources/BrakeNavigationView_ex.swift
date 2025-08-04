@@ -3,7 +3,7 @@
 //  SharedDesignSystemExample
 //
 //  Created by Derrick kim on 7/27/25.
-    //
+//
 
 import SwiftUI
 import SharedDesignSystem
@@ -12,46 +12,26 @@ struct BrakeNavigationView_ex: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showAlert = false
     @State private var alertMessage = ""
-    
+
     var body: some View {
         VStack(spacing: 30) {
             VStack(spacing: 20) {
-                Text("기본 네비게이션")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.grey700)
-                
-                BrakeNavigationView(
-                    title: "TextLabel",
-                    onBackButtonTapped: {
-                        alertMessage = "뒤로가기 버튼이 클릭되었습니다"
-                        showAlert = true
-                    },
-                    onCloseButtonTapped: {
-                        alertMessage = "닫기 버튼이 클릭되었습니다"
-                        showAlert = true
-                    }
-                )
-            }
-            
-            VStack(spacing: 20) {
-                Text("가변 네비")
-                BrakeNavigationView(
-                    title: Text("타이틀")
-                        .font(.pretendard(size: 18, type: .semiBold))
-                        .foregroundStyle(Color.brakeWhite)
-                ) {
+                BrakeNavigationView {
+                    Text("타이틀")
+                    .font(.pretendard(size: 18, type: .semiBold))
+                    .foregroundStyle(Color.brakeWhite)
+                } leading: {
                     BrakeNavigationButton(type: .back) {
                         alertMessage = "뒤로가기 버튼이 클릭되었습니다"
                         showAlert = true
                     }
-                } trailing:  {
+                } trailing: {
                     BrakeNavigationButton(type: .edit) {
                         alertMessage = "닫기 버튼이 클릭되었습니다"
                         showAlert = true
                     }
                 }
             }
-            
         }
         .padding()
         .navigationTitle("BrakeNavigationView Example")
