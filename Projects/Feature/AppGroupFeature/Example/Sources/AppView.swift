@@ -66,6 +66,17 @@ struct BrakeTabView: View {
             .onAppear {
                 bottomInsetHeight = geometry.safeAreaInsets.bottom
             }
+            .environment(
+                AppGroupMainViewModel(
+                    fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
+                    requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
+                    createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
+                    deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
+                    fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
+                    endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
+                    createBreakTimeUseCase: diContainer.createBreakTimeUseCase
+                )
+            )
         }
     }
 }

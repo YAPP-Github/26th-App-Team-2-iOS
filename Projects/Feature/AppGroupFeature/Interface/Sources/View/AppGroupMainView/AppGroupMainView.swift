@@ -19,13 +19,13 @@ public struct AppGroupMainView: View {
     public init() { }
     public var body: some View {
         NavigationStack {
+            @Bindable var viewModel: AppGroupMainViewModel = appGroupMainViewModel
             ZStack {
                 Color.grey900.ignoresSafeArea()
-                @Bindable var viewModel = appGroupMainViewModel
                 
                 // 두 뷰를 모두 렌더링하되 opacity로 부드럽게 전환
                 Group {
-                    if appGroupMainViewModel.appGroups.isEmpty {
+                    if viewModel.appGroups.isEmpty {
                         AppGroupMainEmptyAppGroupView {
                             appGroupMainViewModel.addButtonTapped()
                         }
@@ -61,9 +61,7 @@ public struct AppGroupMainView: View {
                         viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
                     }
                 })
-                .fullScreenCover(
-                    isPresented: $viewModel.addGroupPresent
-                ) {
+                .fullScreenCover(isPresented: $viewModel.addGroupPresent) {
                     UpsertAppGroupView()
                         .environment(createUpsertAppGroupViewModel())
                 }
@@ -83,7 +81,9 @@ public struct AppGroupMainView: View {
                     AppBrakeTimeSettingView()
                 }
             }
+            
         }
+        
         .brakePopUp(
             isPresented: Binding(
                 get: { appGroupMainViewModel.screenTimeAuthAlertPresent } ,
@@ -112,6 +112,7 @@ public struct AppGroupMainView: View {
         .onAppear() {
             appGroupMainViewModel.onAppear()
         }
+        
     }
 }
 

@@ -31,14 +31,14 @@ extension AppGroupMainView {
                         HStack {
                             if appGroupViewModel.currentActiveAppGroup == appGroup {
                                 switch appGroupViewModel.brakeStatus {
-                                case .none: Image.iconGroup
+                                case .none: Image.iconGroupSetting
                                 case .session:
-                                    Image.iconTimer
+                                    Image.iconGroupTimer
                                 case .locked:
-                                    Image.iconCoolDown
+                                    Image.iconGroupCoolDown
                                 }
                             } else {
-                                Image.iconGroup
+                                Image.iconGroupSetting
                             }
                             Text(appGroup.name)
                                 .font(.pretendard(size: 16, type: .medium))
