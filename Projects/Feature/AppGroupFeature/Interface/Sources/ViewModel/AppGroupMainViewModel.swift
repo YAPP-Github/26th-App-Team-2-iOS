@@ -59,6 +59,10 @@ public final class AppGroupMainViewModel {
 //    private let startBlockScheduleUseCase: StartBlockScheduleUseCaseProtocol
 //    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
+//    private let startBlockSchudeleUseCase: StartBlockScheduleUseCase = StartBlockScheduleUseCase(
+//        appScheduleStorage: AppScheduleStorage(),
+//        blockScheduleManager: BlockScheduleManager()
+//    )
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
     private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
@@ -86,7 +90,6 @@ public final class AppGroupMainViewModel {
     // MARK: - 생명주기 메서드
 //    
     public func onAppear() {
-        print("온어피어 실행")
         Task(priority: .high) {
             await refreshAppGroups()
         }

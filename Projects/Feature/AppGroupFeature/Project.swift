@@ -20,25 +20,23 @@ let project = Project.makeModule(
                 ]
             )
         ),
-        
-            .feature(
-                implements: .AppGroupFeature,
-                factory: .init(
-                    dependencies: [
-                        .feature(interface: .AppGroupFeature)
-                    ]
-                )
-            ),
-        
-            .feature(
-                testing: .AppGroupFeature,
-                factory: .init(
-                    dependencies: [
-                        .feature(interface: .AppGroupFeature),
-                        .feature(implements: .AppGroupFeature)
-                    ]
-                )
-            ),
+        .feature(
+            implements: .AppGroupFeature,
+            factory: .init(
+                dependencies: [
+                    .feature(interface: .AppGroupFeature)
+                ]
+            )
+        ),
+        .feature(
+            testing: .AppGroupFeature,
+            factory: .init(
+                dependencies: [
+                    .feature(interface: .AppGroupFeature),
+                    .feature(implements: .AppGroupFeature)
+                ]
+            )
+        ),
         .feature(
             tests: .AppGroupFeature,
             factory: .init(
@@ -58,26 +56,26 @@ let project = Project.makeModule(
                     .target(name: "FeatureAppGroupFeatureDeviceActivityMonitorExtension"),
                     .target(name: "FeatureAppGroupFeatureShieldConfigurationExtension"),
                     .target(name: "FeatureAppGroupFeatureShieldActionConfigurationExtension")
-                ]
+                    
+                ],
+                settings: Project.Environment.debugTargetSettings
+            )
+            
+        ),
+        .feature(
+            deviceActivityMonitorExtension: .AppGroupFeature,
+            factory: .init(
+                name: "FeatureAppGroupFeatureDeviceActivityMonitorExtension",
+                infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
+                entitlements: "Extensions/DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements",
+                dependencies: [
+                    .domain,
+                    .feature(interface: .AppGroupFeature),
+                    .feature(implements: .AppGroupFeature)
+                ],
+                settings: Project.Environment.projectSettings
             )
         ),
-        
-            .feature(
-                deviceActivityMonitorExtension: .AppGroupFeature,
-                factory: .init(
-                    name: "FeatureAppGroupFeatureDeviceActivityMonitorExtension",
-                    infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
-                    entitlements: "Extensions/DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements",
-                    dependencies: [
-                        .core(interface: .AppScreenTime),
-                        .core(implements: .AppScreenTime),
-                        .core(interface: .LocalStorage),
-                        .core(implements: .LocalStorage),
-                        .shared(implements: .Util)
-                    ],
-                    settings: Project.Environment.projectSettings
-                )
-            ),
         .feature(
             shieldConfigurationExtension: .AppGroupFeature,
             factory: .init(
@@ -85,11 +83,9 @@ let project = Project.makeModule(
                 infoPlist: "Extensions/ShieldConfigurationExtension/Info.plist",
                 entitlements: "Extensions/ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements",
                 dependencies: [
-                    .core(interface: .AppScreenTime),
-                    .core(implements: .AppScreenTime),
-                    .core(interface: .LocalStorage),
-                    .core(implements: .LocalStorage),
-                    .shared(implements: .Util)
+                    .domain,
+                    .feature(interface: .AppGroupFeature),
+                    .feature(implements: .AppGroupFeature)
                 ],
                 settings: Project.Environment.projectSettings
             )
@@ -101,11 +97,9 @@ let project = Project.makeModule(
                 infoPlist: "Extensions/ShieldActionConfigurationExtension/Info.plist",
                 entitlements: "Extensions/ShieldActionConfigurationExtension/ShieldActionConfigurationExtension.entitlements",
                 dependencies: [
-                    .core(interface: .AppScreenTime),
-                    .core(implements: .AppScreenTime),
-                    .core(interface: .LocalStorage),
-                    .core(implements: .LocalStorage),
-                    .shared(implements: .Util)
+                    .domain,
+                    .feature(interface: .AppGroupFeature),
+                    .feature(implements: .AppGroupFeature)
                 ],
                 settings: Project.Environment.projectSettings
             )

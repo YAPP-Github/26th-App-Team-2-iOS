@@ -28,7 +28,6 @@ struct FeatureAppGroupFeatureApp: App {
                         }
                     case .dashboard:
                         AppGroupMainView()
-                        
                     case .myInfo:
                         VStack {
                             Spacer()

@@ -30,7 +30,6 @@ public struct AppGroupMainView: View {
                             appGroupMainViewModel.addButtonTapped()
                         }
                     } else {
-                        // Group List View
                         AppGroupMainGroupListView()
                     }
                 }
