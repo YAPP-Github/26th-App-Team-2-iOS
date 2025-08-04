@@ -57,6 +57,8 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             break
         case .extensionPrompt:
             // 그만하기
+            let cooldownMinutes = appScheduleStorage.getExtensionTime() // 저장된 연장 시간 사용
+            handleExtensionTimeExhausted(groupName: "", cooldownMinutes: cooldownMinutes)
             completionHandler(.close)
         case .sessionEnded:
             // 남은 시간 확인 - 쿨다운 상태 유지
@@ -104,7 +106,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             } else {
                 // 최대 연장 횟수 도달 (총 30분 사용 완료) - sessionEnded 상태로 변경
                 let cooldownMinutes = appScheduleStorage.getExtensionTime() // 저장된 연장 시간 사용
-                handleExtensionTimeExhausted(groupName: "앱 그룹", cooldownMinutes: cooldownMinutes)
+                handleExtensionTimeExhausted(groupName: "", cooldownMinutes: cooldownMinutes)
                 completionHandler(.defer)
             }
         case .sessionEnded:
