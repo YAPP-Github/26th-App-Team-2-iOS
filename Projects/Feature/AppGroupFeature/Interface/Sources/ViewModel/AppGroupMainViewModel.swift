@@ -111,18 +111,6 @@ public final class AppGroupMainViewModel {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.currentSchedule = schedule
-//                    switch status {
-//                    case .blocking:
-//                        self.brakeStatus = .none
-//                    case .unlockedTemporarily:
-//                        self.brakeStatus = .session
-//                    case .extensionPrompt(let time, let count):
-//                        self.brakeStatus = .session
-//                    case .sessionEnded(let time, let groupName):
-//                        self.brakeStatus = .none
-//                    case .cooldownActive(let tokenName, let time, let groupName):
-//                        self.brakeStatus = .locked
-//                    }
                 }
             } else {
                 print("스케쥴 fetch 실패")
