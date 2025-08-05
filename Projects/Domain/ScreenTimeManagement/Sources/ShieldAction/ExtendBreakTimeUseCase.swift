@@ -40,7 +40,16 @@ public struct ExtendBreakTimeUseCase: ExtendBreakTimeUseCaseProtocol {
             try startExtensionBreakTime(minutes: time)
             
             // 연장 프롬프트 상태 업데이트
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount))
+            appScheduleStorage.saveBlockingStatus(
+                .extensionPrompt(
+                    time: time,
+                    count: newCount,
+                    startDate: .now,
+                    endDate: .now.addingTimeInterval(
+                        TimeInterval(time) * 60
+                    )
+                )
+            )
             
             return true // 연장 성공
         } else {

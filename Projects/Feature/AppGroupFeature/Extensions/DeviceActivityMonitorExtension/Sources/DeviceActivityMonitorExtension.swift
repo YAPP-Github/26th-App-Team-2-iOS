@@ -34,7 +34,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     private func setupStartAction(by activity: DeviceActivityName) {
         if activity == .brake {
             let extensionCount = appScheduleStorage.getExtensionCount()
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount))
+            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
             appScheduleStorage.saveSelectNotificationTrigger(false)
 
             // 저장된 모든 스케줄을 가져와서 차단 해제
@@ -67,10 +67,10 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
             if extensionCount == 0 {
-                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0))
+                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
             } else if extensionCount < maxExtensions {
                 // 연장 가능: extensionPrompt 상태로 설정
-                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount))
+                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
             } else {
                 // 연장 불가: sessionEnded 상태로 설정 (5번 화면)
                 appScheduleStorage.saveBlockingStatus(.sessionEnded(time: 15, groupName: "앱 그룹"))

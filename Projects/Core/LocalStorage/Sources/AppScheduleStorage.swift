@@ -113,6 +113,7 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
         return userDefaults?.integer(forKey: Keys.extensionCount) ?? 0
     }
     
+    
     // MARK: - 연장 시간 관련 메서드들
     
     public func saveExtensionTime(_ minutes: Int) {

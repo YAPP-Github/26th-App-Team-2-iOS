@@ -31,7 +31,9 @@ public struct SnoozeBreakTimeUseCase: SnoozeBreakTimeUseCaseProtocol {
     public func execute() throws {
         // 1. extensionPrompt 상태로 설정
         let extensionCount = appScheduleStorage.getExtensionCount()
-        appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount))
+        let startDate = appScheduleStorage.getBreakStartDate()
+        let endDate = appScheduleStorage.getBreakEndDate()
+        appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: startDate, endDate: endDate))
         
         // 2. 알림 트리거 비활성화
         appScheduleStorage.saveSelectNotificationTrigger(false)

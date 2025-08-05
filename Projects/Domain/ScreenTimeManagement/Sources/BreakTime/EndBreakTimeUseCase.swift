@@ -47,10 +47,28 @@ public struct EndBreakTimeUseCase: EndBreakTimeUseCaseProtocol {
         
         if extensionCount == 0 {
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0))
+            appScheduleStorage.saveBlockingStatus(
+                .extensionPrompt(
+                    time: 15,
+                    count: 0,
+                    startDate: .now,
+                    endDate: .now.addingTimeInterval(
+                        15 * 60
+                    )
+                )
+            )
         } else if extensionCount < maxExtensions {
             // 연장 가능: extensionPrompt 상태로 설정
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount))
+            appScheduleStorage.saveBlockingStatus(
+                .extensionPrompt(
+                    time: 15,
+                    count: extensionCount,
+                    startDate: .now,
+                    endDate: .now.addingTimeInterval(
+                        15 * 60
+                    )
+                )
+            )
         } else {
             // 연장 불가: sessionEnded 상태로 설정
             // 15분만 더 sessionEnded 상태로 변경
