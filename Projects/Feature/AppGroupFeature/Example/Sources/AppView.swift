@@ -43,14 +43,12 @@ struct FeatureAppGroupFeatureApp: App {
                     fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
                     requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
                     fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
-                    fetchAppNameUseCase: diContainer.fetchAppNameUseCase,
                     createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
                     deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
                     fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
                     endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
                     getBlockingStatusUseCase: diContainer.getBlockingStatusUseCase,
-                    endBreakTimeUseCase: diContainer.endBrakeTimeUseCase,
-                    createBreakTimeUseCase: diContainer.createBreakTimeUseCase
+                    endBreakTimeUseCase: diContainer.endBrakeTimeUseCase
                 )
             )
         }

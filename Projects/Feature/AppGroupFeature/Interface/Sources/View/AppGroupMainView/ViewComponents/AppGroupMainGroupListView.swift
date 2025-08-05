@@ -25,7 +25,6 @@ extension AppGroupMainView {
                             case .locked, .session:
                                 Rectangle().fill(Color.clear).frame(height: 58)
                             }
-                            
                             VStack(spacing: 16) {
                                 groupSectionView
                                 groupListView

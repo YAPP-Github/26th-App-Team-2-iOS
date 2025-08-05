@@ -115,8 +115,8 @@ extension AppGroupMainView {
                             BrakeTimerView(
                                 lineWidth: 7,
                                 progress: appGroupViewModel.sessionRestRatio,
-                                startColor: Color(hex: "#B6C1E0"),
-                                endColor: Color.brakeYellow
+                                startColor: Color(hex: "8E97B0"),
+                                endColor: Color(hex: "#F0F4FF")
                             ) {
                                 VStack(spacing: 12) {
                                     Image.appGroup.lockTimer
@@ -124,16 +124,22 @@ extension AppGroupMainView {
                                         .aspectRatio(1, contentMode: .fit)
                                         .frame(width: 110)
                                     HStack(spacing: 4) {
-                                        ( Text(String(format: "%02d", 54))
+                                        ( Text(String(format: "%02d", appGroupViewModel.sessionRestTime / 60))
                                             .foregroundStyle(Color.grey00)
+                                            .font(.pretendard(size: 16, type: .semiBold))
                                           +
-                                          Text("분").foregroundStyle(Color.grey500)
+                                          Text("분")
+                                            .foregroundStyle(Color.grey500)
+                                            .font(.pretendard(size: 16, type: .medium))
                                         )
-                                        ( Text(String(format: "%02d", 54)).foregroundStyle(Color.grey00)
+                                        ( Text(String(format: "%02d", appGroupViewModel.sessionRestTime % 60))
+                                            .foregroundStyle(Color.grey00)
+                                            .font(.pretendard(size: 16, type: .semiBold))
                                           +
                                           Text("초").foregroundStyle(Color.grey500)
+                                            .font(.pretendard(size: 16, type: .medium))
                                         )
-                                    }.font(.pretendard(size: 14, type: .bold))
+                                    }
                                 }
                             }
                             .padding(.top, 12)

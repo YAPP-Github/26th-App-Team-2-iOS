@@ -50,12 +50,14 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     // MARK: - App Name Management
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
+        
         let status = getBlockingStatus(tokenName)
         let customIcon = getIconImage(by: status)
         let titleLabel = ShieldConfiguration.Label(
             text: status.title,
             color: SharedDesignSystemAsset.Colors.grey100.color
         )
+        
         let subtitleLabel = ShieldConfiguration.Label(
             text: status.subtitle,
             color: SharedDesignSystemAsset.Colors.grey300.color

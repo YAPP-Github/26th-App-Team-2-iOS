@@ -45,12 +45,21 @@ public struct AppGroupMainView: View {
                     message: appGroupMainViewModel.toastMessage,
                     bottomPadding: 60
                 )
-                .fullScreenCover(isPresented:  $viewModel.timerSettingPresent, content: {
-//                    TimerSettingView { selectedTime in
-//                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
-//                    }
-                    AppBrakeTimeSettingView()
-                })
+                .fullScreenCover(
+                    isPresented:  $viewModel.timerSettingPresent,
+                    content: {
+                        AppBrakeTimeSettingView()
+                            .environment(
+                                AppBrakeTimeSettingViewModel(
+                                    createBreakTimeUseCase: diContainer.createBreakTimeUseCase,
+                                    fetchAppNameUseCase: diContainer.fetchAppNameUseCase,
+                                    createBreakTimeCompletion: { selectedTime in
+                                        viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
+                                    }
+                                )
+                            )
+                    }
+                )
                 .fullScreenCover(isPresented: $viewModel.addGroupPresent) {
                     UpsertAppGroupView()
                         .environment(createUpsertAppGroupViewModel())
@@ -62,9 +71,6 @@ public struct AppGroupMainView: View {
                             .environment(updateUpsertAppGroupViewModel(appGroup: appGroup))
                     }
                 )
-//                .fullScreenCover(isPresented: $viewModel.appBrakeTimeSettingPresent) {
-//                    AppBrakeTimeSettingView()
-//                }
             }
             
         }
@@ -89,14 +95,18 @@ public struct AppGroupMainView: View {
             }
         )
         .onChange(of: scenePhase, { oldValue, newValue in
-            if newValue == .active {
-                self.appGroupMainViewModel.sceneActive()
+            switch newValue {
+            case .inactive: self.appGroupMainViewModel.setScene(.inActive)
+            case .active: self.appGroupMainViewModel.setScene(.active)
+            case .background: self.appGroupMainViewModel.setScene(.background)
+            @unknown default:
+                assertionFailure("알 수 없는 타입 발생")
+                self.appGroupMainViewModel.setScene(.background)
             }
         })
         .onAppear() {
             appGroupMainViewModel.onAppear()
         }
-        
     }
 }
 

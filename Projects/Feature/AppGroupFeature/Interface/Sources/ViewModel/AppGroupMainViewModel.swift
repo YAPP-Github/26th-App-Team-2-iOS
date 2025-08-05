@@ -8,7 +8,6 @@
 import Foundation
 import Domain
 import Core
-import Core
 
 extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
     public var id: String {
@@ -19,10 +18,14 @@ extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
     }
 }
 
+public enum AppScene {
+    case active
+    case inActive
+    case background
+}
+
 @Observable
 public final class AppGroupMainViewModel {
-    public let timeOptions = [15, 20, 25, 30, 45, 60, 90, 120]
-    var selectedMinutes: Int = 15
     
     var brakeStatus: BrakeStatus {
         get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
@@ -31,7 +34,6 @@ public final class AppGroupMainViewModel {
     
     private let scheduleKey: String = "BlockScheduleCurrent"
     private var currentSchedule: BlockScheduleEntity?
-    
     var currentActiveAppGroup: AppGroup? = nil
     var sessionExitAlertPresent: Bool = false
     var timerSettingPresent: Bool = false
@@ -53,6 +55,8 @@ public final class AppGroupMainViewModel {
     
 
     private var toastTask: Task<(), any Error>?
+    
+    private var appScene: AppScene = .active
 
     private(set) var appGroups: [AppGroup] = []
 
@@ -67,7 +71,6 @@ public final class AppGroupMainViewModel {
     private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
     private let fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol
     
-    private let fetchAppNameUseCase: FetchAppNameUseCaseProtocol
 
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
@@ -76,7 +79,6 @@ public final class AppGroupMainViewModel {
     private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
     
     private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
-    private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
     
     
     
@@ -84,20 +86,17 @@ public final class AppGroupMainViewModel {
         fetchAppGroupUseCase: FetchAppGroupUseCase,
         requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
         fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol,
-        fetchAppNameUseCase: FetchAppNameUseCaseProtocol,
         
         createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol,
         deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
         fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol,
         endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol,
         getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol,
-        endBreakTimeUseCase: EndBreakTimeUseCaseProtocol,
-        createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
+        endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
     ) {
         self.fetchAppGroupUseCase = fetchAppGroupUseCase
         self.requestScreenTimeAuthUseCase = requestScreenTimeAuthUseCase
         self.fetchSelectedNotificationUseCase = fetchSelectedNotificationUseCase
-        self.fetchAppNameUseCase = fetchAppNameUseCase
         
         
         self.createBlockScheduleUseCase = createBlockScheduleUseCase
@@ -107,23 +106,33 @@ public final class AppGroupMainViewModel {
         self.getBlockingStatusUseCase = getBlockingStatusUseCase
         
         self.endBreakTimeUseCase = endBreakTimeUseCase
-        self.createBreakTimeUseCase = createBreakTimeUseCase
     }
     
     // MARK: - 생명주기 메서드
 
 //
     public func onAppear() {
+        self.appScene = .inActive
         Task(priority: .high) {
-            
             await refreshAppGroups()
             loadAppBrakeTimeNotificationSetting()
-            loadAppName()
         }
         refreshSessionTimer()
     }
+    
+    public func setScene(_ scene: AppScene) {
+        self.appScene = scene
+        switch scene {
+        case .active:
+            sceneActive()
+        case .inActive: break
+        case .background: break
+        }
+    }
+    
+    
 
-    public func sceneActive() {
+    private func sceneActive() {
         Task(priority: .background) { await screenTimeAuthRequest() }
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
@@ -168,112 +177,6 @@ public final class AppGroupMainViewModel {
         }
     }
 
-    private func loadAppName() {
-        Task {
-            do {
-                selectedAppName = try await fetchAppNameUseCase.execute() ?? ""
-            } catch {
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-                    self.toast(message: "앱 이름을 불러오는데 실패했습니다.")
-                }
-            }
-        }
-    }
-
-    public func brakeTimeSettingCompleteButtonTapped() {
-        Task {
-            do {
-                try await createBreakTimeUseCase.execute(by: selectedMinutes)
-                brakeTimeSettingCompletePresent.toggle()
-            } catch {
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-                    self.toast(message: "휴게시간 설정에 실패했습니다.")
-                }
-            }
-        }
-    }
-
-    // MARK: - AppBrakeTimeSetting Logic
-
-    public var endTime: String {
-        let now = Date()
-        let endDate = now.addingTimeInterval(TimeInterval(selectedMinutes * 60))
-
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ko_KR")
-        formatter.dateFormat = "a h시 m분"
-
-        return formatter.string(from: endDate)
-    }
-
-    public func getUpperFarNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex - 2
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex < 0 {
-            return ""
-        }
-
-        let farNumber = timeOptions[targetIndex]
-        let nearNumber = getUpperNearNumber()
-
-        // near와 far 숫자가 같으면 빈 문자열 반환
-        if nearNumber == "\(farNumber)" {
-            return ""
-        }
-
-        return "\(farNumber)"
-    }
-
-    public func getUpperNearNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex - 1
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex < 0 {
-            return ""
-        }
-        return "\(timeOptions[targetIndex])"
-    }
-
-    public func getLowerNearNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex + 1
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex >= timeOptions.count {
-            return ""
-        }
-        return "\(timeOptions[targetIndex])"
-    }
-
-    public func getLowerFarNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex + 2
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex >= timeOptions.count {
-            return ""
-        }
-
-        let farNumber = timeOptions[targetIndex]
-        let nearNumber = getLowerNearNumber()
-
-        // near와 far 숫자가 같으면 빈 문자열 반환
-        if nearNumber == "\(farNumber)" {
-            return ""
-        }
-
-        return "\(farNumber)"
-    }
-
-    @MainActor
-    public func updateSelectedTime(to index: Int) {
-        selectedMinutes = timeOptions[index]
-    }
     public func reAuthButtonTapped() {
         Task {
             await screenTimeAuthRequest()
@@ -332,8 +235,6 @@ public final class AppGroupMainViewModel {
     
     public func sessionTimerSettingCompletion(selectedTime: Int) {
         do {
-//            try self.breakTimeManager.createBreakTime(minutes: selectedTime)
-//            try createBreakTimeUseCase.execute(by: selectedTime)
             self.brakeStatus = .session
             self.currentActiveAppGroup = appGroups.first
             self.sessionStart(seconds: selectedTime * 60)
@@ -352,9 +253,9 @@ public final class AppGroupMainViewModel {
                 return
             }
             try self.endBreakTimeUseCase.execute()
-            self.currentActiveAppGroup = nil
             appScheduleStorage.saveSelectNotificationTrigger(false)
-            self.brakeStatus = .none
+            self.brakeStatus = .locked
+            refreshSessionTimer()
             self.sessionExitAlertPresent = false
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
@@ -384,26 +285,31 @@ public final class AppGroupMainViewModel {
             if Task.isCancelled {
                 await timerActor.stop()
             }
+            guard self.brakeStatus != .none else {
+                await self.timerActor.stop()
+                return
+            }
             let start = self.breakTimeManager.getStartDate()
             let end = self.breakTimeManager.getEndDate()
-            print("정한 시간: ", end.timeIntervalSince1970 - start.timeIntervalSince1970)
-            print("end: \(end) | start: \(start) | 현재: \(Date.now)")
-            print("break 상태: \(brakeStatus)")
-            switch self.brakeStatus {
-            case .session, .locked:
-                await timerActor.stop()
-                await timerActor.startTimer(until: end) { [weak self] interval in
-                    await MainActor.run { [weak self] in
-                        guard let self else { return }
-                        sessionRestRatio = 1 - (interval / (end.timeIntervalSince1970 - start.timeIntervalSince1970))
-                        sessionRestTime = Int(interval)
-                    }
-                } onEnd: { [weak self] in
-                    await MainActor.run { [weak self] in
-                        guard let self else { return }
+            await timerActor.stop()
+            await timerActor.startTimer(until: end) { [weak self] interval in
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    sessionRestRatio = 1 - (interval / (end.timeIntervalSince1970 - start.timeIntervalSince1970))
+                    sessionRestTime = Int(interval)
+                }
+            } onEnd: { [weak self, breakStatus = self.brakeStatus] in
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    switch breakStatus {
+                    case .locked:
+                        self.brakeStatus = .none
+                    case .session:
+                        brakeStatus = .locked
+                        refreshSessionTimer()
+                    case .none: break
                     }
                 }
-            case .none: await self.timerActor.stop()
             }
         }
     }

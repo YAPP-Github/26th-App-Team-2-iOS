@@ -9,16 +9,20 @@ import SwiftUI
 import SharedDesignSystem
 
 public struct CompleteTimeSettingView: View {
-
-    @Environment(AppGroupMainViewModel.self) private var viewModel
     @Environment(\.dismiss) private var dismiss
-
-    public init() { }
+    private let selectedMinutes: Int
+    private let endTime: String
+    public init(
+        selectedMinutes: Int,
+        endTime: String
+    ) {
+        self.selectedMinutes = selectedMinutes
+        self.endTime = endTime
+    }
 
     public var body: some View {
         ZStack {
             Color.grey900.ignoresSafeArea()
-
             VStack {
                 // 상단 알림 박스 - 최상단 왼쪽에서 16만큼 이동, 상단에서 9만큼 내려온 위치
                 VStack(alignment: .leading, spacing: 8) {
@@ -63,7 +67,7 @@ public struct CompleteTimeSettingView: View {
                 // 시간 표시
                 VStack(spacing: 8) {
                     HStack(spacing: 4) {
-                        Text("\(viewModel.selectedMinutes)")
+                        Text("\(selectedMinutes)")
                             .font(.pretendard(size: 48, type: .bold))
                             .foregroundColor(.brakeWhite)
 
@@ -73,7 +77,7 @@ public struct CompleteTimeSettingView: View {
                             .offset(y: 8)
                     }
 
-                    Text(viewModel.endTime)
+                    Text(endTime)
                         .font(.pretendard(size: 16, type: .medium))
                         .foregroundColor(.grey300)
                 }
