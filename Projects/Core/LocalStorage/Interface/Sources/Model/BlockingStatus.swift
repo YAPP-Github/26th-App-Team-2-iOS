@@ -93,10 +93,11 @@ public enum BlockingStatus: Codable, Equatable {
             return "\(name)을 꼭 사용하실건가요?"
         case .unlockedTemporarily:
             return "알림을 눌러 사용 시간을 설정해주세요"
-        case .extensionPrompt(_, _, let startDate, _):
+        case .extensionPrompt(_, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 return "약속한 시간이 지났어요"
-                
+            } else if endDate < .now {
+                return "name 꼭 사용하실건가요?"
             } else {
                 return "지금은 을 사용할 수 없어요"
             }
@@ -111,10 +112,12 @@ public enum BlockingStatus: Codable, Equatable {
     public var subtitle: String {
         switch self {
         case .blocking, .unlockedTemporarily: return ""
-        case .extensionPrompt(let time, _, let startDate, _):
+        case .extensionPrompt(let time, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 return ""
-            } else {
+            }  else if endDate < .now {
+                return ""
+            }else {
                 return "\(time)분간 을 사용할 수 없어요."
             }
         case .sessionEnded:
@@ -130,9 +133,11 @@ public enum BlockingStatus: Codable, Equatable {
             return "사용하기"
         case .unlockedTemporarily:
             return ""
-        case .extensionPrompt(_, _, let startDate, _):
+        case .extensionPrompt(_, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 return "그만하기"
+            }  else if endDate < .now {
+                return "사용하기"
             } else {
                 return "남은 시간 확인"
             }
@@ -147,9 +152,11 @@ public enum BlockingStatus: Codable, Equatable {
             return "안하기"
         case .unlockedTemporarily:
             return "다시 알림 보내기"
-        case .extensionPrompt(let time, _, let startDate, _): // TODO: 5분 간격이 가능해지면 1/2 카운트가 될 수 있음
+        case .extensionPrompt(let time, _, let startDate, let endDate): // TODO: 5분 간격이 가능해지면 1/2 카운트가 될 수 있음
             if .now < startDate.addingTimeInterval(60) {
                 return "\(time)분 더"
+            } else if endDate < .now {
+                return "안하기"
             } else {
                 return "나가기"
             }

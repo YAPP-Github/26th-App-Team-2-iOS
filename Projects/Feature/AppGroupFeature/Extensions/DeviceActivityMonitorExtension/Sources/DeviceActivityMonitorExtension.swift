@@ -34,7 +34,19 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     private func setupStartAction(by activity: DeviceActivityName) {
         if activity == .brake {
             let extensionCount = appScheduleStorage.getExtensionCount()
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
+            let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
+            let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
+            let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
+            
+            appScheduleStorage.saveBlockingStatus(
+                .extensionPrompt(
+                    time: 15,
+                    count: extensionCount,
+                    startDate: extensionStartDate,
+                    endDate: extensionEndDate
+                )
+            )
+            
             appScheduleStorage.saveSelectNotificationTrigger(false)
 
             // 저장된 모든 스케줄을 가져와서 차단 해제
@@ -65,12 +77,23 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             let extensionCount = appScheduleStorage.getExtensionCount() // 현재 연장 횟수
             let maxExtensions = 1
 
+            let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
+            let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
+            let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
+            
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
             if extensionCount == 0 {
-                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
+                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0, startDate: extensionStartDate, endDate: extensionEndDate))
             } else if extensionCount < maxExtensions {
                 // 연장 가능: extensionPrompt 상태로 설정
-                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
+                appScheduleStorage.saveBlockingStatus(
+                    .extensionPrompt(
+                        time: 15,
+                        count: extensionCount,
+                        startDate: extensionStartDate,
+                        endDate: extensionEndDate
+                    )
+                )
             } else {
                 // 연장 불가: sessionEnded 상태로 설정 (5번 화면)
                 appScheduleStorage.saveBlockingStatus(.sessionEnded(time: 15, groupName: "앱 그룹"))

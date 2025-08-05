@@ -137,9 +137,11 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         case .unlockedTemporarily:
             return UIImage(resource: .iconWarning)
         case .extensionPrompt(_, _, let startDate, let endDate):
-            if .now < startDate.addingTimeInterval(60) {
+            if .now < startDate.addingTimeInterval(60) { // "15분 더" 디자인
                 return UIImage(resource: .illustrationTimer)
-            } else {
+            } else if endDate < .now { // 쿨다운 시간을 넘음... blocking 화면을 보여줌...
+                return UIImage(resource: .iconArrow)
+            } else { // "쿨다운 시간"... 쿨다운 화면을 보여줌...
                 return UIImage(resource: .illustrationBlock)
             }
         case .sessionEnded, .cooldownActive:

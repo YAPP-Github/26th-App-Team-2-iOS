@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import SharedDesignSystem
 import Domain
+import ManagedSettings
 
 enum BrakeStatus: Int {
     case session
@@ -24,6 +25,9 @@ extension AppGroupMainView {
         let editButtonTapped: () -> ()
         let sessionExitButtonTapped: () -> ()
         
+        var infoApplicationTokens: Array<ApplicationToken>.SubSequence {
+            appGroup.selection.applicationTokens.map { $0 }.prefix(6)
+        }
         
         var body: some View {
             VStack(spacing: 20) {
@@ -57,7 +61,6 @@ extension AppGroupMainView {
                     
                     HStack(spacing: 0) {
                         let allApplicationTokensCount = appGroup.selection.applicationTokens.count
-                        let infoApplicationTokens = appGroup.selection.applicationTokens.map { $0 }.prefix(6)
                         ForEach(infoApplicationTokens, id: \.hashValue) { applicationToken in
                             Label(applicationToken)
                                 .labelStyle(.iconOnly)

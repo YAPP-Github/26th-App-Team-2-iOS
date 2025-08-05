@@ -49,9 +49,9 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             // 노티피케이션 요청
             scheduleNotification()
             // AppScheduleStorage를 통해 차단 상태 저장
-            //            appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
-            let extensionCount = appScheduleStorage.getExtensionCount()
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
+                        appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
+//            let extensionCount = appScheduleStorage.getExtensionCount()
+//            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
             completionHandler(.defer)
             
         case .unlockedTemporarily:

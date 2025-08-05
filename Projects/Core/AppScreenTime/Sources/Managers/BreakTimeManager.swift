@@ -53,6 +53,8 @@ public struct BreakTimeManager: BreakTimeProtocol {
         )
 
         try center.createBrakeTime(breakSchedule)
+        print("startDate / endDate: \(startDate) \(endDate)")
+        print("새로운 세션 저장 후 상태: ", appScheduleStorage.getBlockingStatus(), "현재 상태: ", Date.now)
     }
     
     // 휴식 스케줄 삭제

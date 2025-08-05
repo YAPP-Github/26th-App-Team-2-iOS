@@ -117,7 +117,7 @@ public final class AppGroupMainViewModel {
             await refreshAppGroups()
             loadAppBrakeTimeNotificationSetting()
         }
-        refreshSessionTimer()
+//        refreshSessionTimer()
     }
     
     public func setScene(_ scene: AppScene) {
@@ -138,20 +138,35 @@ public final class AppGroupMainViewModel {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
                let schedule = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
                 let status = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
-                print("현재 상태: \(status)")
+                print("현재 상태: \(status) | 지금 시간: \(Date.now)")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.currentSchedule = schedule
+                    self.timerSettingPresent = self.appScheduleStorage.getSelectedNotification()
+                    switch status {
+                    case .blocking, .unlockedTemporarily:
+                        self.brakeStatus = .none
+                    case .extensionPrompt(_, _, let startDate, let endDate):
+                        if .now < startDate {
+                            self.brakeStatus = .session
+                            let endDate = self.breakTimeManager.getEndDate()
+                            let startDate = self.breakTimeManager.getStartDate()
+                            refreshSessionTimer(start: startDate, end: endDate)
+                        } else if startDate < .now && .now < endDate {
+                            self.brakeStatus = .locked
+                            refreshSessionTimer(start: .now, end: endDate)
+                        } else {
+                            self.brakeStatus = .none
+                        }
+                    case .sessionEnded(let time, let groupName): self.brakeStatus = .locked
+                    case .cooldownActive(let tokenName, let time, let groupName):
+                        self.brakeStatus = .locked
+                    }
                 }
             } else {
                 print("스케쥴 fetch 실패")
             }
             await refreshAppGroups()
-            await MainActor.run { [weak self] in
-                guard let self else { return }
-                self.timerSettingPresent = self.appScheduleStorage.getSelectedNotification()
-                refreshSessionTimer()
-            }
         }
     }
     
@@ -221,8 +236,6 @@ public final class AppGroupMainViewModel {
         }
         
         self.appGroups = [appGroup]
-        
-        
         toast(message: message)
     }
     
@@ -255,7 +268,7 @@ public final class AppGroupMainViewModel {
             try self.endBreakTimeUseCase.execute()
             appScheduleStorage.saveSelectNotificationTrigger(false)
             self.brakeStatus = .locked
-            refreshSessionTimer()
+            refreshSessionTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
             self.sessionExitAlertPresent = false
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
@@ -280,7 +293,7 @@ public final class AppGroupMainViewModel {
         }
     }
     
-    private func refreshSessionTimer() {
+    private func refreshSessionTimer(start: Date, end: Date) {
         self.timerTask = Task {
             if Task.isCancelled {
                 await timerActor.stop()
@@ -289,8 +302,6 @@ public final class AppGroupMainViewModel {
                 await self.timerActor.stop()
                 return
             }
-            let start = self.breakTimeManager.getStartDate()
-            let end = self.breakTimeManager.getEndDate()
             await timerActor.stop()
             await timerActor.startTimer(until: end) { [weak self] interval in
                 await MainActor.run { [weak self] in
@@ -306,7 +317,7 @@ public final class AppGroupMainViewModel {
                         self.brakeStatus = .none
                     case .session:
                         brakeStatus = .locked
-                        refreshSessionTimer()
+                        refreshSessionTimer(start: .now, end: .now.addingTimeInterval(60 * 15))
                     case .none: break
                     }
                 }
