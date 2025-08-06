@@ -8,12 +8,16 @@
 import Foundation
 import DeviceActivity
 import CoreAppScreenTimeInterface
+import CoreLocalStorage
+import CoreLocalStorageInterface
 
 // 휴식 시간 관리자
 public struct BreakTimeManager: BreakTimeProtocol {
+    
 
     private let center = DeviceActivityCenter()
-
+    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    
     public init() { }
 
     // 휴식 스케줄 추가 (분 단위로 받음)
@@ -34,12 +38,14 @@ public struct BreakTimeManager: BreakTimeProtocol {
         ]
         
         // 현재 시간부터 시작
+        let startDate: Date = Date()
+        appScheduleStorage.setBreakStartDate(date: startDate)
         let startTime = Calendar.current.dateComponents(dateComponents, from: .now)
 
         // 종료 시간 계산 (크로스데이 허용)
-        let endDate = Calendar.current.date(byAdding: .minute, value: minutes, to: .now) ?? .now
+        let endDate: Date = Calendar.current.date(byAdding: .minute, value: minutes, to: .now) ?? .now
+        appScheduleStorage.setBreakEndDate(date: endDate)
         let endTime = Calendar.current.dateComponents(dateComponents, from: endDate)
-
         let breakSchedule = DeviceActivitySchedule(
             intervalStart: startTime,
             intervalEnd: endTime,
@@ -47,10 +53,19 @@ public struct BreakTimeManager: BreakTimeProtocol {
         )
 
         try center.createBrakeTime(breakSchedule)
+        print("startDate / endDate: \(startDate) \(endDate)")
+        print("새로운 세션 저장 후 상태: ", appScheduleStorage.getBlockingStatus(), "현재 상태: ", Date.now)
     }
     
     // 휴식 스케줄 삭제
     public func deleteBreakTime() {
         center.stopBrakeTime()
+    }
+    
+    public func getStartDate() -> Date {
+        self.appScheduleStorage.getBreakStartDate()
+    }
+    public func getEndDate() -> Date {
+        self.appScheduleStorage.getBreakEndDate()
     }
 }

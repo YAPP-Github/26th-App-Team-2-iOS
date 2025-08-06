@@ -47,28 +47,52 @@ public struct EndBreakTimeUseCase: EndBreakTimeUseCaseProtocol {
         
         if extensionCount == 0 {
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0))
+            appScheduleStorage.saveBlockingStatus(
+                .extensionPrompt(
+                    time: 15,
+                    count: 0,
+                    startDate: .now,
+                    endDate: .now.addingTimeInterval(
+                        15 * 60
+                    )
+                )
+            )
         } else if extensionCount < maxExtensions {
             // 연장 가능: extensionPrompt 상태로 설정
-            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount))
+            appScheduleStorage.saveBlockingStatus(
+                .extensionPrompt(
+                    time: 15,
+                    count: extensionCount,
+                    startDate: .now,
+                    endDate: .now.addingTimeInterval(
+                        15 * 60
+                    )
+                )
+            )
         } else {
             // 연장 불가: sessionEnded 상태로 설정
             // 15분만 더 sessionEnded 상태로 변경
             let cooldownMinutes = appScheduleStorage.getExtensionTime() // 저장된 연장 시간 사용
-            handleExtensionTimeExhausted(groupName: "앱 그룹", cooldownMinutes: cooldownMinutes)
-            appScheduleStorage.saveBlockingStatus(.sessionEnded(time: 15, groupName: "앱 그룹"))
+            handleExtensionTimeExhausted(groupName: "앱 그룹", cooldownMinutes: 15)
         }
     }
 
     /// 연장 시간이 모두 사용된 경우 호출
     private func handleExtensionTimeExhausted(groupName: String, cooldownMinutes: Int) {
-        let status = BlockingStatus.sessionEnded(
-            time: cooldownMinutes,
-            groupName: groupName
-        )
+        let startDate = Date.now
+        let endDate = startDate.addingTimeInterval(TimeInterval(cooldownMinutes * 60))
+        let status = BlockingStatus
+            .cooldownActive(
+                tokenName: groupName,
+                time: cooldownMinutes,
+                groupName: groupName,
+                startDate: startDate,
+                endDate: endDate
+            )
         appScheduleStorage.saveBlockingStatus(status)
 
         // 쿨다운 시작
+        
         cooldownStorage.saveCooldownGroup(groupName: groupName)
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
     }

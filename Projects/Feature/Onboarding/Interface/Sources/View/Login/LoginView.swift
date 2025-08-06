@@ -37,7 +37,7 @@ public struct LoginView: View {
                 } privacyInfoButtonTapped: {
                     self.logInViewModel.privacyInfoButtonTapped()
                 } termsOfServiceButtonTapped: {
-                    self.logInViewModel.termsOfServiceButtonTapped()
+                    logInViewModel.termsOfServiceButtonTapped()
                 }
                 .padding([.horizontal, .bottom], 16)
             }

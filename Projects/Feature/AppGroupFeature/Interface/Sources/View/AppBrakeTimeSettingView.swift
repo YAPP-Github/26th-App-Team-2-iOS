@@ -7,10 +7,11 @@
 
 import SwiftUI
 import SharedDesignSystem
+import Domain
 
 public struct AppBrakeTimeSettingView: View {
-
-    @Environment(AppGroupMainViewModel.self) private var viewModel
+    @Environment(\.dismiss) var dismiss
+    @Environment(AppBrakeTimeSettingViewModel.self) private var viewModel
     @GestureState private var dragState: CGSize = .zero
 
     public init() {}
@@ -44,48 +45,8 @@ public struct AppBrakeTimeSettingView: View {
                             .foregroundColor(.grey400)
                     }
                     .frame(height: 60)
-
-                    ZStack {
-                        // 배경
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.grey850)
-                            .frame(height: 133)
-                        VStack(alignment: .center, spacing: 16) {
-                            HStack(spacing: 4) {
-                                ZStack {
-                                    Color.grey900
-                                        .frame(width: 98, height: 70)
-                                        .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                                    Text("\(viewModel.selectedMinutes)")
-                                        .font(.pretendard(size: 55, type: .semiBold))
-                                        .foregroundColor(.brakeWhite)
-                                }
-                                Text("분")
-                                    .font(.pretendard(size: 16, type: .regular))
-                                    .foregroundColor(.grey50)
-                                    .offset(y: 9)
-                            }
-                            .offset(x: 5)
-                            .padding(.top, 6)
-
-                            // 예상 종료 시간
-                            Text("\(viewModel.endTime)까지")
-                                .font(.pretendard(size: 16, type: .regular))
-                                .foregroundColor(.grey300)
-                                .offset(y: -2)
-                        }
-                    }
-                    .gesture(
-                        DragGesture()
-                            .updating($dragState) { value, state, _ in
-                                state = value.translation
-                                handleDragUpdate(value: value)
-                            }
-                            .onEnded { value in
-                                handleSwipe(value: value)
-                            }
-                    )
+                    
+                    dragView
 
                     VStack(alignment: .center, spacing: 10) {
                         Text(viewModel.getLowerNearNumber())
@@ -114,16 +75,72 @@ public struct AppBrakeTimeSettingView: View {
             .padding(.bottom, 10)
             .padding(.horizontal, 16)
         }
+
         .overlay {
             if viewModel.brakeTimeSettingCompletePresent {
-                CompleteTimeSettingView()
-                    .environment(viewModel)
+                CompleteTimeSettingView(selectedMinutes: viewModel.selectedMinutes, endTime: viewModel.endTime)
                     .transition(.opacity)
-                    .animation(.easeInOut(duration: 0.3), value: viewModel.brakeTimeSettingCompletePresent)
+                    .animation(
+                        .easeInOut(duration: 0.3),
+                        value: viewModel.brakeTimeSettingCompletePresent
+                    )
+            }
+        }
+        .onChange(of: viewModel.dismiss) { oldValue, newValue in
+            if newValue {
+                self.dismiss()
             }
         }
     }
 
+}
+
+fileprivate extension AppBrakeTimeSettingView {
+    
+    @ViewBuilder var dragView: some View {
+        ZStack {
+            // 배경
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color.grey850)
+                .frame(height: 133)
+            VStack(alignment: .center, spacing: 16) {
+                HStack(spacing: 4) {
+                    ZStack {
+                        Color.grey900
+                            .frame(width: 98, height: 70)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+
+                        Text("\(viewModel.selectedMinutes)")
+                            .font(.pretendard(size: 55, type: .semiBold))
+                            .foregroundColor(.brakeWhite)
+                    }
+                    Text("분")
+                        .font(.pretendard(size: 16, type: .regular))
+                        .foregroundColor(.grey50)
+                        .offset(y: 9)
+                }
+                .offset(x: 5)
+                .padding(.top, 6)
+
+                // 예상 종료 시간
+                Text("\(viewModel.endTime)까지")
+                    .font(.pretendard(size: 16, type: .regular))
+                    .foregroundColor(.grey300)
+                    .offset(y: -2)
+            }
+        }
+        .gesture(
+            DragGesture()
+                .updating($dragState) { value, state, _ in
+                    state = value.translation
+                    handleDragUpdate(value: value)
+                }
+                .onEnded { value in
+                    handleSwipe(value: value)
+                }
+        )
+    }
+    
     private func handleDragUpdate(value: DragGesture.Value) {
         let threshold: CGFloat = 80
         let currentIndex = viewModel.timeOptions.firstIndex(of: viewModel.selectedMinutes) ?? 0
@@ -160,4 +177,3 @@ public struct AppBrakeTimeSettingView: View {
         }
     }
 }
-

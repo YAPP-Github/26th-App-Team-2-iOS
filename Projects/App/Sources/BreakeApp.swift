@@ -6,30 +6,17 @@
 //
 
 import SwiftUI
-import FamilyControls
-import ManagedSettings
+import Domain
+import FeatureAppGroupFeatureInterface
+import SharedDesignSystem
 
 @main
 struct BreakeApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+    @State private var selectedTab: TabItemType = .dashboard
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
     }
-}
-
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-        }
-    }
-}
-
-#Preview {
-    ContentView()
 }

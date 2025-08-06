@@ -20,7 +20,6 @@ let project = Project.makeModule(
                 ]
             )
         ),
-        
         .feature(
             implements: .AppGroupFeature,
             factory: .init(
@@ -29,7 +28,6 @@ let project = Project.makeModule(
                 ]
             )
         ),
-
         .feature(
             testing: .AppGroupFeature,
             factory: .init(
@@ -48,15 +46,56 @@ let project = Project.makeModule(
                 ]
             )
         ),
-
         .feature(
             example: .AppGroupFeature,
             factory: .init(
                 infoPlist: Project.Environment.appInfoPlist(deploymentTarget: .debug),
                 entitlements: "\(Project.Environment.appName).entitlements",
                 dependencies: [
-                    .feature(interface: .AppGroupFeature)
-                ]
+                    .feature(interface: .AppGroupFeature),
+                    .target(name: "FeatureAppGroupFeatureDeviceActivityMonitorExtension"),
+                    .target(name: "FeatureAppGroupFeatureShieldConfigurationExtension"),
+                    .target(name: "FeatureAppGroupFeatureShieldActionConfigurationExtension")
+                    
+                ],
+                settings: Project.Environment.debugTargetSettings
+            )
+            
+        ),
+        .feature(
+            deviceActivityMonitorExtension: .AppGroupFeature,
+            factory: .init(
+                name: "FeatureAppGroupFeatureDeviceActivityMonitorExtension",
+                infoPlist: "Extensions/DeviceActivityMonitorExtension/Info.plist",
+                entitlements: "Extensions/DeviceActivityMonitorExtension/DeviceActivityMonitorExtension.entitlements",
+                dependencies: [
+                    .domain
+                ],
+                settings: Project.Environment.projectSettings
+            )
+        ),
+        .feature(
+            shieldConfigurationExtension: .AppGroupFeature,
+            factory: .init(
+                name: "FeatureAppGroupFeatureShieldConfigurationExtension",
+                infoPlist: "Extensions/ShieldConfigurationExtension/Info.plist",
+                entitlements: "Extensions/ShieldConfigurationExtension/ShieldConfigurationExtension.entitlements",
+                dependencies: [
+                    .domain
+                ],
+                settings: Project.Environment.projectSettings
+            )
+        ),
+        .feature(
+            shieldActionConfigurationExtension: .AppGroupFeature,
+            factory: .init(
+                name: "FeatureAppGroupFeatureShieldActionConfigurationExtension",
+                infoPlist: "Extensions/ShieldActionConfigurationExtension/Info.plist",
+                entitlements: "Extensions/ShieldActionConfigurationExtension/ShieldActionConfigurationExtension.entitlements",
+                dependencies: [
+                    .domain
+                ],
+                settings: Project.Environment.projectSettings
             )
         )
     ]

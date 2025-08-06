@@ -12,50 +12,45 @@ import SharedDesignSystem
 
 @main
 struct FeatureAppGroupFeatureApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.appGroupDIContainer) var diContainer
     @State private var selectedTab: TabItemType = .dashboard
     var body: some Scene {
         WindowGroup {
-            BrakeTabView(selectedTab: $selectedTab)
-                .environment(
-                    AppGroupMainViewModel(
-                        fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
-                        requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
-                        createBreakTimeUseCase: diContainer.createBreakTimeUseCase,
-                        fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
-                        fetchAppNameUseCase: diContainer.fetchAppNameUseCase
-                    )
-                )
-                .safeAreaInset(edge: .bottom) {
-                    BrakeTabBarView(selectedTabBarItem: $selectedTab)
-                        .padding(.bottom, 16)
+            BrakeTabView(selectedTab: $selectedTab) { selectedTab in
+                ZStack {
+                    switch selectedTab {
+                    case .report:
+                        VStack {
+                            Spacer()
+                            Text("Report")
+                            Spacer()
+                        }
+                    case .dashboard:
+                        AppGroupMainView()
+                    case .myInfo:
+                        VStack {
+                            Spacer()
+                            Text("My Info")
+                            Spacer()
+                        }
+                    }
                 }
-        }
-    }
-}
-
-struct BrakeTabView: View {
-    @Environment(\.appGroupDIContainer) var diContainer
-    @Environment(AppGroupMainViewModel.self) var appGroupViewModel
-    @Binding var selectedTab: TabItemType
-    var body: some View {
-        ZStack {
-            switch selectedTab {
-            case .report:
-                VStack {
-                    Spacer()
-                    Text("Report")
-                    Spacer()
-                }
-            case .dashboard: AppGroupMainView()
-            case .myInfo:
-                VStack {
-                    Spacer()
-                    Text("My Info")
-                    Spacer()
-                }
+                
             }
-
+            .environment(
+                AppGroupMainViewModel(
+                    fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
+                    requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
+                    fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
+                    createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
+                    deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
+                    fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
+                    endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
+                    getBlockingStatusUseCase: diContainer.getBlockingStatusUseCase,
+                    endBreakTimeUseCase: diContainer.endAppBrakeTimeUseCase
+                )
+            )
         }
     }
 }

@@ -17,12 +17,10 @@ extension BlockingStatus {
             return .blocking(tokenName: tokenName)
         case .unlockedTemporarily:
             return .unlockedTemporarily
-        case .extensionPrompt(let time, let count):
-            return .extensionPrompt(time: time, count: count)
-        case .sessionEnded(let time, let groupName):
-            return .sessionEnded(time: time, groupName: groupName)
-        case .cooldownActive(let tokenName, let time, let groupName):
-            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName)
+        case .extensionPrompt(let time, let count, let startDate, let endDate):
+            return .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
+        case .cooldownActive(let tokenName, let time, let groupName, let startDate, let endDate):
+            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName, startDate: startDate, endDate: endDate)
         }
     }
 } 

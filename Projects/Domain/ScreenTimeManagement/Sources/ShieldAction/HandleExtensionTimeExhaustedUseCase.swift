@@ -27,14 +27,14 @@ public struct HandleExtensionTimeExhaustedUseCase: HandleExtensionTimeExhaustedU
     
     public func execute(groupName: String, cooldownMinutes: Int) {
         // sessionEnded 상태로 변경
-        let status = BlockingStatus.sessionEnded(
-            time: cooldownMinutes,
-            groupName: groupName
-        )
-        appScheduleStorage.saveBlockingStatus(status)
-        
-        // 쿨다운 시작
-        cooldownStorage.saveCooldownGroup(groupName: groupName)
-        cooldownStorage.startCooldown(minutes: cooldownMinutes)
+//        let status = BlockingStatus.sessionEnded(
+//            time: cooldownMinutes,
+//            groupName: groupName
+//        )
+//        appScheduleStorage.saveBlockingStatus(status)
+//        
+//        // 쿨다운 시작
+//        cooldownStorage.saveCooldownGroup(groupName: groupName)
+//        cooldownStorage.startCooldown(minutes: cooldownMinutes)
     }
 } 

@@ -22,6 +22,7 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
 
     // 차단 앱 스케줄 추가
     public func create(_ model: BlockSchedule) throws {
+        print("스케쥴 추가: \(model.title) \(model.blockList.applicationTokens.count)")
         // 스케줄 저장
         try save(model)
 
