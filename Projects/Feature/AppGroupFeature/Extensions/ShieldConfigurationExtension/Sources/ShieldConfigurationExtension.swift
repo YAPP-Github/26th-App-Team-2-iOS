@@ -108,8 +108,8 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         case .sessionEnded(let time, let groupName):
             // 저장된 시간과 그룹명을 그대로 사용
             return .sessionEnded(time: time, groupName: groupName)
-        case .cooldownActive(_, let time, let groupName):
-            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName)
+        case .cooldownActive(_, let time, let groupName, let startDate, let endDate):
+            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName, startDate: startDate, endDate: endDate)
         }
     }
     
@@ -152,7 +152,8 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     /// 세션 종료 후 쿨다운 시작
     private func startCooldownFromSessionEnd() {
         let cooldownMinutes = appScheduleStorage.getExtensionTime()
-        
+        let startDate = Date()
+        let endDate = startDate.addingTimeInterval(TimeInterval(60 * 15))
         cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
         
@@ -162,7 +163,9 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             .cooldownActive(
                 tokenName: "앱 그룹",
                 time: cooldownMinutes,
-                groupName: ""
+                groupName: "",
+                startDate: startDate,
+                endDate: endDate
             )
         )
     }

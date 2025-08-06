@@ -13,6 +13,8 @@ public protocol CooldownStorageProtocol {
     
     /// 쿨다운 종료 시각 조회
     func getCooldownEndTime() -> Date?
+    /// 쿨다운 시작 시각 조회
+    func getCooldownStartTime() -> Date?
     
     /// 현재 쿨다운 상태인지 확인
     func isInCooldown() -> Bool

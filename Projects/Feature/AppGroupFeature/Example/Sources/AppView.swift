@@ -48,7 +48,7 @@ struct FeatureAppGroupFeatureApp: App {
                     fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
                     endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
                     getBlockingStatusUseCase: diContainer.getBlockingStatusUseCase,
-                    endBreakTimeUseCase: diContainer.endBrakeTimeUseCase
+                    endBreakTimeUseCase: diContainer.endAppBrakeTimeUseCase
                 )
             )
         }

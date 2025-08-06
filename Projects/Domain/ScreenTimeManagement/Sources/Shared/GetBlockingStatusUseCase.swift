@@ -50,16 +50,39 @@ public struct GetBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol {
             appScheduleStorage.saveBlockingStatus(blockingStatus)
             return blockingStatus
         }
-        return .cooldownActive(tokenName: "앱 그룹", time: 0, groupName: "")
+        
+        guard let endTime = cooldownStorage.getCooldownEndTime(),
+              let startTime = cooldownStorage.getCooldownEndTime() else {
+            let blockingStatus = BlockingStatus.blocking(tokenName: tokenName)
+            appScheduleStorage.saveBlockingStatus(blockingStatus)
+            return blockingStatus
+        }
+        
+        return .cooldownActive(tokenName: "앱 그룹", time: 0, groupName: "", startDate: startTime, endDate: endTime)
     }
     
     private func handleSessionEndedStatus() -> BlockingStatus {
         startCooldownFromSessionEnd()
-        return .cooldownActive(tokenName: "앱 그룹", time: appScheduleStorage.getExtensionTime(), groupName: "")
+        
+        guard let endTime = cooldownStorage.getCooldownEndTime(),
+              let startTime = cooldownStorage.getCooldownEndTime() else {
+            assertionFailure("시작 시간과 끝 시간을 가져오지 못 함")
+            return .blocking(tokenName: "")
+        }
+        
+        return .cooldownActive(
+            tokenName: "앱 그룹",
+            time: appScheduleStorage.getExtensionTime(),
+            groupName: "",
+            startDate: startTime,
+            endDate: endTime
+        )
     }
     
     private func startCooldownFromSessionEnd() {
         let cooldownMinutes = appScheduleStorage.getExtensionTime()
+        let startDate = Date.now
+        let endDate = startDate.addingTimeInterval(TimeInterval(cooldownMinutes * 60))
         
         cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
@@ -69,7 +92,9 @@ public struct GetBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol {
             .cooldownActive(
                 tokenName: "앱 그룹",
                 time: cooldownMinutes,
-                groupName: ""
+                groupName: "",
+                startDate: startDate,
+                endDate: endDate
             )
         )
     }

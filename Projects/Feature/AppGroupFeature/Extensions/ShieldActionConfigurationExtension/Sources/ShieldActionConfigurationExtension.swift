@@ -49,18 +49,21 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             // 노티피케이션 요청
             scheduleNotification()
             // AppScheduleStorage를 통해 차단 상태 저장
-                        appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
-//            let extensionCount = appScheduleStorage.getExtensionCount()
-//            appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
+            appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
             completionHandler(.defer)
-            
         case .unlockedTemporarily:
             // 버튼 없음
             break
-        case .extensionPrompt(_, _, let startDate, _):
+        case .extensionPrompt(_, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 // 그만하기
                 completionHandler(.close)
+            } else if endDate < .now {
+                // 노티피케이션 요청
+                scheduleNotification()
+                // AppScheduleStorage를 통해 차단 상태 저장
+                appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
+                completionHandler(.defer)
             } else {
                 scheduleNotification()
                 completionHandler(.defer)
@@ -97,24 +100,32 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     // 연장 횟수 증가
                     let newCount = count + 1
                     appScheduleStorage.saveExtensionCount(newCount)
-                    
                     // 15분 연장 시간 설정 및 저장
                     appScheduleStorage.saveExtensionTime(time)
                     
                     // DeviceActivity로 15분 휴식 시간 설정
                     startExtensionBreakTime(minutes: time)
                     
+                    let newStartDate: Date = .now.addingTimeInterval(15 * 60)
+                    let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
+                    
                     // 연장 프롬프트 상태 업데이트
-                    appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount, startDate: startDate, endDate: endDate))
+                    appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount, startDate: newStartDate, endDate: newEndDate))
                     
                     // 차단창 닫기 (15분 동안 앱 사용 가능)
                     completionHandler(.defer)
+                }
+                else if endDate < .now {
+                    completionHandler(.close)
                 } else {
                     // 최대 연장 횟수 도달 (총 30분 사용 완료) - sessionEnded 상태로 변경
                     let cooldownMinutes = appScheduleStorage.getExtensionTime() // 저장된 연장 시간 사용
                     handleExtensionTimeExhausted(groupName: "앱 그룹", cooldownMinutes: cooldownMinutes)
                     completionHandler(.defer)
                 }
+            }
+            else if endDate < .now {
+                completionHandler(.close)
             } else {
                 completionHandler(.close)
             }

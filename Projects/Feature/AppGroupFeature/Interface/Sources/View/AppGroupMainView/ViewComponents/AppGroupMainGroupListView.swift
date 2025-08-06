@@ -20,8 +20,7 @@ extension AppGroupMainView {
                     ScrollView {
                         VStack(spacing: 0) {
                             switch appGroupMainViewModel.brakeStatus {
-                            case .none:
-                                groupHeaderView(size: proxy.size)
+                            case .none: groupHeaderView(size: proxy.size)
                             case .locked, .session:
                                 Rectangle().fill(Color.clear).frame(height: 58)
                             }

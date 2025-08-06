@@ -21,6 +21,7 @@ public struct CooldownStorage: CooldownStorageProtocol {
     // MARK: - Keys
     
     private enum Keys {
+        static let cooldownStartTime = "cooldown_start_time"
         static let cooldownEndTime = "cooldown_end_time"
         static let cooldownGroup = "cooldown_group"
     }
@@ -29,12 +30,17 @@ public struct CooldownStorage: CooldownStorageProtocol {
     
     public func startCooldown(minutes: Int) {
         guard isEmpty else { return }
-        let cooldownEndTime = Date().addingTimeInterval(TimeInterval(minutes * 60))
+        let cooldownStartTime = Date()
+        let cooldownEndTime = cooldownStartTime.addingTimeInterval(TimeInterval(minutes * 60))
+        userDefaults?.set(cooldownStartTime, forKey: Keys.cooldownStartTime)
         userDefaults?.set(cooldownEndTime, forKey: Keys.cooldownEndTime)
     }
     
     public func getCooldownEndTime() -> Date? {
         return userDefaults?.object(forKey: Keys.cooldownEndTime) as? Date
+    }
+    public func getCooldownStartTime() -> Date? {
+        return userDefaults?.object(forKey: Keys.cooldownStartTime) as? Date
     }
     
     public func isInCooldown() -> Bool {
@@ -55,6 +61,8 @@ public struct CooldownStorage: CooldownStorageProtocol {
         userDefaults?.removeObject(forKey: Keys.cooldownEndTime)
         userDefaults?.removeObject(forKey: Keys.cooldownGroup)
     }
+    
+    
     
     public func saveCooldownGroup(groupName: String) {
         userDefaults?.set(groupName, forKey: Keys.cooldownGroup)

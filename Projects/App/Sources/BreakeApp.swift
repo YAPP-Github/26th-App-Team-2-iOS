@@ -13,12 +13,10 @@ import SharedDesignSystem
 @main
 struct BreakeApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @Environment(\.appGroupDIContainer) var diContainer
     @State private var selectedTab: TabItemType = .dashboard
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(BlockingViewModel())
         }
     }
 }

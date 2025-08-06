@@ -88,7 +88,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             // 다시 알림 보내기
             saveBlockingStatusUseCase.execute(.blocking(tokenName: ""))
             completionHandler(.defer)
-        case .extensionPrompt(let time, let count):
+        case .extensionPrompt(let time, let count, _, _):
             do {
                 let extended = try extendBreakTimeUseCase.execute(time: time, count: count)
                 if extended {

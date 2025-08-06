@@ -12,7 +12,7 @@ public enum BlockingStatusEntity {
     case unlockedTemporarily // 2. 임시 사용 허용 상태
     case extensionPrompt(time: Int, count: Int, startDate: Date, endDate: Date) // 3. 휴게시간 연장 가능 상태
     case sessionEnded(time: Int, groupName: String) // 5. 세션 종료 (스누즈 2회 후) - 앱이 포그라운드일 때
-    case cooldownActive(tokenName: String, time: Int, groupName: String) // 6. 쿨다운 중 앱 진입 시도 -
+    case cooldownActive(tokenName: String, time: Int, groupName: String, startDate: Date, endDate: Date) // 6. 쿨다운 중 앱 진입 시도 -
 
     public var title: String {
         switch self {
@@ -29,7 +29,7 @@ public enum BlockingStatusEntity {
             
         case .sessionEnded(let time, let groupName):
             return "이제 \(time)분간 \(groupName) 앱을 사용할수 없어요"
-        case .cooldownActive(let name, _, _):
+        case .cooldownActive(let name, _, _, _, _):
             return "지금은 \(name)을 사용할 수 없어요"
         }
     }
@@ -45,7 +45,7 @@ public enum BlockingStatusEntity {
             }
         case .sessionEnded:
             return "사용 시간이 모두 끝났어요."
-        case .cooldownActive(_, let time, let groupName):
+        case .cooldownActive(_, let time, let groupName, _, _):
             return "\(time)분간 \(groupName)을 사용할 수 없어요."
         }
     }

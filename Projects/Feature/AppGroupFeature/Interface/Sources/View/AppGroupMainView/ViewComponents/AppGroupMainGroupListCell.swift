@@ -57,6 +57,9 @@ extension AppGroupMainView {
                         }.disabled(
                             appGroupViewModel.brakeStatus != .none
                         )
+                        .opacity(
+                            appGroupViewModel.brakeStatus != .none ? 0.5 : 1
+                        )
                     }
                     
                     HStack(spacing: 0) {
@@ -74,7 +77,9 @@ extension AppGroupMainView {
                                 .foregroundStyle(Color.grey200)
                         }
                         Spacer()
-                    }.padding(.leading, 8)
+                    }
+                    .opacity(appGroupViewModel.brakeStatus == .locked ? 0.5 : 1)
+                    .padding(.leading, 8)
                 }
                 if appGroupViewModel.currentActiveAppGroup?.groupID == appGroup.groupID {
                     switch appGroupViewModel.brakeStatus {

@@ -28,7 +28,9 @@ public enum AppScene {
 public final class AppGroupMainViewModel {
     
     var brakeStatus: BrakeStatus {
-        get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
+        get {
+            BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none
+        }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
     }
     
@@ -71,11 +73,12 @@ public final class AppGroupMainViewModel {
     private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
     private let fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol
     
-
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
+    
     private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
+    
     private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
     
     private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
@@ -137,7 +140,7 @@ public final class AppGroupMainViewModel {
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
                let schedule = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
-                let status = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
+                let status: BlockingStatusEntity = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
                 print("현재 상태: \(status) | 지금 시간: \(Date.now)")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
@@ -147,20 +150,24 @@ public final class AppGroupMainViewModel {
                     case .blocking, .unlockedTemporarily:
                         self.brakeStatus = .none
                     case .extensionPrompt(_, _, let startDate, let endDate):
+                        print("일단 여기 걸린다")
                         if .now < startDate {
+                            print("시작시간이 현재보다 짧다")
                             self.brakeStatus = .session
                             let endDate = self.breakTimeManager.getEndDate()
                             let startDate = self.breakTimeManager.getStartDate()
                             refreshSessionTimer(start: startDate, end: endDate)
                         } else if startDate < .now && .now < endDate {
+                            print("시작시간과 끝 시간 사이이다.")
                             self.brakeStatus = .locked
-                            refreshSessionTimer(start: .now, end: endDate)
+                            refreshSessionTimer(start: startDate, end: endDate)
                         } else {
                             self.brakeStatus = .none
                         }
                     case .sessionEnded(let time, let groupName): self.brakeStatus = .locked
-                    case .cooldownActive(let tokenName, let time, let groupName):
+                    case .cooldownActive(let tokenName, let time, let groupName, let startDate, let endDate):
                         self.brakeStatus = .locked
+                        refreshSessionTimer(start: startDate, end: endDate)
                     }
                 }
             } else {
@@ -265,11 +272,13 @@ public final class AppGroupMainViewModel {
                 assertionFailure("현재 스케쥴이 없는데 부름!!")
                 return
             }
+            let currentAppGroupName = self.currentActiveAppGroup?.name ?? ""
             try self.endBreakTimeUseCase.execute()
             appScheduleStorage.saveSelectNotificationTrigger(false)
             self.brakeStatus = .locked
             refreshSessionTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
             self.sessionExitAlertPresent = false
+            self.toast(message: "\(currentAppGroupName) 사용 종료!\n이제 \(currentAppGroupName) 앱을 사용할 수 없어요.")
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
         }
@@ -294,6 +303,7 @@ public final class AppGroupMainViewModel {
     }
     
     private func refreshSessionTimer(start: Date, end: Date) {
+        self.timerTask?.cancel()
         self.timerTask = Task {
             if Task.isCancelled {
                 await timerActor.stop()
@@ -302,6 +312,7 @@ public final class AppGroupMainViewModel {
                 await self.timerActor.stop()
                 return
             }
+            
             await timerActor.stop()
             await timerActor.startTimer(until: end) { [weak self] interval in
                 await MainActor.run { [weak self] in
@@ -328,13 +339,6 @@ public final class AppGroupMainViewModel {
 
 // MARK: - Private Helper Methods
 fileprivate extension AppGroupMainViewModel {
-    func sessionExit() async {
-        await MainActor.run { [weak self] in
-            guard let self else { return }
-            self.brakeStatus = .locked
-        }
-    }
-    
     func screenTimeAuthRequest() async {
         let result: ScreenTimeAuthorizationResult = await requestScreenTimeAuthUseCase.execute()
         await MainActor.run { [weak self] in

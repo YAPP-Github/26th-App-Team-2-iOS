@@ -40,7 +40,7 @@ public protocol AppGroupDIContainerProtocol {
     var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol { get }
     var fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol { get }
     var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol { get }
-    var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol { get }
+    var endAppBrakeTimeUseCase: EndBreakTimeUseCaseProtocol { get }
     var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol { get }
 }
 
@@ -80,7 +80,7 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     
     private(set) lazy var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol = EndBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     
-    private(set) lazy var endBrakeTimeUseCase: EndBreakTimeUseCaseProtocol = EndBreakTimeUseCase(
+    private(set) lazy var endAppBrakeTimeUseCase: EndBreakTimeUseCaseProtocol = EndAppBreakTimeUseCase(
         appScheduleStorage: appScheduleStorage,
         blockScheduleManager: blockSchedule,
         managedSettingsManager: managedSetting,
