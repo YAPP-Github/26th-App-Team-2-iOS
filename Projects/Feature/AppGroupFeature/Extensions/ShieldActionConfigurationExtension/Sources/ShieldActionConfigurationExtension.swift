@@ -68,10 +68,6 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                 scheduleNotification()
                 completionHandler(.defer)
             }
-        case .sessionEnded:
-            // 남은 시간 확인 - 쿨다운 상태 유지
-            scheduleNotification()
-            completionHandler(.defer)
         case .cooldownActive:
             // 남은 시간 확인 - 쿨다운 상태 유지
             // TODO: 남은 시간 확인하기 부분
@@ -129,9 +125,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             } else {
                 completionHandler(.close)
             }
-        case .sessionEnded:
-            // 나가기
-            completionHandler(.close)
+
         case .cooldownActive:
             // 나가기
             completionHandler(.close)
@@ -158,9 +152,14 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     
     /// 연장 시간이 모두 사용된 경우 호출
     private func handleExtensionTimeExhausted(groupName: String, cooldownMinutes: Int) {
-        let status = BlockingStatus.sessionEnded(
+        let startDate = Date.now
+        let endDate = startDate.addingTimeInterval(TimeInterval(cooldownMinutes * 60))
+        let status = BlockingStatus.cooldownActive(
+            tokenName: groupName,
             time: cooldownMinutes,
-            groupName: groupName
+            groupName: groupName,
+            startDate: startDate,
+            endDate: endDate
         )
         appScheduleStorage.saveBlockingStatus(status)
         

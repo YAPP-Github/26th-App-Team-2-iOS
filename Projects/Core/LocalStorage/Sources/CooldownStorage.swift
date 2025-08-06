@@ -31,7 +31,7 @@ public struct CooldownStorage: CooldownStorageProtocol {
     public func startCooldown(minutes: Int) {
         
         let cooldownStartTime = Date()
-        let cooldownEndTime = cooldownStartTime.addingTimeInterval(TimeInterval(15 * 60))
+        let cooldownEndTime = cooldownStartTime.addingTimeInterval(TimeInterval(min(minutes, 15) * 60))
         print("cooldownStartTime: \(cooldownStartTime)")
         print("cooldownEndTime: \(cooldownEndTime) | minutes: \(minutes)")
         userDefaults?.set(cooldownStartTime, forKey: Keys.cooldownStartTime)

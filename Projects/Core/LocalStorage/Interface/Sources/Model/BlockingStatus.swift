@@ -14,7 +14,6 @@ public enum BlockingStatus: Codable, Equatable {
     case blocking(tokenName: String) // 1. 차단 UI 노출
     case unlockedTemporarily // 2. 임시 사용 허용 상태
     case extensionPrompt(time: Int, count: Int, startDate: Date, endDate: Date) // 3. 휴게시간 연장 가능 상태 --> 쿨다운이 되어야함
-    case sessionEnded(time: Int, groupName: String) // 4. 세션 종료 (스누즈 2회 후) - 앱이 포그라운드일 때
     case cooldownActive(tokenName: String, time: Int, groupName: String, startDate: Date, endDate: Date) // 5. 쿨다운 중 앱 진입 시도 - 앱이 쿨다운 상태일 때
 
     // MARK: - Codable Implementation
@@ -45,10 +44,10 @@ public enum BlockingStatus: Codable, Equatable {
             let startDate = try container.decode(Date.self, forKey: .startDate)
             let endDate = try container.decode(Date.self, forKey: .endDate)
             self = .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
-        case "sessionEnded":
-            let time = try container.decode(Int.self, forKey: .time)
-            let groupName = try container.decode(String.self, forKey: .groupName)
-            self = .sessionEnded(time: time, groupName: groupName)
+//        case "sessionEnded":
+//            let time = try container.decode(Int.self, forKey: .time)
+//            let groupName = try container.decode(String.self, forKey: .groupName)
+//            self = .sessionEnded(time: time, groupName: groupName)
         case "cooldownActive":
             let tokenName = try container.decode(String.self, forKey: .tokenName)
             let time = try container.decode(Int.self, forKey: .time)
@@ -76,10 +75,10 @@ public enum BlockingStatus: Codable, Equatable {
             try container.encode(count, forKey: .count)
             try container.encode(startDate, forKey: .startDate)
             try container.encode(endDate, forKey: .endDate)
-        case .sessionEnded(let time, let groupName):
-            try container.encode("sessionEnded", forKey: .type)
-            try container.encode(time, forKey: .time)
-            try container.encode(groupName, forKey: .groupName)
+//        case .sessionEnded(let time, let groupName):
+//            try container.encode("sessionEnded", forKey: .type)
+//            try container.encode(time, forKey: .time)
+//            try container.encode(groupName, forKey: .groupName)
         case .cooldownActive(let tokenName, let time, let groupName, let startDate, let endDate):
             try container.encode("cooldownActive", forKey: .type)
             try container.encode(tokenName, forKey: .tokenName)
@@ -105,9 +104,6 @@ public enum BlockingStatus: Codable, Equatable {
             } else {
                 return "지금은 을 사용할 수 없어요"
             }
-            
-        case .sessionEnded(let time, let groupName):
-            return "이제 \(time)분간 \(groupName) 앱을 사용할수 없어요"
         case .cooldownActive(let name, _, _, _, _):
             return "지금은 \(name)을 사용할 수 없어요"
         }
@@ -121,11 +117,9 @@ public enum BlockingStatus: Codable, Equatable {
                 return ""
             }  else if endDate < .now {
                 return ""
-            }else {
+            } else {
                 return "\(time)분간 을 사용할 수 없어요."
             }
-        case .sessionEnded:
-            return "사용 시간이 모두 끝났어요."
         case .cooldownActive(_, let time, let groupName, _,_ ):
             return "\(time)분간 \(groupName)을 사용할 수 없어요."
         }
@@ -145,7 +139,7 @@ public enum BlockingStatus: Codable, Equatable {
             } else {
                 return "남은 시간 확인"
             }
-        case .sessionEnded, .cooldownActive:
+        case .cooldownActive:
             return "남은 시간 확인"
         }
     }
@@ -164,7 +158,7 @@ public enum BlockingStatus: Codable, Equatable {
             } else {
                 return "나가기"
             }
-        case .sessionEnded, .cooldownActive:
+        case .cooldownActive:
             return "나가기"
 
         }

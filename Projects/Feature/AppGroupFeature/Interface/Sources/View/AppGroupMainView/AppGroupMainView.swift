@@ -46,7 +46,7 @@ public struct AppGroupMainView: View {
                     bottomPadding: 60
                 )
                 .fullScreenCover(
-                    isPresented:  $viewModel.timerSettingPresent,
+                    isPresented:  $viewModel.appBrakeTimeSettingPresent,
                     content: {
                         AppBrakeTimeSettingView()
                             .environment(

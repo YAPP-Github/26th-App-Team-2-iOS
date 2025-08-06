@@ -82,7 +82,14 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
             if extensionCount == 0 {
-                appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 0, startDate: extensionStartDate, endDate: extensionEndDate))
+                appScheduleStorage.saveBlockingStatus(
+                    .extensionPrompt(
+                        time: 15,
+                        count: 0,
+                        startDate: extensionStartDate,
+                        endDate: extensionEndDate
+                    )
+                )
             } else if extensionCount < maxExtensions {
                 // 연장 가능: extensionPrompt 상태로 설정
                 appScheduleStorage.saveBlockingStatus(
@@ -95,7 +102,15 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 )
             } else {
                 // 연장 불가: sessionEnded 상태로 설정 (5번 화면)
-                appScheduleStorage.saveBlockingStatus(.sessionEnded(time: 15, groupName: "앱 그룹"))
+                appScheduleStorage.saveBlockingStatus(
+                    .cooldownActive(
+                        tokenName: "앱 그룹",
+                        time: 15,
+                        groupName: "앱 그룹",
+                        startDate: .now,
+                        endDate: .now.addingTimeInterval(15 * 60)
+                    )
+                )
             }
         } else if let schedule = BlockSchedule(from: activity)  {
             // 스케줄 종료 시 차단 상태 설정

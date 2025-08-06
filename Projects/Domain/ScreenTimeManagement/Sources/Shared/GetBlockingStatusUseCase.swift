@@ -36,8 +36,6 @@ public struct GetBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol {
         switch status {
         case .cooldownActive:
             return validateCooldownStatus(tokenName: tokenName)
-        case .sessionEnded:
-            return handleSessionEndedStatus()
         default:
             return status
         }

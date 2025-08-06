@@ -29,13 +29,13 @@ public final class AppGroupMainViewModel {
         get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
     }
+    
     var brakeStatus: BrakeStatus = .none
     
     private let scheduleKey: String = "BlockScheduleCurrent"
     private var currentSchedule: BlockScheduleEntity?
     var currentActiveAppGroup: AppGroup? = nil
     var sessionExitAlertPresent: Bool = false
-    var timerSettingPresent: Bool = false
     var sessionRestRatio: Double = 0.0
     var sessionRestTime: Int = 0
     
@@ -86,7 +86,6 @@ public final class AppGroupMainViewModel {
         fetchAppGroupUseCase: FetchAppGroupUseCase,
         requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
         fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol,
-        
         createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol,
         deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
         fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol,
@@ -110,7 +109,6 @@ public final class AppGroupMainViewModel {
     
     // MARK: - 생명주기 메서드
 
-//
     public func onAppear() {
         print("OnAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
         self.brakeStatus = self.brakeStatusStorage
@@ -119,7 +117,6 @@ public final class AppGroupMainViewModel {
             await refreshAppGroups()
             loadAppBrakeTimeNotificationSetting()
         }
-//        refreshSessionTimer()
     }
     
     public func onDisAppear() {
@@ -148,18 +145,16 @@ public final class AppGroupMainViewModel {
         Task(priority: .background) { await screenTimeAuthRequest() }
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
-               let schedule = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
+               let schedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
                 let status: BlockingStatusEntity = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
                 print("현재 상태: \(status) | 지금 시간: \(Date.now)")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.currentSchedule = schedule
-                    self.timerSettingPresent = self.appScheduleStorage.getSelectedNotification()
+                    
                     switch status {
-                    case .blocking, .unlockedTemporarily:
-                        self.brakeStatus = .none
+                    case .blocking, .unlockedTemporarily: self.brakeStatus = .none
                     case .extensionPrompt(_, _, let startDate, let endDate):
-                        print("일단 여기 걸린다")
                         if .now < startDate {
                             print("시작시간이 현재보다 짧다")
                             self.brakeStatus = .session
@@ -173,8 +168,7 @@ public final class AppGroupMainViewModel {
                         } else {
                             self.brakeStatus = .none
                         }
-                    case .sessionEnded(let time, let groupName): self.brakeStatus = .locked
-                    case .cooldownActive(let tokenName, let time, let groupName, let startDate, let endDate):
+                    case .cooldownActive(_, _, _, let startDate, let endDate):
                         self.brakeStatus = .locked
                         refreshSessionTimer(start: startDate, end: endDate)
                     }
@@ -267,7 +261,7 @@ public final class AppGroupMainViewModel {
             self.brakeStatus = .session
             self.currentActiveAppGroup = appGroups.first
             self.sessionStart(seconds: selectedTime * 60)
-            self.timerSettingPresent = false
+            self.appBrakeTimeSettingPresent = false
         } catch DeviceActivityCenterError.intervalTooShort {
             print("휴식 시간이 너무 짧습니다. 최소 15분 이상 설정해주세요.")
         } catch {
