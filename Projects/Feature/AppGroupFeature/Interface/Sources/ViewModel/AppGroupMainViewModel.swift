@@ -17,7 +17,6 @@ extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
         lhs.id == rhs.id
     }
 }
-
 public enum AppScene {
     case active
     case inActive
@@ -26,13 +25,11 @@ public enum AppScene {
 
 @Observable
 public final class AppGroupMainViewModel {
-    
-    var brakeStatus: BrakeStatus {
-        get {
-            BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none
-        }
+    private var brakeStatusStorage: BrakeStatus {
+        get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
     }
+    var brakeStatus: BrakeStatus = .none
     
     private let scheduleKey: String = "BlockScheduleCurrent"
     private var currentSchedule: BlockScheduleEntity?
@@ -115,6 +112,8 @@ public final class AppGroupMainViewModel {
 
 //
     public func onAppear() {
+        print("OnAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
+        self.brakeStatus = self.brakeStatusStorage
         self.appScene = .inActive
         Task(priority: .high) {
             await refreshAppGroups()
@@ -123,12 +122,21 @@ public final class AppGroupMainViewModel {
 //        refreshSessionTimer()
     }
     
+    public func onDisAppear() {
+        print("OnDisAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
+        self.brakeStatusStorage = brakeStatus
+    }
+    
     public func setScene(_ scene: AppScene) {
         self.appScene = scene
         switch scene {
         case .active:
+            print("Active - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
+            self.brakeStatusStorage = brakeStatus
             sceneActive()
-        case .inActive: break
+        case .inActive:
+            print("inActive - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
+            self.brakeStatusStorage = brakeStatus
         case .background: break
         }
     }
@@ -136,6 +144,7 @@ public final class AppGroupMainViewModel {
     
 
     private func sceneActive() {
+        self.brakeStatus = self.brakeStatusStorage
         Task(priority: .background) { await screenTimeAuthRequest() }
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),

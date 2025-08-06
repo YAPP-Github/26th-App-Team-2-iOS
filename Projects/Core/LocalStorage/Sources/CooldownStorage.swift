@@ -27,11 +27,13 @@ public struct CooldownStorage: CooldownStorageProtocol {
     }
     
     // MARK: - CooldownStorageProtocol
-    
+    /// 여기 메서드 minutes가 0으로 바뀜
     public func startCooldown(minutes: Int) {
-        guard isEmpty else { return }
+        
         let cooldownStartTime = Date()
-        let cooldownEndTime = cooldownStartTime.addingTimeInterval(TimeInterval(minutes * 60))
+        let cooldownEndTime = cooldownStartTime.addingTimeInterval(TimeInterval(15 * 60))
+        print("cooldownStartTime: \(cooldownStartTime)")
+        print("cooldownEndTime: \(cooldownEndTime) | minutes: \(minutes)")
         userDefaults?.set(cooldownStartTime, forKey: Keys.cooldownStartTime)
         userDefaults?.set(cooldownEndTime, forKey: Keys.cooldownEndTime)
     }

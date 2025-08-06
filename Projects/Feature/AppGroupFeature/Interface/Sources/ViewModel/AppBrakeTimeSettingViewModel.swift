@@ -12,7 +12,7 @@ import Domain
 final class AppBrakeTimeSettingViewModel {
     public let timeOptions = [15, 20, 25, 30, 45, 60, 90, 120]
     var selectedAppName: String = ""
-    var selectedMinutes: Int = 0
+    var selectedMinutes: Int = 15
     var brakeTimeSettingCompletePresent: Bool = false
     var dismiss: Bool = false
     
@@ -116,7 +116,6 @@ final class AppBrakeTimeSettingViewModel {
     }
     
     public func brakeTimeSettingCompleteButtonTapped() {
-        
         Task {
             do {
                 try await createBreakTimeUseCase.execute(by: selectedMinutes)

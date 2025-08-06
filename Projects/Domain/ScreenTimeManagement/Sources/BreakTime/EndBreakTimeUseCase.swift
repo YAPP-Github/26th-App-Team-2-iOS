@@ -73,7 +73,7 @@ public struct EndBreakTimeUseCase: EndBreakTimeUseCaseProtocol {
             // 연장 불가: sessionEnded 상태로 설정
             // 15분만 더 sessionEnded 상태로 변경
             let cooldownMinutes = appScheduleStorage.getExtensionTime() // 저장된 연장 시간 사용
-            handleExtensionTimeExhausted(groupName: "앱 그룹", cooldownMinutes: cooldownMinutes)
+            handleExtensionTimeExhausted(groupName: "앱 그룹", cooldownMinutes: 15)
             appScheduleStorage.saveBlockingStatus(.sessionEnded(time: 15, groupName: "앱 그룹"))
         }
     }

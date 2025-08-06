@@ -80,12 +80,20 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     
     private(set) lazy var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol = EndBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     
-    private(set) lazy var endAppBrakeTimeUseCase: EndBreakTimeUseCaseProtocol = EndAppBreakTimeUseCase(
+    private(set) lazy var endAppBrakeTimeUseCase: EndBreakTimeUseCaseProtocol =
+    EndAppBreakTimeUseCase(
         appScheduleStorage: appScheduleStorage,
         blockScheduleManager: blockSchedule,
         managedSettingsManager: managedSetting,
         cooldownStorage: coolDownStorage
     )
+//    EndBreakTimeUseCase(
+    //        appScheduleStorage: appScheduleStorage,
+    //        blockScheduleManager: blockSchedule,
+    //        managedSettingsManager: managedSetting,
+    //        cooldownStorage: coolDownStorage
+    //    )
+    
     private(set) lazy var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol = GetBlockingStatusUseCase(
         appScheduleStorage: appScheduleStorage,
         cooldownStorage: coolDownStorage

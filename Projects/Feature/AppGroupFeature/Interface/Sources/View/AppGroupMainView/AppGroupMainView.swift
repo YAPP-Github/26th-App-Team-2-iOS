@@ -104,9 +104,8 @@ public struct AppGroupMainView: View {
                 self.appGroupMainViewModel.setScene(.background)
             }
         })
-        .onAppear() {
-            appGroupMainViewModel.onAppear()
-        }
+        .onAppear() { appGroupMainViewModel.onAppear() }
+        .onDisappear() { appGroupMainViewModel.onDisAppear() }
     }
 }
 
