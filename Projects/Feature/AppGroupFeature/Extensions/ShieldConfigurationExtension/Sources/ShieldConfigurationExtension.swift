@@ -105,9 +105,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         case .extensionPrompt(let time, let count, let startDate, let endDate):
             // 저장된 시간과 횟수를 그대로 사용
             return .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
-        case .sessionEnded(let time, let groupName):
-            // 저장된 시간과 그룹명을 그대로 사용
-            return .sessionEnded(time: time, groupName: groupName)
         case .cooldownActive(_, let time, let groupName, let startDate, let endDate):
             return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName, startDate: startDate, endDate: endDate)
         }
@@ -122,7 +119,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
                 appScheduleStorage.saveBlockingStatus(.blocking(tokenName: tokenName))
                 return .blocking(tokenName: tokenName)
             }
-        case .sessionEnded: startCooldownFromSessionEnd()
         default:
             break
         }
@@ -144,7 +140,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             } else { // "쿨다운 시간"... 쿨다운 화면을 보여줌...
                 return UIImage(resource: .illustrationBlock)
             }
-        case .sessionEnded, .cooldownActive:
+        case  .cooldownActive:
             return UIImage(resource: .illustrationBlock)
         }
     }
