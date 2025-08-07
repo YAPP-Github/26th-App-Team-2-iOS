@@ -152,7 +152,7 @@ public struct EditProfileView: View {
         }
         .background(Color.grey900)
         .navigationBarHidden(true)
-        .toast(message: viewModel.showToast ? viewModel.toastMessage : nil)
+        .toast(message: viewModel.showToast ? viewModel.toastMessage : nil, bottomPadding: 20)
     }
 
 }

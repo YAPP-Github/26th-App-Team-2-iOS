@@ -8,8 +8,6 @@
 import Foundation
 import Domain
 
-
-
 @Observable
 public class StartUpViewModel {
     public var userLogInState: UserLogInStateType = .unknown

@@ -10,11 +10,8 @@ import DomainUserInterface
 import Core
 
 extension UserProfileService: @retroactive UserProfileProtocol {
-    
-    
-    
+
     public func setUserNickname(_ nickname: String) async throws {
-        
         let setMemberNameRequest = SetMemberNameRequest(nickname: nickname)
         let userNameEndPoint = BrakeRouter.MemberEndPoint<MemberInfoResponse>.setName(setMemberNameRequest)
         let userMemberInfoResponse: MemberInfoResponse = try await networkProvider.request(userNameEndPoint)
