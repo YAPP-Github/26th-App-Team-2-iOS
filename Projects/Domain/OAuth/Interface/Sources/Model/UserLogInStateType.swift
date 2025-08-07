@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum UserLogInStateType {
+public enum UserLogInStateType: Equatable {
     case unknown
     case logInRequired /// 로그인이 요구됨
     case onboardingRequired /// 온보딩이 요구됨

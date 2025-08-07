@@ -6,17 +6,23 @@
 //
 
 import SwiftUI
-import Domain
-import FeatureAppGroupFeatureInterface
 import SharedDesignSystem
+import FeatureOnboardingInterface
 
 @main
 struct BreakeApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State private var selectedTab: TabItemType = .dashboard
+    @Environment(\.appDIContainer) var appDIContainer
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainAppView()
+                .environment(
+                    StartUpViewModel(
+                        autoLogInUseCase: appDIContainer.useCaseContainer.autoLogInUseCase,
+                        onboardingStateUseCase: appDIContainer.useCaseContainer.onboardingStateUseCase
+                    )
+                )
         }
     }
 }

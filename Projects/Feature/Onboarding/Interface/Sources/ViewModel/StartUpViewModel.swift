@@ -57,4 +57,8 @@ public class StartUpViewModel {
             }
         }
     }
+    
+    public func logout() {
+        self.userLogInState = .logInRequired
+    }
 }
