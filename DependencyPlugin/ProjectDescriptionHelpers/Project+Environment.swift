@@ -128,8 +128,7 @@ public extension Project {
                     "UIApplicationSupportsMultipleScenes": true,
                     "UISceneConfigurations": [
                         "UIWindowSceneSessionRoleApplication": [[
-                            "UISceneConfigurationName": "Default Configuration",
-                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                            "UISceneConfigurationName": "Default Configuration"
                         ]]
                     ]
                 ],
@@ -163,8 +162,7 @@ public extension Project {
                     "UIApplicationSupportsMultipleScenes": true,
                     "UISceneConfigurations": [
                         "UIWindowSceneSessionRoleApplication": [[
-                            "UISceneConfigurationName": "Default Configuration",
-                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                            "UISceneConfigurationName": "Default Configuration"
                         ]]
                     ]
                 ],
