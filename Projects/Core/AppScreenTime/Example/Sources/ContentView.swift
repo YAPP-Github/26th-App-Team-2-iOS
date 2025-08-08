@@ -213,7 +213,7 @@ struct ContentView: View {
     
     private func testExtensionPrompt() {
         // 연장 프롬프트 상태 설정
-        viewModel.appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 1))
+        viewModel.appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 1, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
         print("✅ 연장 프롬프트 상태 설정 완료: extensionPrompt(time: 5, count: 1)")
     }
     
@@ -223,7 +223,9 @@ struct ContentView: View {
             .cooldownActive(
                 tokenName: "테스트앱",
                 time: 15,
-                groupName: "SNS 앱"
+                groupName: "SNS 앱",
+                startDate: .now,
+                endDate: .now.addingTimeInterval(15 * 60)
             )
         )
         print("✅ 쿨다운 상태 설정 완료: cooldownActive")
