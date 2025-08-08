@@ -151,13 +151,13 @@ struct BrakePopUpView_ex: View {
             alertType: .doubleButton,
             primaryButtonTitle: "탈퇴",
             secondaryButtonTitle: "취소",
-            primaryAction: {
+            showCloseButton: true, primaryAction: {
                 showWithdrawalAlert = false
                 print("탈퇴 완료")
             }, secondaryAction: {
                 showWithdrawalAlert = false
                 print("탈퇴 취소")
-            }, showCloseButton: true,
+            },
             closeAction: {
                 showWithdrawalAlert = false
                 print("X 버튼으로 탈퇴 취소")
