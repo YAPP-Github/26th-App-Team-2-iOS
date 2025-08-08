@@ -13,61 +13,54 @@ import FeatureOnboardingInterface
 
 struct MainTabView: View {
     @Environment(\.appDIContainer) private var appDIContainer
-    @State private var selectedTab: TabItemType = .dashboard
     @Environment(StartUpViewModel.self) var startUpViewModel
 
+    @State private var selectedTab: TabItemType = .dashboard
+    @State private var isTabBarHidden: Bool = false
+
     var body: some View {
-        NavigationStack {
+        BrakeTabView(
+            selectedTab: $selectedTab,
+            isTabBarHidden: $isTabBarHidden
+        ) { selectedTab in
             ZStack {
                 Color.grey900
                     .ignoresSafeArea()
-                VStack(spacing: 0) {
-                    switch selectedTab {
-                    case .report:
-                        Color.clear
-                    case .dashboard:
-                        AppGroupMainView()
-                            .environment(
-                                AppGroupMainViewModel(
-                                    fetchAppGroupUseCase: appDIContainer.useCaseContainer.fetchAppGroupUseCase,
-                                    requestScreenTimeAuthUseCase: appDIContainer.useCaseContainer.requestScreenTimeAuthUseCase,
-                                    fetchSelectedNotificationUseCase: appDIContainer.useCaseContainer.fetchSelectedNotificationUseCase,
-                                    createBlockScheduleUseCase: appDIContainer.useCaseContainer.createBlockScheduleUseCase,
-                                    deleteBlockScheduleUseCase: appDIContainer.useCaseContainer.deleteBlockScheduleUseCase,
-                                    fetchBlockScheduleUseCase: appDIContainer.useCaseContainer.fetchBlockScheduleUseCase,
-                                    endBlockScheduleUseCase: appDIContainer.useCaseContainer.endBlockScheduleUseCase,
-                                    getBlockingStatusUseCase: appDIContainer.useCaseContainer.getBlockingStatusUseCase,
-                                    endBreakTimeUseCase: appDIContainer.useCaseContainer.endBreakTimeUseCase
-                                )
-                            )
-                    case .myInfo:
-                        MyInfoSettingView()
-                            .environment(
-                                MyInfoSettingViewModel(
-                                    fetchUserNicknameUseCase: appDIContainer.useCaseContainer.fetchUserNicknameUseCase,
-                                    userSetNicknameUseCase: appDIContainer.useCaseContainer.userSetNicknameUseCase,
-                                    deleteUserUseCase: appDIContainer.useCaseContainer.deleteUserUseCase,
-                                    oAuthLogoutUseCase: appDIContainer.useCaseContainer.oAuthLogoutUseCase,
-                                    onLogout: {
-                                        startUpViewModel.logout()
-                                    }
-                                )
-                            )
-                    }
-
-                    Spacer()
-
-                    VStack {
-                        BrakeTabBarView(selectedTabBarItem: .init(get: {
-                            selectedTab
-                        }, set: { item in
-                            selectedTab = item
-                        }))
-                        .padding(.bottom, 16)
-                    }
+                switch selectedTab {
+                case .report:
+                    Color.clear
+                case .dashboard:
+                    AppGroupMainView()
+                case .myInfo:
+                    MyInfoSettingView(isTabBarHidden: $isTabBarHidden)
                 }
             }
+            .environment(
+                AppGroupMainViewModel(
+                    fetchAppGroupUseCase: appDIContainer.useCaseContainer.fetchAppGroupUseCase,
+                    requestScreenTimeAuthUseCase: appDIContainer.useCaseContainer.requestScreenTimeAuthUseCase,
+                    fetchSelectedNotificationUseCase: appDIContainer.useCaseContainer.fetchSelectedNotificationUseCase,
+                    createBlockScheduleUseCase: appDIContainer.useCaseContainer.createBlockScheduleUseCase,
+                    deleteBlockScheduleUseCase: appDIContainer.useCaseContainer.deleteBlockScheduleUseCase,
+                    fetchBlockScheduleUseCase: appDIContainer.useCaseContainer.fetchBlockScheduleUseCase,
+                    endBlockScheduleUseCase: appDIContainer.useCaseContainer.endBlockScheduleUseCase,
+                    getBlockingStatusUseCase: appDIContainer.useCaseContainer.getBlockingStatusUseCase,
+                    endBreakTimeUseCase: appDIContainer.useCaseContainer.endBreakTimeUseCase
+                )
+            )
+            .environment(
+                MyInfoSettingViewModel(
+                    fetchUserNicknameUseCase: appDIContainer.useCaseContainer.fetchUserNicknameUseCase,
+                    userSetNicknameUseCase: appDIContainer.useCaseContainer.userSetNicknameUseCase,
+                    deleteUserUseCase: appDIContainer.useCaseContainer.deleteUserUseCase,
+                    oAuthLogoutUseCase: appDIContainer.useCaseContainer.oAuthLogoutUseCase,
+                    onLogout: {
+                        startUpViewModel.logout()
+                    }
+                )
+            )
+            .navigationBarHidden(true)
         }
-        .navigationBarHidden(true)
     }
 }
+

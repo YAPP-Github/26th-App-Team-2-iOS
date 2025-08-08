@@ -12,7 +12,7 @@ public struct EditProfileView: View {
 
     @Environment(MyInfoSettingViewModel.self) private var viewModel
 
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @Binding public var nickname: String
     @FocusState private var isTextFieldFocused: Bool
 
@@ -38,7 +38,7 @@ public struct EditProfileView: View {
         return isRegexValid && isLengthValid
     }
 
-    init(nickname: Binding<String>) {
+    public init(nickname: Binding<String>) {
         self._nickname = nickname
         self._tempNickname = State(initialValue: nickname.wrappedValue)
     }
@@ -51,7 +51,7 @@ public struct EditProfileView: View {
                     .foregroundStyle(Color.grey100)
             } leading: {
                 BrakeNavigationButton(type: .back) {
-                    self.presentationMode.wrappedValue.dismiss()
+                    dismiss()
                 }
             }
 
@@ -123,7 +123,7 @@ public struct EditProfileView: View {
                         try await viewModel.editNickname(tempNickname)
                         // 성공 시에만 화면 닫기
                         await MainActor.run {
-                            presentationMode.wrappedValue.dismiss()
+                            dismiss()
                         }
                     } catch {
                         await MainActor.run {
