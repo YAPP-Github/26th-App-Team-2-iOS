@@ -13,7 +13,9 @@ chmod +x ./ci_post_clone_sub_scripts/googleservice-info.sh
 # curl https://mise.run | sh
 curl https://mise.run | sh
 
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+
+echo 'eval "$($HOME/.local/bin/mise activate bash)"' >> ~/.bashrc
 
 echo "❗️Current PATH: $PATH"
 
