@@ -9,12 +9,17 @@ mkdir -p ./Projects/App/xcconfigs
 chmod -R 777 ./Projects/App/xcconfigs
 
 # 필수 환경 변수 확인
+# 환경 변수가 설정되어 있는지 확인하는 함수
 check_env_var() {
+    # -z: 문자열이 비어있으면 true
+    # ${!1}: 간접 참조로 $1에 담긴 변수명의 실제 값을 가져옴
+    # 예: $1이 "MY_VAR"이면 ${!1}은 $MY_VAR의 값을 반환
     if [ -z "${!1}" ]; then
         echo "❌ ERROR: Environment variable $1 is not set"
         exit 1
     fi
 }
+
 
 # Projects > App xcconfig 구성
 
