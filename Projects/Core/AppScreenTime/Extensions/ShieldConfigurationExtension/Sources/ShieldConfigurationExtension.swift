@@ -16,7 +16,7 @@ import SwiftUICore
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-    
+
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
 
@@ -45,16 +45,18 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         }
         return setShieldConfig(displayName)
     }
-    
+
     // MARK: - App Name Management
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
+
         let status = getBlockingStatus(tokenName)
         let customIcon = getIconImage(by: status)
         let titleLabel = ShieldConfiguration.Label(
             text: status.title,
             color: SharedDesignSystemAsset.Colors.grey100.color
         )
+
         let subtitleLabel = ShieldConfiguration.Label(
             text: status.subtitle,
             color: SharedDesignSystemAsset.Colors.grey300.color
@@ -92,24 +94,21 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
     private func getBlockingStatus(_ tokenName: String) -> BlockingStatus {
         let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
-        let validatedStatus = validateAndFixStatus(status, tokenName: tokenName)
+        let validatedStatus: BlockingStatus = validateAndFixStatus(status, tokenName: tokenName)
 
         switch validatedStatus {
         case .blocking:
             return .blocking(tokenName: tokenName)
         case .unlockedTemporarily:
             return .unlockedTemporarily
-        case .extensionPrompt(let time, let count):
+        case .extensionPrompt(let time, let count, let startDate, let endDate):
             // 저장된 시간과 횟수를 그대로 사용
-            return .extensionPrompt(time: time, count: count)
-        case .sessionEnded(let time, let groupName):
-            // 저장된 시간과 그룹명을 그대로 사용
-            return .sessionEnded(time: time, groupName: groupName)
-        case .cooldownActive(_, let time, let groupName):
-            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName)
+            return .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
+        case .cooldownActive(_, let time, let groupName, let startDate, let endDate):
+            return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName, startDate: startDate, endDate: endDate)
         }
     }
-    
+
     /// 상태 검증 및 수정
     private func validateAndFixStatus(_ status: BlockingStatus, tokenName: String) -> BlockingStatus {
         switch status {
@@ -119,24 +118,28 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
                 appScheduleStorage.saveBlockingStatus(.blocking(tokenName: tokenName))
                 return .blocking(tokenName: tokenName)
             }
-        case .sessionEnded:
-            startCooldownFromSessionEnd()
         default:
             break
         }
-        
+
         return status
     }
- 
+
     private func getIconImage(by status: BlockingStatus) -> UIImage {
         switch status {
         case .blocking:
             return UIImage(resource: .iconArrow)
         case .unlockedTemporarily:
             return UIImage(resource: .iconWarning)
-        case .extensionPrompt:
-            return UIImage(resource: .illustrationBlock)
-        case .sessionEnded, .cooldownActive:
+        case .extensionPrompt(_, _, let startDate, let endDate):
+            if .now < startDate.addingTimeInterval(60) { // "15분 더" 디자인
+                return UIImage(resource: .illustrationTimer)
+            } else if endDate < .now { // 쿨다운 시간을 넘음... blocking 화면을 보여줌...
+                return UIImage(resource: .iconArrow)
+            } else { // "쿨다운 시간"... 쿨다운 화면을 보여줌...
+                return UIImage(resource: .illustrationBlock)
+            }
+        case  .cooldownActive:
             return UIImage(resource: .illustrationBlock)
         }
     }
@@ -144,7 +147,8 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     /// 세션 종료 후 쿨다운 시작
     private func startCooldownFromSessionEnd() {
         let cooldownMinutes = appScheduleStorage.getExtensionTime()
-
+        let startDate = Date()
+        let endDate = startDate.addingTimeInterval(TimeInterval(60 * 15))
         cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
 
@@ -154,9 +158,12 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             .cooldownActive(
                 tokenName: "앱 그룹",
                 time: cooldownMinutes,
-                groupName: ""
+                groupName: "",
+                startDate: startDate,
+                endDate: endDate
             )
         )
     }
 
 }
+

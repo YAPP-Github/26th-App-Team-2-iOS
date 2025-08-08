@@ -8,8 +8,6 @@
 import Foundation
 import Domain
 
-
-
 @Observable
 public class StartUpViewModel {
     public var userLogInState: UserLogInStateType = .unknown
@@ -58,5 +56,9 @@ public class StartUpViewModel {
                 self.userLogInState = autoLogInResult
             }
         }
+    }
+    
+    public func logout() {
+        self.userLogInState = .logInRequired
     }
 }

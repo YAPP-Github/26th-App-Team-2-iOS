@@ -124,15 +124,6 @@ public extension Project {
                 "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
                 "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
                 "NSFamilyControlsUsageDescription": "스크린타임 데이터를 관리하기 위해 접근 권한이 필요합니다.",
-                "UIApplicationSceneManifest": [
-                    "UIApplicationSupportsMultipleScenes": true,
-                    "UISceneConfigurations": [
-                        "UIWindowSceneSessionRoleApplication": [[
-                            "UISceneConfigurationName": "Default Configuration",
-                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
-                        ]]
-                    ]
-                ],
                 "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
                 "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
                 "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
@@ -159,15 +150,6 @@ public extension Project {
                 "UILaunchStoryboardName": "LaunchScreen",
                 "NSAppTransportSecurity": ["NSAllowsArbitraryLoads": true],
                 "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
-                "UIApplicationSceneManifest": [
-                    "UIApplicationSupportsMultipleScenes": true,
-                    "UISceneConfigurations": [
-                        "UIWindowSceneSessionRoleApplication": [[
-                            "UISceneConfigurationName": "Default Configuration",
-                            "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
-                        ]]
-                    ]
-                ],
                 "NSFamilyControlsUsageDescription": "앱 사용 시간을 관리하기 위해 Family Controls 권한이 필요합니다.",
                 "LSApplicationQueriesSchemes": [
                     "kakaokompassauth",

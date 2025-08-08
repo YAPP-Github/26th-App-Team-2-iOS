@@ -33,8 +33,9 @@ public protocol DIContainerProtocol {
 }
 
 // MARK: - Production DI Container
-public final class ProductionDIContainer: DIContainerProtocol {
+public final class MyInfoDIContainer: DIContainerProtocol {
 
+    public init() { }
     // MARK: -- Core Layer
     // Lazy 프로퍼티로 필요할 때만 생성
     public lazy var tokenStorage: TokenStorageProtocol = KeyChainTokenStorage()
@@ -91,13 +92,11 @@ public final class ProductionDIContainer: DIContainerProtocol {
         oAuthService: oAuthLogoutService
     )
 
-    public init() { }
 }
-
 
 // MARK: - DI Container Environment Key
 private struct DIContainerKey: EnvironmentKey {
-    static let defaultValue: DIContainerProtocol = ProductionDIContainer()
+    static let defaultValue: DIContainerProtocol = MyInfoDIContainer()
 }
 
 extension EnvironmentValues {

@@ -18,19 +18,19 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     private let managedSettingsManager = ManagedSettingsStoreManager()
-    
+
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
-    
+
     public override func handle(action: ShieldAction, for webDomain: WebDomainToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
-    
+
     public override func handle(action: ShieldAction, for category: ActivityCategoryToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
-    
+
     private func handleApplications(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         switch action {
         case .primaryButtonPressed:
@@ -41,7 +41,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             completionHandler(.close)
         }
     }
-    
+
     private func primaryButtonPressedAction(completionHandler: @escaping (ShieldActionResponse) -> Void) {
         let status = appScheduleStorage.getBlockingStatus()
         switch status {
@@ -80,10 +80,10 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             completionHandler(.defer)
         }
     }
-    
+
     private func secondaryButtonPressedAction(completionHandler: @escaping (ShieldActionResponse) -> Void) {
         let status = appScheduleStorage.getBlockingStatus()
-        
+
         switch status {
         case .blocking:
             completionHandler(.close)
@@ -98,16 +98,16 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     appScheduleStorage.saveExtensionCount(newCount)
                     // 15분 연장 시간 설정 및 저장
                     appScheduleStorage.saveExtensionTime(time)
-                    
+
                     // DeviceActivity로 15분 휴식 시간 설정
                     startExtensionBreakTime(minutes: time)
-                    
+
                     let newStartDate: Date = .now.addingTimeInterval(15 * 60)
                     let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
-                    
+
                     // 연장 프롬프트 상태 업데이트
                     appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount, startDate: newStartDate, endDate: newEndDate))
-                    
+
                     // 차단창 닫기 (15분 동안 앱 사용 가능)
                     completionHandler(.defer)
                 }
@@ -133,23 +133,23 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             completionHandler(.close)
         }
     }
-    
+
     // MARK: - Extension Time Management
-    
+
     /// 15분 연장 시간 시작
     private func startExtensionBreakTime(minutes: Int) {
         do {
             // BreakTimeManager를 통해 15분 휴식 시간 생성
             let breakTimeManager = BreakTimeManager()
             try breakTimeManager.createBreakTime(minutes: minutes)
-            
+
             // 알림 트리거 설정
             appScheduleStorage.saveSelectNotificationTrigger(false)
         } catch {
             // 연장 시간 설정 실패
         }
     }
-    
+
     /// 연장 시간이 모두 사용된 경우 호출
     private func handleExtensionTimeExhausted(groupName: String, cooldownMinutes: Int) {
         let startDate = Date.now
@@ -162,12 +162,12 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             endDate: endDate
         )
         appScheduleStorage.saveBlockingStatus(status)
-        
+
         // 쿨다운 시작
         cooldownStorage.saveCooldownGroup(groupName: groupName)
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
     }
-    
+
     // 차단 화면에서 보여지는 거라 에러 핸들링 할 수 없음
     private func scheduleNotification() {
         let center = UNUserNotificationCenter.current()
@@ -179,16 +179,16 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             }
         }
     }
-    
+
     private func makeNotification() -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = "여기를 눌러 앱 사용 시작하기"
         content.body = "알림을 누르면 앱을 사용할 수 있어요!"
         content.sound = UNNotificationSound.default
-        
+
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
         let request = UNNotificationRequest(identifier: "BrakeNotification", content: content, trigger: trigger)
-        
+
         return request
     }
 }
