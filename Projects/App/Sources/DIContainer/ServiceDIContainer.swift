@@ -46,6 +46,8 @@ public final class ServiceDIContainer: ServiceDIContainerProtocol {
         onboardingState: onboardingStateService
     )
 
+    @MainActor public lazy var appleAuthCodeService: AppleAuthCodeProtocol = AppleAuthCodeService()
+    
     @MainActor public lazy var oAuthLogoutService: OAuthLogoutServiceProtocol = OAuthLogoutService(
         networkProvider: coreContainer.makeNetworkProvider(hasRequestInterceptor: true),
         tokenStorage: coreContainer.tokenStorage,
@@ -57,8 +59,6 @@ public final class ServiceDIContainer: ServiceDIContainerProtocol {
         memberStateStorage: coreContainer.memberStateStorage,
         userDefaultsUserStorage: coreContainer.userStorage
     )
-
-    @MainActor public lazy var appleAuthCodeService: AppleAuthCodeProtocol = AppleAuthCodeService()
 
     @MainActor public lazy var userProfileService: UserProfileProtocol = UserProfileService(
         networkProvider: coreContainer.makeNetworkProvider(hasRequestInterceptor: true),
