@@ -44,6 +44,7 @@ public class StartUpViewModel {
             self.userLogInState = result
         }
     }
+    
     public func onboardingCompleted() {
         self.userLogInState = .brakeAvailable
     }
