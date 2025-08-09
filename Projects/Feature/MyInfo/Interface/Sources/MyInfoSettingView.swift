@@ -12,45 +12,34 @@ import SharedDesignSystem
 public struct MyInfoSettingView: View {
 
     @Environment(MyInfoSettingViewModel.self) private var myInfoSettingViewModel
-    @Binding private var isTabBarHidden: Bool
+//    @Binding private var isTabBarHidden: Bool
 
-    public init(isTabBarHidden: Binding<Bool>) {
-        self._isTabBarHidden = isTabBarHidden
+    public init(/*isTabBarHidden: Binding<Bool>*/) {
+//        self._isTabBarHidden = isTabBarHidden
     }
 
     public var body: some View {
-        @Bindable var viewModel = myInfoSettingViewModel
-
         NavigationStack {
+            @Bindable var viewModel = myInfoSettingViewModel
             VStack(spacing: 0) {
                 // 상단 컨텐츠 영역
                 VStack {
-                    userProfileSection
-                        .padding(.top, 87)
-                    // 메뉴 아이템들
-                    menuItemsSection
-                    Spacer()
+                    userProfileSection.padding(.top, 87)
+                    ScrollView {
+                        // 메뉴 아이템들
+                        menuItemsSection
+                    }
                 }
                 .ignoresSafeArea()
             }
             .onAppear {
+                print("세팅 온 어피어")
                 myInfoSettingViewModel.onAppear()
             }
             .background(Color.grey900)
             .navigationBarHidden(true)
-            .navigationDestination(isPresented: .init(get: {
-                myInfoSettingViewModel.showEditProfile
-            }, set: { isPresented in
-                myInfoSettingViewModel.showEditProfile = isPresented
-                isTabBarHidden = isPresented
-            })) {
-                EditProfileView(
-                    nickname: .init(
-                        get: { myInfoSettingViewModel.nickname },
-                        set: { myInfoSettingViewModel.nickname = $0 }
-                    )
-                )
-                .environment(myInfoSettingViewModel)
+            .navigationDestination(isPresented: $viewModel.showEditProfile) {
+                EditProfileView(nickname: viewModel.nickname).environment(viewModel)
             }
             .brakePopUp(
                 isPresented: .init(get: {
@@ -127,8 +116,10 @@ public struct MyInfoSettingView: View {
     }
 
     // MARK: - 사용자 프로필 섹션
+    @ViewBuilder
     private var userProfileSection: some View {
         HStack {
+            @Bindable var viewModel = myInfoSettingViewModel
             // 프로필 이미지
             ZStack {
                 Circle()
@@ -140,15 +131,17 @@ public struct MyInfoSettingView: View {
                     .offset(y: 9)
             }
             .mask(Circle())
-
-            Text(myInfoSettingViewModel.nickname)
+            Text(viewModel.nickname)
                 .font(.pretendard(size: 22, type: .semiBold))
                 .foregroundColor(.grey00)
+                .onChange(of: myInfoSettingViewModel.nickname) { oldValue, newValue in
+                    print("nickname: \(newValue)")
+                }
 
             Spacer()
 
             Button("수정") {
-                myInfoSettingViewModel.showEditProfile = true
+                viewModel.showEditProfile = true
             }
             .font(.pretendard(size: 14, type: .semiBold))
             .foregroundColor(.grey500)
@@ -159,6 +152,7 @@ public struct MyInfoSettingView: View {
     }
 
     // MARK: - 메뉴 아이템 섹션
+    @ViewBuilder
     private var menuItemsSection: some View {
         VStack(spacing: 16) {
             FeedbackSectionView(
@@ -176,12 +170,15 @@ public struct MyInfoSettingView: View {
         }
         .padding(.horizontal, 20)
         .onReceive(myInfoSettingViewModel.feedbackSubject) { action in
+            print("myInfoSettingViewModel.feedbackSubject action")
             myInfoSettingViewModel.handleMenuTap(action: action)
         }
         .onReceive(myInfoSettingViewModel.legalSubject) { action in
+            print("myInfoSettingViewModel.legalSubject action")
             myInfoSettingViewModel.handleMenuTap(action: action)
         }
         .onReceive(myInfoSettingViewModel.accountSubject) { action in
+            print("myInfoSettingViewModel.accountSubject action")
             myInfoSettingViewModel.handleMenuTap(action: action)
         }
     }

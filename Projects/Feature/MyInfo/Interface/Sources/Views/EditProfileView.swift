@@ -9,40 +9,26 @@ import SwiftUI
 import SharedDesignSystem
 
 public struct EditProfileView: View {
-
-    @Environment(MyInfoSettingViewModel.self) private var viewModel
-
+    
+    @Environment(MyInfoSettingViewModel.self) var viewModel
     @Environment(\.dismiss) private var dismiss
-    @Binding public var nickname: String
+    
     @FocusState private var isTextFieldFocused: Bool
-
+    
     private let maxLength: Int = 10
-    private let regex: String = "^[가-힣a-zA-Z]+$"
     @State private var isValid: Bool = false
     @State private var hasError: Bool = false
-    @State private var tempNickname: String = ""
+    @State private var tempNickname: String
     
     // 유효성 검사
     private var isNicknameValid: Bool {
-        let trimmedNickname = tempNickname.trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // 0일 때는 유효성 검사하지 않음
-        if trimmedNickname.isEmpty {
-            return true
-        }
-        
-        let regexPattern = try! NSRegularExpression(pattern: regex)
-        let range = NSRange(location: 0, length: trimmedNickname.utf16.count)
-        let isRegexValid = regexPattern.firstMatch(in: trimmedNickname, range: range) != nil
-        let isLengthValid = trimmedNickname.count <= maxLength
-        return isRegexValid && isLengthValid
+        return tempNickname.isValidNickName
     }
-
-    public init(nickname: Binding<String>) {
-        self._nickname = nickname
-        self._tempNickname = State(initialValue: nickname.wrappedValue)
+    
+    public init(nickname: String) {
+        self._tempNickname = State(initialValue: nickname)
     }
-
+    
     public var body: some View {
         VStack(spacing: 0) {
             BrakeNavigationView {
@@ -54,105 +40,108 @@ public struct EditProfileView: View {
                     dismiss()
                 }
             }
-
-            ScrollView {
-                VStack(spacing: 0) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.grey850)
-                            .frame(width: 100, height: 100)
-
-                        Image.iconProfile
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 86, height: 82)
-                            .offset(y: 17)
-                    }
-                    .mask(Circle())
-                    .padding(.top, 36)
-
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("닉네임")
-                            .font(.pretendard(size: 14, type: .medium))
-                            .foregroundColor(.grey200)
-                            .padding(.leading, 16)
-
-                        BrakeTextFieldView(
-                            text: $tempNickname,
-                            placeholder: "닉네임을 입력해주세요"
-                        )
-                        .focused($isTextFieldFocused)
-                        .onChange(of: tempNickname) { oldValue, newValue in
-                            // 10자 제한
-                            if newValue.count > maxLength {
-                                tempNickname = String(newValue.prefix(maxLength))
-                            }
+            ZStack(alignment: .bottom) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.grey850)
+                                .frame(width: 100, height: 100)
+                            
+                            Image.iconProfile
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 86, height: 82)
+                                .offset(y: 17)
                         }
-
-                        HStack {
-                            Spacer()
-
-                            HStack(spacing: 0) {
-                                Text("\(tempNickname.count)")
-                                    .font(.pretendard(size: 12, type: .medium))
-                                    .foregroundStyle(isNicknameValid ? Color.brakeWhite : Color.error)
-
-                                Text("/")
-                                    .font(.pretendard(size: 12, type: .medium))
-                                    .foregroundStyle(isNicknameValid ? Color.brakeWhite : Color.error)
-
-                                Text("\(maxLength)")
-                                    .font(.pretendard(size: 12, type: .medium))
-                                    .foregroundStyle(isNicknameValid ? Color.grey400 : Color.error)
+                        .mask(Circle())
+                        .padding(.top, 36)
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("닉네임")
+                                .font(.pretendard(size: 14, type: .medium))
+                                .foregroundColor(.grey200)
+                                .padding(.leading, 16)
+                            
+                            BrakeTextFieldView(
+                                text: $tempNickname,
+                                placeholder: "닉네임을 입력해주세요"
+                            )
+                            .focused($isTextFieldFocused)
+                            .onChange(of: tempNickname) { oldValue, newValue in
+                                // 10자 제한
+                                if newValue.count > maxLength {
+                                    tempNickname = String(newValue.prefix(maxLength))
+                                }
                             }
-                            .padding(.trailing, 16)
+                            
+                            HStack {
+                                Spacer()
+                                
+                                HStack(spacing: 0) {
+                                    Text("\(tempNickname.count)")
+                                        .font(.pretendard(size: 12, type: .medium))
+                                        .foregroundStyle(isNicknameValid ? Color.brakeWhite : Color.error)
+                                    
+                                    Text("/")
+                                        .font(.pretendard(size: 12, type: .medium))
+                                        .foregroundStyle(isNicknameValid ? Color.brakeWhite : Color.error)
+                                    
+                                    Text("\(maxLength)")
+                                        .font(.pretendard(size: 12, type: .medium))
+                                        .foregroundStyle(isNicknameValid ? Color.grey400 : Color.error)
+                                }
+                                .padding(.trailing, 16)
+                            }
+                            .padding(.top, 8)
                         }
-                        .padding(.top, 8)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 32)
+                        .padding(.bottom, 100) // 저장 버튼 공간 확보
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 32)
-                    .padding(.bottom, 100) // 저장 버튼 공간 확보
                 }
-            }
-
-            Button("저장") {
-                isTextFieldFocused = false
+                .ignoresSafeArea(.keyboard)
+                .background(Color.clear)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    isTextFieldFocused = false
+                }
                 
-                Task {
-                    do {
-                        try await viewModel.editNickname(tempNickname)
-                        // 성공 시에만 화면 닫기
-                        await MainActor.run {
-                            dismiss()
-                        }
-                    } catch {
-                        await MainActor.run {
-                            viewModel.toastMessage = "닉네임 변경에 실패했습니다"
-                            viewModel.showToast = true
-
-                            Task {
-                                try? await Task.sleep(for: .seconds(1.0))
-                                await MainActor.run {
-                                    viewModel.showToast = false
+                Button {
+                    Task {
+                        do {
+                            try await viewModel.editNickname(tempNickname)
+                            // 성공 시에만 화면 닫기
+                            await MainActor.run { dismiss() }
+                        } catch {
+                            await MainActor.run {
+                                viewModel.toastMessage = "닉네임 변경에 실패했습니다"
+                                viewModel.showToast = true
+                                Task {
+                                    try? await Task.sleep(for: .seconds(1.0))
+                                    await MainActor.run {
+                                        viewModel.showToast = false
+                                    }
                                 }
                             }
                         }
                     }
+                } label: {
+                    Text("저장")
+                        .font(.pretendard(size: 16, type: .semiBold))
+                        .foregroundColor(.grey900)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 54)
+                        .background(isNicknameValid ? Color.buttonYellow : Color.grey700)
+                        .cornerRadius(16)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 10)
                 }
+                .disabled(!isNicknameValid)
             }
-            .font(.pretendard(size: 16, type: .semiBold))
-            .foregroundColor(.grey900)
-            .frame(maxWidth: .infinity)
-            .frame(height: 54)
-            .background(isNicknameValid ? Color.buttonYellow : Color.grey700)
-            .cornerRadius(16)
-            .padding(.horizontal, 16)
-            .padding(.bottom, 10)
-            .disabled(!isNicknameValid)
         }
         .background(Color.grey900)
         .navigationBarHidden(true)
         .toast(message: viewModel.showToast ? viewModel.toastMessage : nil, bottomPadding: 20)
     }
-
 }
