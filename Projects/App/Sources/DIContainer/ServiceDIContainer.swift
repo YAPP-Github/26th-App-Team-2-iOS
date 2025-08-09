@@ -49,7 +49,13 @@ public final class ServiceDIContainer: ServiceDIContainerProtocol {
     @MainActor public lazy var oAuthLogoutService: OAuthLogoutServiceProtocol = OAuthLogoutService(
         networkProvider: coreContainer.makeNetworkProvider(hasRequestInterceptor: true),
         tokenStorage: coreContainer.tokenStorage,
-        tokenKeyHolder: coreContainer.tokenKeyHolder
+        tokenKeyHolder: coreContainer.tokenKeyHolder,
+        appGroupStorage: coreContainer.appGroupStorage,
+        appScheduleStorage: coreContainer.appScheduleStorage,
+        breakTimeStorage: coreContainer.breakTimeStorage,
+        cooldownStorage: coreContainer.cooldownStorage,
+        memberStateStorage: coreContainer.memberStateStorage,
+        userDefaultsUserStorage: coreContainer.userStorage
     )
 
     @MainActor public lazy var appleAuthCodeService: AppleAuthCodeProtocol = AppleAuthCodeService()
@@ -57,8 +63,14 @@ public final class ServiceDIContainer: ServiceDIContainerProtocol {
     @MainActor public lazy var userProfileService: UserProfileProtocol = UserProfileService(
         networkProvider: coreContainer.makeNetworkProvider(hasRequestInterceptor: true),
         onboardingState: onboardingStateService,
-        userStorage: coreContainer.userStorage,
-        tokenStorage: coreContainer.tokenStorage
+        tokenStorage: coreContainer.tokenStorage,
+        tokenKeyHolder: coreContainer.tokenKeyHolder,
+        appGroupStorage: coreContainer.appGroupStorage,
+        appScheduleStorage: coreContainer.appScheduleStorage,
+        breakTimeStorage: coreContainer.breakTimeStorage,
+        cooldownStorage: coreContainer.cooldownStorage,
+        memberStateStorage: coreContainer.memberStateStorage,
+        userDefaultsUserStorage: coreContainer.userStorage
     )
 
     @MainActor public lazy var appGroupService: AppGroupProtocol = AppGroupService(appGroupStorage: coreContainer.appGroupStorage)

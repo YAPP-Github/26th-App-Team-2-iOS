@@ -84,11 +84,18 @@ public final class OnboardingDIContainer: DIContainerProtocol {
     
     public lazy var appleAuthCodeService: AppleAuthCodeProtocol = AppleAuthCodeService()
     
+    @MainActor
     public lazy var userProfileService: UserProfileProtocol = UserProfileService(
         networkProvider: networkProvider,
         onboardingState: onboardingStateService,
-        userStorage: userStorage,
-        tokenStorage: tokenStorage
+        tokenStorage: tokenStorage,
+        tokenKeyHolder: tokenKeyHolder,
+        appGroupStorage: AppGroupStorage(),
+        appScheduleStorage: AppScheduleStorage(),
+        breakTimeStorage: BreakTimeStorage()    ,
+        cooldownStorage: CooldownStorage(),
+        memberStateStorage: memberStateStorage,
+        userDefaultsUserStorage: userStorage
     )
     
     // MARK: -- Domain UseCase
@@ -102,10 +109,12 @@ public final class OnboardingDIContainer: DIContainerProtocol {
         onboardingState: onboardingStateService
     )
     
+    @MainActor
     public lazy var userSetNicknameUseCase: UserSetNicknameUseCase = UserSetNicknameUseCase(
         userProfileService: userProfileService
     )
     
+    @MainActor
     public lazy var logInCancelUseCase: LogInCancelUseCase = LogInCancelUseCase(userProfileService: userProfileService)
     
     public lazy var appleLogInUseCase: AppleLogInUseCase = AppleLogInUseCase(

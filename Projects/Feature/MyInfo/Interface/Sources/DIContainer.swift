@@ -55,6 +55,9 @@ public final class MyInfoDIContainer: DIContainerProtocol {
         ),
         urlComponentConfig: .default
     )
+    
+    @MainActor
+    public lazy var appGroupStorage: AppGroupStorageProtocol? = AppGroupStorage()
 
     // MARK: -- Domain Services
 
@@ -62,35 +65,50 @@ public final class MyInfoDIContainer: DIContainerProtocol {
         memberStateStorage: memberStateStorage
     )
 
-    public lazy var oAuthLogoutService: OAuthLogoutServiceProtocol = OAuthLogoutService(
+    @MainActor public lazy var oAuthLogoutService: OAuthLogoutServiceProtocol = OAuthLogoutService(
         networkProvider: networkProvider,
         tokenStorage: tokenStorage,
-        tokenKeyHolder: tokenKeyHolder
+        tokenKeyHolder: tokenKeyHolder,
+        appGroupStorage: appGroupStorage,
+        appScheduleStorage: AppScheduleStorage(),
+        breakTimeStorage: BreakTimeStorage(),
+        cooldownStorage: CooldownStorage(),
+        memberStateStorage: memberStateStorage,
+        userDefaultsUserStorage: UserDefaultsUserStorage()
     )
 
-    public lazy var userProfileService: UserProfileProtocol = UserProfileService(
+    @MainActor  public lazy var userProfileService: UserProfileProtocol = UserProfileService(
         networkProvider: networkProvider,
         onboardingState: onboardingStateService,
-        userStorage: userStorage,
-        tokenStorage: tokenStorage
+        tokenStorage: tokenStorage,
+        tokenKeyHolder: tokenKeyHolder,
+        appGroupStorage: appGroupStorage,
+        appScheduleStorage: AppScheduleStorage(),
+        breakTimeStorage: BreakTimeStorage(),
+        cooldownStorage: CooldownStorage(),
+        memberStateStorage: memberStateStorage,
+        userDefaultsUserStorage: UserDefaultsUserStorage()
     )
     
+    
+    @MainActor
+    public lazy var appGroupService: AppGroupProtocol = AppGroupService(appGroupStorage: appGroupStorage)
+    
     // MARK: -- Domain UseCase
-    public lazy var userSetNicknameUseCase: UserSetNicknameUseCase = UserSetNicknameUseCase(
+    @MainActor public lazy var userSetNicknameUseCase: UserSetNicknameUseCase = UserSetNicknameUseCase(
         userProfileService: userProfileService
     )
 
-    public lazy var fetchUserNicknameUseCase: FetchUserNicknameUseCaseProtocol = FetchUserNicknameUseCase(
+    @MainActor public lazy var fetchUserNicknameUseCase: FetchUserNicknameUseCaseProtocol = FetchUserNicknameUseCase(
         userProfileService: userProfileService
     )
 
-    public lazy var deleteUserUseCase: DeleteUserUseCaseProtocol = DeleteUserUseCase(
+    @MainActor public lazy var deleteUserUseCase: DeleteUserUseCaseProtocol = DeleteUserUseCase(
         userProfileService: userProfileService
     )
 
-    public lazy var oAuthLogoutUseCase: OAuthLogoutUseCaseProtocol = OAuthLogoutUseCase(
-        oAuthService: oAuthLogoutService
-    )
+    @MainActor
+    public lazy var oAuthLogoutUseCase: OAuthLogoutUseCaseProtocol = OAuthLogoutUseCase(oAuthService: oAuthLogoutService)
 
 }
 

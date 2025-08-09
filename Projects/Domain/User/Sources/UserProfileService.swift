@@ -22,12 +22,12 @@ extension UserProfileService: @retroactive UserProfileProtocol {
             throw MemberStateError.unknownType
         }
         
-        userStorage.saveNickname(userMemberInfoResponse.data.nickname)
+        userDefaultsUserStorage.saveNickname(userMemberInfoResponse.data.nickname)
         onboardingState.setMemberState(memberStateType)
     }
     
     public func getUserNickname() async throws -> String {
-        if let nickname = self.userStorage.getNickname() { return nickname }
+        if let nickname = self.userDefaultsUserStorage.getNickname() { return nickname }
         
         let memberInfoEndPoint = BrakeRouter.MemberEndPoint<BrakeResponse<MemberInfoResponse>>.getInfo
         let userMemberInfoResponse: BrakeResponse<MemberInfoResponse> = try await networkProvider.request(memberInfoEndPoint)
@@ -42,19 +42,18 @@ extension UserProfileService: @retroactive UserProfileProtocol {
         }
         
         
-        self.userStorage.saveNickname(nickname)
+        self.userDefaultsUserStorage.saveNickname(nickname)
         self.onboardingState.setMemberState(memberStateType)
         
         return nickname
     }
     
     public func deleteUser() async throws {
-        let deleteEndPoint = BrakeRouter.MemberEndPoint<BrakeResponse<EmptyData>>.delete
-        let _: BrakeResponse<EmptyData> = try await networkProvider.request(deleteEndPoint)
+        let deleteEndPoint = BrakeRouter.MemberEndPoint<EmptyData>.delete
+        let _: EmptyData = try await networkProvider.request(deleteEndPoint)
         
-        // 회원탈퇴 성공 시 로컬 데이터 정리
-        userStorage.deleteNickname()
-        try await tokenStorage.deleteAllTokens()
+
+        try await self.localStorageReset()
     }
     
 }

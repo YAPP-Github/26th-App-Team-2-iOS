@@ -11,9 +11,8 @@ import FamilyControls
 import CoreLocalStorageInterface
 
 /// SwiftData ModelContext는 MainActor에서만 동작
-extension AppGroupStorage: @retroactive AppGroupStorageProtocol { }
-
-extension AppGroupStorageProtocol {
+@MainActor extension AppGroupStorage: @retroactive AppGroupStorageProtocol {
+    
     public func getAllAppGroupEntities() async throws -> [AppGroupEntity] {
         let descriptor = FetchDescriptor<AppGroupEntity>()
         do {
@@ -92,4 +91,18 @@ extension AppGroupStorageProtocol {
         }
         // 존재하지 않는 엔티티의 경우 조용히 무시 (에러를 던지지 않음)
     }
+    
+    public func deleteAllAppGroupEntities() async throws {
+        let descriptor = FetchDescriptor<AppGroupEntity>()
+        do {
+            let entities = try context.fetch(descriptor)
+            for entity in entities {
+                context.delete(entity)
+            }
+            try context.save()
+        } catch {
+            throw AppGroupStorageError.deleteFailed
+        }
+    }
 }
+

@@ -33,7 +33,6 @@ public struct MyInfoSettingView: View {
                 .ignoresSafeArea()
             }
             .onAppear {
-                print("세팅 온 어피어")
                 myInfoSettingViewModel.onAppear()
             }
             .background(Color.grey900)
@@ -170,15 +169,12 @@ public struct MyInfoSettingView: View {
         }
         .padding(.horizontal, 20)
         .onReceive(myInfoSettingViewModel.feedbackSubject) { action in
-            print("myInfoSettingViewModel.feedbackSubject action")
             myInfoSettingViewModel.handleMenuTap(action: action)
         }
         .onReceive(myInfoSettingViewModel.legalSubject) { action in
-            print("myInfoSettingViewModel.legalSubject action")
             myInfoSettingViewModel.handleMenuTap(action: action)
         }
         .onReceive(myInfoSettingViewModel.accountSubject) { action in
-            print("myInfoSettingViewModel.accountSubject action")
             myInfoSettingViewModel.handleMenuTap(action: action)
         }
     }

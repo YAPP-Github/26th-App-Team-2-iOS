@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 public protocol AppGroupStorageProtocol {
-    var context: ModelContext { get }
+//    var context: ModelContext { get }
     func getAllAppGroupEntities() async throws -> [AppGroupEntity]
     func getAppGroupEntity(groupID: Int) async throws -> AppGroupEntity
     
@@ -17,6 +17,7 @@ public protocol AppGroupStorageProtocol {
     func updateAppGroupEntity(_ appGroup: AppGroupEntity) async throws
     func upsertAppGroupEntity(_ appGroup: AppGroupEntity) async throws
     func deleteAppGroupEntity(groupID: Int) async throws
+    func deleteAllAppGroupEntities() async throws
 }
 
 
