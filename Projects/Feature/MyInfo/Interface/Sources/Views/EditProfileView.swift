@@ -48,7 +48,7 @@ public struct EditProfileView: View {
                                 .fill(Color.grey850)
                                 .frame(width: 100, height: 100)
                             
-                            Image.iconProfile
+                           Image.iconProfileEdit
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 86, height: 82)

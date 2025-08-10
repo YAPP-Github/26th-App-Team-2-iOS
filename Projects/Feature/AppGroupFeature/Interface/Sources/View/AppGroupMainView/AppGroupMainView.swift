@@ -32,15 +32,20 @@ public struct AppGroupMainView: View {
                         AppGroupMainGroupListView()
                     }
                 }
-                .alert(isPresented: $viewModel.sessionExitAlertPresent, content: {
-                    SessionExitAlertView {
-                        viewModel.sessionExitAlertPresent = false
-                    } exitAction: {
+                .brakePopUp(
+                    isPresented: $viewModel.sessionExitAlertPresent,
+                    title: "앱 사용을 종료할까요?",
+                    message: "예정보다 일찍 마무리하셨네요. 멋진 선택이에요!",
+                    icon: Image.iconConfetti,
+                    primaryButtonTitle: "종료하기",
+                    primaryBackgroundColor: Color.buttonYellow,
+                    showCloseButton: true,
+                    primaryAction: {
                         viewModel.sessionExitConfirmBtnTapped()
+                    }, closeAction: {
+                        viewModel.sessionExitAlertPresent = false
                     }
-                }, background: {
-                    Color.black.opacity(0.5)
-                })
+                )
                 .toast(
                     message: appGroupMainViewModel.toastMessage,
                     bottomPadding: 60
@@ -106,51 +111,6 @@ public struct AppGroupMainView: View {
         })
         .onAppear() { appGroupMainViewModel.onAppear() }
         .onDisappear() { appGroupMainViewModel.onDisAppear() }
-    }
-}
-
-
-
-
-extension AppGroupMainView {
-    struct SessionExitAlertView: View {
-        let cancelAction: () -> ()
-        let exitAction: () -> ()
-        var body: some View {
-            VStack(spacing: 0) {
-                HStack {
-                    Spacer()
-                    Button {
-                        cancelAction()
-                    } label: {
-                        Image.iconCancel
-                    }
-                }
-                .padding(.bottom, 7)
-                VStack(spacing: 8) {
-                    Image.iconConfetti
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 110)
-                        .padding(.bottom, 2)
-                    Text("앱 사용을 종료할까요?")
-                        .font(.pretendard(size: 22, type: .semiBold))
-                        .foregroundStyle(Color.grey00)
-                    Text("예정보다 일찍 마무리하셨네요.\n멋진 선택이에요!")
-                        .font(.pretendard(size: 16, type: .medium))
-                        .foregroundStyle(Color.grey200)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.bottom, 42)
-                LargeButtonView(buttonType: .confirm, title: "종료하기", isActive: true) {
-                    exitAction()
-                }
-            }
-            .padding(16)
-            .background(Color.grey850)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
-            .padding(.horizontal, 28)
-        }
     }
 }
 
