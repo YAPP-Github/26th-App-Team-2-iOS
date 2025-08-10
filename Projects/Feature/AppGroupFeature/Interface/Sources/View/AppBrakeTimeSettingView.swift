@@ -46,7 +46,7 @@ public struct AppBrakeTimeSettingView: View {
                     }
                     .frame(height: 60)
                     
-                    dragView
+                    timeSelectionView
 
                     VStack(alignment: .center, spacing: 10) {
                         Text(viewModel.getLowerNearNumber())
@@ -109,7 +109,7 @@ public struct AppBrakeTimeSettingView: View {
 
 fileprivate extension AppBrakeTimeSettingView {
     
-    @ViewBuilder var dragView: some View {
+    @ViewBuilder var timeSelectionView: some View {
         ZStack {
             // 배경
             RoundedRectangle(cornerRadius: 16)
