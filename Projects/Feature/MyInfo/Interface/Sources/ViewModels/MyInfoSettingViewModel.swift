@@ -24,8 +24,6 @@ public final class MyInfoSettingViewModel {
     
     public var showWithdrawalAlert = false
     public var showLogoutAlert = false
-    
-    public var selectedTab: TabItemType = .report
 
     public var showEditProfile = false
     
@@ -103,7 +101,10 @@ public final class MyInfoSettingViewModel {
     public func editNickname(_ newNickname: String) async throws {
         try await userSetNicknameUseCase.execute(nickname: newNickname)
         // 성공 시 닉네임 업데이트
-        self.nickname = newNickname
+        await MainActor.run { [weak self] in
+            guard let self else { return }
+            self.nickname = newNickname
+        }
     }
 
     public func webCompletedButtonTapped() {
@@ -149,7 +150,6 @@ public final class MyInfoSettingViewModel {
             } catch {
                 toastMessage = "닉네임을 불러오는데 실패했습니다"
                 showToast = true
-            
                 try? await Task.sleep(for: .seconds(1.0))
                 showToast = false
             }

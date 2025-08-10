@@ -8,6 +8,7 @@
 import Foundation
 
 public enum AppGroupStorageError: LocalizedError {
+    case initFailed
     case entityNotFound
     case saveFailed
     case updateFailed
@@ -17,6 +18,7 @@ public enum AppGroupStorageError: LocalizedError {
     
     public var errorDescription: String? {
         switch self {
+        case .initFailed: return "AppGroupStorage 생성을 실패했습니다"
         case .entityNotFound:
             return "엔티티를 찾을 수 없습니다."
         case .saveFailed:

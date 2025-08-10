@@ -6,17 +6,20 @@
 //
 
 import DomainOAuthInterface
+import DomainUserInterface
+import DomainSharedInterface
 
 public struct OAuthLogoutUseCase: OAuthLogoutUseCaseProtocol {
 
     private let oAuthService: OAuthLogoutServiceProtocol
 
-    public init(oAuthService: OAuthLogoutServiceProtocol) {
+    public init(
+        oAuthService: OAuthLogoutServiceProtocol
+    ) {
         self.oAuthService = oAuthService
     }
 
     public func execute() async throws {
         try await oAuthService.logout()
     }
-
 }

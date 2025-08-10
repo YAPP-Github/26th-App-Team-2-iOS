@@ -21,6 +21,7 @@ public protocol CoreDIContainerProtocol {
     var userStorage: UserStorageProtocol { get }
     var appGroupStorage: AppGroupStorageProtocol? { get }
     var breakTimeManager: BreakTimeProtocol { get }
+    var breakTimeStorage: BreakTimeStorageProtocol { get }
     var appScheduleStorage: AppScheduleStorageProtocol { get }
     var cooldownStorage: CooldownStorageProtocol { get }
     var blockScheduleManger: BlockScheduleProtocol { get }
@@ -28,6 +29,8 @@ public protocol CoreDIContainerProtocol {
 }
 
 public final class CoreDIContainer: @preconcurrency CoreDIContainerProtocol {
+    
+    
 
     public init() {}
 
@@ -57,4 +60,5 @@ public final class CoreDIContainer: @preconcurrency CoreDIContainerProtocol {
     @MainActor public lazy var cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     @MainActor public lazy var blockScheduleManger: BlockScheduleProtocol = BlockScheduleManager()
     @MainActor public lazy var managedSettingsManager: ManagedSettingsStoreProtocol = ManagedSettingsStoreManager()
+    @MainActor public lazy var breakTimeStorage: BreakTimeStorageProtocol = BreakTimeStorage()
 }

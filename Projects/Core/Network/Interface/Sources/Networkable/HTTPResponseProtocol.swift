@@ -7,7 +7,9 @@
 
 import Foundation
 
-public struct EmptyData: Decodable, Equatable { }
+public struct EmptyData: Decodable, Equatable {
+    public init() { }
+}
 
 public protocol HTTPResponseProtocol {
     associatedtype Item: Decodable

@@ -34,6 +34,11 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
             
             try response.validateResponse()
             
+            // EmptyData 타입인 경우 특별 처리
+            if Item.self == EmptyData.self {
+                return EmptyData() as! Item
+            }
+            
             guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {
                 throw NetworkError.decoding
             }

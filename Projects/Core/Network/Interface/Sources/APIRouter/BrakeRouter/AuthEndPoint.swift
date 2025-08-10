@@ -14,7 +14,7 @@ public extension BrakeRouter {
         
         case refresh(AuthRefreshRequest)
         case logIn(AuthLogInRequest)
-        case logout(AuthLogoutRequest)
+        case logout
 
         public var path: String {
             switch self {
@@ -43,7 +43,7 @@ public extension BrakeRouter {
             switch self {
             case .refresh(let requestDTO): requestDTO
             case .logIn(let requestDTO): requestDTO
-            case .logout(let requestDTO): requestDTO
+            case .logout: nil
             }
         }
         

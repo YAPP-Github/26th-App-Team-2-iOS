@@ -18,20 +18,15 @@ public struct AccountSectionView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 0) {
-            menuItem(title: AccountSection.logout.title, showChevron: true) {
+        VStack(spacing: 2) {
+            MyInfoMainSettingCell(title: AccountSection.logout.title, showChevron: true) {
                 accountSubject.send(.logout)
             }
             
-            Divider()
-                .frame(height: 2)
-                .background(Color.grey800)
-            
-            menuItem(title: AccountSection.withdraw.title, showChevron: true) {
+            MyInfoMainSettingCell(title: AccountSection.withdraw.title, showChevron: true) {
                 accountSubject.send(.withdraw)
             }
         }
-        .background(Color.grey850)
         .cornerRadius(16)
     }
     

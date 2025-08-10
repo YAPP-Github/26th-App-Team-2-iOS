@@ -19,7 +19,6 @@ struct MainAppView: View {
     var body: some View {
         ZStack {
             Color.grey900.ignoresSafeArea()
-            
             switch startUpViewModel.userLogInState {
             case .unknown:
                 EmptyView()
@@ -36,8 +35,7 @@ struct MainAppView: View {
                 OnboardingView()
                     .environment(startUpViewModel)
             case .brakeAvailable:
-                MainTabView()
-                    .environment(startUpViewModel)
+                MainTabView().environment(startUpViewModel)
             case .errorOccured:
                 EmptyView()
             }

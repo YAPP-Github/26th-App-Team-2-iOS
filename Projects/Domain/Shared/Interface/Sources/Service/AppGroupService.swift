@@ -18,6 +18,7 @@ public protocol AppGroupProtocol {
         activitySelection: FamilyActivitySelection
     ) async throws -> AppGroup
     func deleteAppGroup(groupID: Int) async throws
+    func deleteAllAppGroup() async throws
 }
 
 enum AppGroupServiceError: Error {
@@ -25,6 +26,8 @@ enum AppGroupServiceError: Error {
 }
 
 public final class AppGroupService: AppGroupProtocol {
+    
+    
     
     private let appGroupStorage: AppGroupStorageProtocol?
     
@@ -76,5 +79,11 @@ public final class AppGroupService: AppGroupProtocol {
             throw AppGroupServiceError.storageNotExist
         }
         try await appGroupStorage.deleteAppGroupEntity(groupID: groupID)
+    }
+    public func deleteAllAppGroup() async throws {
+        guard let appGroupStorage else {
+            throw AppGroupServiceError.storageNotExist
+        }
+        try await appGroupStorage.deleteAllAppGroupEntities()
     }
 }
