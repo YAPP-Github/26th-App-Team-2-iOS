@@ -50,16 +50,13 @@ public final class OAuthLogoutService: OAuthLogoutServiceProtocol, ResetLocalSto
         let accessTokenKey: String = try self.tokenKeyHolder.fetchAccessTokenKey()
         let accessToken: AccessToken? = try await tokenStorage.read(key: accessTokenKey)
 
-        guard let accessToken = accessToken else {
+        guard accessToken != nil else {
             throw AuthError.invalidToken
         }
 
         let endPoint: BrakeRouter.AuthEndPoint<EmptyData> = BrakeRouter.AuthEndPoint<EmptyData>.logout
-        do {
-            let _: EmptyData = try await networkProvider.request(endPoint)
-        } catch {
-            fatalError("에러 던지기: \(error)")
-        }
+        let _: EmptyData = try await networkProvider.request(endPoint)
+        
         try await localStorageReset()
     }
 }

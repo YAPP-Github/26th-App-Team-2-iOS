@@ -36,7 +36,6 @@ public final class OnboardingCompletedViewModel {
                     onboardingCompleted()
                 }
             } catch {
-                print("error: \(error.localizedDescription)")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.errorOccuredPresented = true

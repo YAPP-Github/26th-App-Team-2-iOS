@@ -16,18 +16,16 @@ struct MainTabView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
 
     @State private var selectedTab: TabItemType = .dashboard
-//    @State private var isTabBarHidden: Bool = false
 
     var body: some View {
         BrakeTabView(
             selectedTab: $selectedTab
-//            isTabBarHidden: $isTabBarHidden
         ) { selectedTab in
             ZStack {
                 Color.grey900.ignoresSafeArea()
                 switch selectedTab {
                 case .dashboard: AppGroupMainView()
-                case .myInfo: MyInfoSettingView(/*isTabBarHidden: $isTabBarHidden*/)
+                case .myInfo: MyInfoSettingView()
                 }
             }
             

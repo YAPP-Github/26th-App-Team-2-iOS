@@ -12,10 +12,8 @@ import SharedDesignSystem
 public struct MyInfoSettingView: View {
 
     @Environment(MyInfoSettingViewModel.self) private var myInfoSettingViewModel
-//    @Binding private var isTabBarHidden: Bool
 
-    public init(/*isTabBarHidden: Binding<Bool>*/) {
-//        self._isTabBarHidden = isTabBarHidden
+    public init() {
     }
 
     public var body: some View {
@@ -133,9 +131,6 @@ public struct MyInfoSettingView: View {
             Text(viewModel.nickname)
                 .font(.pretendard(size: 22, type: .semiBold))
                 .foregroundColor(.grey00)
-                .onChange(of: myInfoSettingViewModel.nickname) { oldValue, newValue in
-                    print("nickname: \(newValue)")
-                }
 
             Spacer()
 

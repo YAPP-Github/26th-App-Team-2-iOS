@@ -36,22 +36,7 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
             
             // EmptyData 타입인 경우 특별 처리
             if Item.self == EmptyData.self {
-                // 빈 데이터이거나 유효하지 않은 JSON인 경우 EmptyData로 처리
-                if data.isEmpty { return EmptyData() as! Item }
-                
-                // JSON 파싱을 시도해보고 실패하면 EmptyData 반환
-                do {
-                    let jsonObject = try JSONSerialization.jsonObject(with: data)
-                    // 빈 객체나 배열인 경우
-                    if let dict = jsonObject as? [String: Any], dict.isEmpty {
-                        return EmptyData() as! Item
-                    }
-                    if let array = jsonObject as? [Any], array.isEmpty {
-                        return EmptyData() as! Item
-                    }
-                } catch {
-                    return EmptyData() as! Item
-                }
+                return EmptyData() as! Item
             }
             
             guard let decodedResponse = try? JSONDecoder().decode(Item.self, from: data) else {

@@ -10,16 +10,13 @@ import SwiftUI
 public struct BrakeTabView<Content: View> : View {
     @Binding private var selectedTab: TabItemType
     @State private var tabBarInsetHeight: CGFloat = 0
-//    @Binding private var isTabBarHidden: Bool
     private let content: (TabItemType) -> Content
 
     public init(
         selectedTab: Binding<TabItemType>,
-//        isTabBarHidden: Binding<Bool>,
         content: @escaping (TabItemType) -> Content
     ) {
         self._selectedTab = selectedTab
-//        self._isTabBarHidden = isTabBarHidden
         self.content = content
     }
     
@@ -31,10 +28,8 @@ public struct BrakeTabView<Content: View> : View {
                     .onAppear { tabBarInsetHeight = geometry.safeAreaInsets.bottom }
             }
             .safeAreaInset(edge: .bottom) {
-//                if isTabBarHidden == false {
                     BrakeTabBarView(selectedTabBarItem: $selectedTab)
                         .padding(.bottom, 16)
-//                }
             }
         }
     }

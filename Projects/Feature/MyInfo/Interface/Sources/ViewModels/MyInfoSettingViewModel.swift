@@ -103,7 +103,6 @@ public final class MyInfoSettingViewModel {
         // 성공 시 닉네임 업데이트
         await MainActor.run { [weak self] in
             guard let self else { return }
-            print("newNickname: \(newNickname)")
             self.nickname = newNickname
         }
     }
