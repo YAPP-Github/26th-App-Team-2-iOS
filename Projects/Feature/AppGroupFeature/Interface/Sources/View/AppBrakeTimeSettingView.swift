@@ -57,6 +57,18 @@ public struct AppBrakeTimeSettingView: View {
                             .foregroundColor(.grey600)
                     }
                 }
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture()
+                        .updating($dragState) { value, state, _ in
+                            state = value.translation
+                            handleDragUpdate(value: value)
+                        }
+                        .onEnded { value in
+                            handleSwipe(value: value)
+                        }
+                )
                 Spacer()
 
                 // 완료 버튼
@@ -129,16 +141,6 @@ fileprivate extension AppBrakeTimeSettingView {
                     .offset(y: -2)
             }
         }
-        .gesture(
-            DragGesture()
-                .updating($dragState) { value, state, _ in
-                    state = value.translation
-                    handleDragUpdate(value: value)
-                }
-                .onEnded { value in
-                    handleSwipe(value: value)
-                }
-        )
     }
     
     private func handleDragUpdate(value: DragGesture.Value) {
