@@ -16,7 +16,8 @@ struct MyInfoExampleApp: App {
     
     @Environment(\.diContainer) var diContainer
     @State private var selectedTab: TabItemType = .myInfo
-    
+    @State var isTabBarHidden: Bool = false
+
     init() { }
     
     var body: some Scene {
@@ -43,7 +44,7 @@ struct MyInfoExampleApp: App {
                     case .dashboard:
                         Color.clear // 대시보드 탭 컨텐츠
                     case .myInfo:
-                        MyInfoSettingView()
+                        MyInfoSettingView(isTabBarHidden: $isTabBarHidden)
                             .environment(
                                 MyInfoSettingViewModel(
                                     fetchUserNicknameUseCase: diContainer.fetchUserNicknameUseCase,

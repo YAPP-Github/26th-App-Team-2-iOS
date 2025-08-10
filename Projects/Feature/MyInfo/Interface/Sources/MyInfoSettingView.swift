@@ -46,7 +46,7 @@ public struct MyInfoSettingView: View {
                 }),
                 title: "정말 탈퇴하시겠어요?",
                 message: "탈퇴하면 모든 계정 정보와 이용 기록이 삭제되며, 복구할 수 없습니다.",
-                icon: Image.iconConfettiThunder,
+                icon: Image.iconConfetti,
                 alertType: .doubleButton,
                 primaryButtonTitle: "탈퇴",
                 secondaryButtonTitle: "취소",
@@ -123,9 +123,8 @@ public struct MyInfoSettingView: View {
                     .fill(Color.grey850)
                     .frame(width: 60, height: 60)
 
-                Image.iconProfile
-                    .frame(width: 50, height: 47)
-                    .offset(y: 9)
+                Image.iconProfileMyInfo
+                    .frame(width: 42, height: 42)
             }
             .mask(Circle())
             Text(viewModel.nickname)

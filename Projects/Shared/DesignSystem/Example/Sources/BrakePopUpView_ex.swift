@@ -147,17 +147,17 @@ struct BrakePopUpView_ex: View {
             isPresented: $showWithdrawalAlert,
             title: "정말 탈퇴하시겠어요?",
             message: "탈퇴하면 모든 계정 정보와 이용 기록이 삭제되며, 복구할 수 없습니다.",
-            icon: Image.iconConfettiThunder,
+            icon: Image.iconConfetti,
             alertType: .doubleButton,
             primaryButtonTitle: "탈퇴",
             secondaryButtonTitle: "취소",
-            primaryAction: {
+            showCloseButton: true, primaryAction: {
                 showWithdrawalAlert = false
                 print("탈퇴 완료")
             }, secondaryAction: {
                 showWithdrawalAlert = false
                 print("탈퇴 취소")
-            }, showCloseButton: true,
+            },
             closeAction: {
                 showWithdrawalAlert = false
                 print("X 버튼으로 탈퇴 취소")

@@ -38,13 +38,14 @@ public extension Image {
     static let iconTrash: Image = SharedDesignSystemAsset.Images.iconTrash.swiftUIImage
     static let iconUser: Image = SharedDesignSystemAsset.Images.iconUser.swiftUIImage
     static let iconConfetti: Image = SharedDesignSystemAsset.Images.iconConfetti.swiftUIImage
-    static let iconConfettiThunder: Image = SharedDesignSystemAsset.Images.iconConfettiThunder.swiftUIImage
+    static let iconConfetti2: Image = SharedDesignSystemAsset.Images.iconConfetti2.swiftUIImage
     static let iconClap: Image = SharedDesignSystemAsset.Images.iconClap.swiftUIImage
     static let iconKakao: Image = SharedDesignSystemAsset.Images.iconKakao.swiftUIImage
     static let iconApple: Image = SharedDesignSystemAsset.Images.iconApple.swiftUIImage
     static let illustBlock: Image = SharedDesignSystemAsset.Images.illustBlock.swiftUIImage
     static let iconPolygon: Image = SharedDesignSystemAsset.Images.iconPolygon.swiftUIImage
-    static let iconProfile: Image = SharedDesignSystemAsset.Images.iconProfile.swiftUIImage
+    static let iconProfileEdit: Image = SharedDesignSystemAsset.Images.iconProfileEdit.swiftUIImage
+    static let iconProfileMyInfo: Image = SharedDesignSystemAsset.Images.iconProfileMyInfo.swiftUIImage
     static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
     static let iconGroupTimer: Image = SharedDesignSystemAsset.Images.iconGroupTimer.swiftUIImage
     static let iconGroupCoolDown: Image = SharedDesignSystemAsset.Images.iconGroupCooldown.swiftUIImage

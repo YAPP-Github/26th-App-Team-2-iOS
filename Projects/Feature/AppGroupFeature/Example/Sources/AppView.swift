@@ -15,9 +15,11 @@ struct FeatureAppGroupFeatureApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @Environment(\.appGroupDIContainer) var diContainer
     @State private var selectedTab: TabItemType = .dashboard
+    @State var isTabBarHidden: Bool = false
+
     var body: some Scene {
         WindowGroup {
-            BrakeTabView(selectedTab: $selectedTab) { selectedTab in
+            BrakeTabView(selectedTab: $selectedTab, isTabBarHidden: $isTabBarHidden) { selectedTab in
                 ZStack {
                     switch selectedTab {
                     case .report:
