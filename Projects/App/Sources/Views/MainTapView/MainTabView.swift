@@ -11,10 +11,14 @@ import FeatureAppGroupFeatureInterface
 import FeatureMyInfoInterface
 import FeatureOnboardingInterface
 
+
 struct MainTabView: View {
     @Environment(\.appDIContainer) private var appDIContainer
     @Environment(StartUpViewModel.self) var startUpViewModel
-
+    @Environment(MainAppViewModel.self) var mainAppViewModel
+    @Environment(\.scenePhase) var scenePhase
+    @Environment(\.dismiss) var dismiss
+    
     @State private var selectedTab: TabItemType = .dashboard
 
     var body: some View {
@@ -29,7 +33,14 @@ struct MainTabView: View {
                 }
             }
             
-        }.environment(
+        }
+        .onAppear() { mainAppViewModel.onAppear() }
+        .onChange(of: scenePhase, { oldValue, newValue in
+            if newValue == .active {
+                mainAppViewModel.sceneActive()
+            }
+        })
+        .environment(
             AppGroupMainViewModel(
                 fetchAppGroupUseCase: appDIContainer.useCaseContainer.fetchAppGroupUseCase,
                 requestScreenTimeAuthUseCase: appDIContainer.useCaseContainer.requestScreenTimeAuthUseCase,
@@ -53,6 +64,15 @@ struct MainTabView: View {
                 }
             )
         )
+        .mainAuthModifier().environment(mainAppViewModel)
     }
 }
+
+fileprivate extension View {
+    func mainAuthModifier() -> some View {
+        @Environment(MainAppViewModel.self) var mainAppViewModel
+        return self.modifier(MainAuthModifier())
+    }
+}
+
 

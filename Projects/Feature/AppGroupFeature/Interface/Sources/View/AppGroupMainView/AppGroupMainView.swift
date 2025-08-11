@@ -51,7 +51,7 @@ public struct AppGroupMainView: View {
                     bottomPadding: 60
                 )
                 .fullScreenCover(
-                    isPresented:  $viewModel.appBrakeTimeSettingPresent,
+                    isPresented: $viewModel.appBrakeTimeSettingPresent,
                     content: {
                         AppBrakeTimeSettingView()
                             .environment(
@@ -79,26 +79,6 @@ public struct AppGroupMainView: View {
             }
             
         }
-        .brakePopUp(
-            isPresented: Binding(
-                get: { appGroupMainViewModel.screenTimeAuthAlertPresent } ,
-                set: { appGroupMainViewModel.screenTimeAuthAlertPresent = $0 }
-            ),
-            title: appGroupMainViewModel.screenTimeAuthErrorResult?.title ?? "스크린타임 권한 오류",
-            message: appGroupMainViewModel.screenTimeAuthErrorResult?.desc ?? "스크린타임 권한 처리 중 알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-            primaryButtonTitle: appGroupMainViewModel.screenTimeAuthErrorResult?.primaryButtonTitle ?? "확인",
-            primaryAction: {
-                guard let result = appGroupMainViewModel.screenTimeAuthErrorResult else {
-                    appGroupMainViewModel.screenTimeAuthAlertPresent = false
-                    return
-                }
-                switch result {
-                case .denied, .unknownError, .userCancel, .approved, .authenticationMethodUnavailable, .networkError:
-                    appGroupMainViewModel.reAuthButtonTapped()
-                case .restricted, .unavailableDevice: break
-                }
-            }
-        )
         .onChange(of: scenePhase, { oldValue, newValue in
             switch newValue {
             case .inactive: self.appGroupMainViewModel.setScene(.inActive)

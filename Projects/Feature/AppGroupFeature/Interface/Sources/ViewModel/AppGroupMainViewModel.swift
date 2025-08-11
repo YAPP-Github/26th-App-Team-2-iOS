@@ -45,7 +45,6 @@ public final class AppGroupMainViewModel {
     var toastMessage: String? = nil
     
     
-    var screenTimeAuthAlertPresent: Bool = false
     var brakeTimeSettingCompletePresent: Bool = false
     var screenTimeAuthErrorResult: ScreenTimeAuthorizationResult? = nil
     
@@ -142,7 +141,6 @@ public final class AppGroupMainViewModel {
 
     private func sceneActive() {
         self.brakeStatus = self.brakeStatusStorage
-        Task(priority: .background) { await screenTimeAuthRequest() }
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
                let schedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
@@ -202,11 +200,6 @@ public final class AppGroupMainViewModel {
         }
     }
 
-    public func reAuthButtonTapped() {
-        Task {
-            await screenTimeAuthRequest()
-        }
-    }
     
     public func sessionExitButtonTapped() {
         self.sessionExitAlertPresent = true
@@ -342,17 +335,6 @@ public final class AppGroupMainViewModel {
 
 // MARK: - Private Helper Methods
 fileprivate extension AppGroupMainViewModel {
-    func screenTimeAuthRequest() async {
-        let result: ScreenTimeAuthorizationResult = await requestScreenTimeAuthUseCase.execute()
-        await MainActor.run { [weak self] in
-            guard let self else { return }
-            self.screenTimeAuthErrorResult = result
-            switch result {
-            case .approved: screenTimeAuthAlertPresent = false
-            default: screenTimeAuthAlertPresent = true
-            }
-        }
-    }
 
     func toast(message: String) {
         self.toastTask?.cancel()
