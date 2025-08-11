@@ -30,6 +30,7 @@ extension NotificationAuthorizationResult {
 public final class UserNotificationAuthViewModel {
     
     public var notificationAuthFiledPresent: Bool = false
+    public var notificationAuthDeniedPresent: Bool = false
     public var notoficationAuthFailedResult: NotificationAuthorizationResult?
     
     private let requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase
@@ -51,7 +52,10 @@ public final class UserNotificationAuthViewModel {
                 switch result {
                 case .approved:
                     notificationApproved()
-                case .denied, .userRestricted, .unknownError:
+                case .denied:
+                    self.notificationAuthDeniedPresent = true
+                    self.notoficationAuthFailedResult = result
+                case .userRestricted, .unknownError:
                     self.notoficationAuthFailedResult = result
                     self.notificationAuthFiledPresent = true
                 }

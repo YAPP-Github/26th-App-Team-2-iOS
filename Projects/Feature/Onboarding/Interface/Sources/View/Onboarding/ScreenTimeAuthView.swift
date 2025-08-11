@@ -18,6 +18,7 @@ public struct ScreenTimeAuthView: View {
     public init() { }
     
     public var body: some View {
+        @Bindable var viewModel = screenTimeAuthViewModel
         ZStack(alignment: .bottom) {
             Color.grey900.ignoresSafeArea()
             VStack(spacing: 0) {
@@ -43,8 +44,6 @@ public struct ScreenTimeAuthView: View {
                 Spacer()
             }
             
-            
-            
             GeometryReader { proxy in
                 ZStack {
                     Color.clear
@@ -54,7 +53,6 @@ public struct ScreenTimeAuthView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            
             LargeButtonView(
                 buttonType: .confirm,
                 title: "허용하기",
@@ -65,41 +63,26 @@ public struct ScreenTimeAuthView: View {
             .padding(.bottom, 16)
         }
         .toolbar(.hidden, for: .navigationBar)
-        .alert(isPresented: .init(get: {
-            screenTimeAuthViewModel.cancelScreenTimeGrantPresented
-        }, set: {
-            screenTimeAuthViewModel.cancelScreenTimeGrantPresented = $0
-        }), content: {
-            VStack(spacing: 20) {
-                Text("Brake Alert").font(.title)
-                VStack {
-                    Text("여기에 추가적인 콘텐츠를 넣으세요")
-                    Button {
-                        self.screenTimeAuthViewModel.cancelScreenTimeGrantPresented = false
-                    } label: {
-                        Text("Dismiss")
-                    }
-                }
+        .brakePopUp(
+            isPresented: $viewModel.cancelScreenTimeGrantPresented,
+            title: "스크린타임 권한이 필요해요",
+            message: "Brake!의 기능을 사용하기 위해서는\n스크린타임 연동이 필수적이에요.",
+            icon: .iconConfetti,
+            primaryButtonTitle: "확인",
+            primaryBackgroundColor: .brakeYellow,
+            primaryAction: {
+                viewModel.cancelScreenTimeGrantPresented = false
             }
-            .padding(15)
-            .background(.background, in: .rect(cornerRadius: 10))
-            .transition(.blurReplace)
-        }, background: {
-            Rectangle().fill(.primary.opacity(0.35))
-        })
-        .alert(
-            screenTimeAuthViewModel.screenTimeAuthFailedResult?.alertTitle ?? "",
-            isPresented: .init(get: {
-                screenTimeAuthViewModel.screenTimeAuthFailedPresent
-            }, set: {
-                screenTimeAuthViewModel.screenTimeAuthFailedPresent = $0
-            }),
-            presenting: screenTimeAuthViewModel.screenTimeAuthFailedResult,
-            actions: { result in
-                Button("확인", role: .cancel, action: {})
-            },
-            message: { result in
-                Text(result.alertDescription)
+        )
+        .brakePopUp(
+            isPresented: $viewModel.screenTimeAuthFailedPresent,
+            title: viewModel.screenTimeAuthFailedResult?.alertTitle ?? "",
+            message: viewModel.screenTimeAuthFailedResult?.alertDescription ?? "",
+            icon: .iconConfetti,
+            primaryButtonTitle: "확인",
+            primaryBackgroundColor: .brakeYellow,
+            primaryAction: {
+                viewModel.screenTimeAuthFailedPresent = false
             }
         )
     }
