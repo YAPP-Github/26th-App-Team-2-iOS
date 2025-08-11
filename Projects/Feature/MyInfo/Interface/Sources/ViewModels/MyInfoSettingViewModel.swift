@@ -43,17 +43,20 @@ public final class MyInfoSettingViewModel {
     private let userSetNicknameUseCase: UserSetNicknameUseCase
     private let deleteUserUseCase: DeleteUserUseCaseProtocol
     private let oAuthLogoutUseCase: OAuthLogoutUseCaseProtocol
+    private let onLogout: (() -> Void)?
 
     public init(
         fetchUserNicknameUseCase: FetchUserNicknameUseCaseProtocol,
         userSetNicknameUseCase: UserSetNicknameUseCase,
         deleteUserUseCase: DeleteUserUseCaseProtocol,
-        oAuthLogoutUseCase: OAuthLogoutUseCaseProtocol
+        oAuthLogoutUseCase: OAuthLogoutUseCaseProtocol,
+        onLogout: (() -> Void)? = nil
     ) {
         self.fetchUserNicknameUseCase = fetchUserNicknameUseCase
         self.userSetNicknameUseCase = userSetNicknameUseCase
         self.deleteUserUseCase = deleteUserUseCase
         self.oAuthLogoutUseCase = oAuthLogoutUseCase
+        self.onLogout = onLogout
     }
     
     // MARK: - Actions
@@ -111,6 +114,8 @@ public final class MyInfoSettingViewModel {
         Task { @MainActor in
             do {
                 try await oAuthLogoutUseCase.execute()
+                // 로그아웃 성공 시 콜백 호출
+                onLogout?()
             } catch {
                 toastMessage = "로그아웃에 실패했습니다."
                 showToast = true
@@ -125,6 +130,8 @@ public final class MyInfoSettingViewModel {
         Task { @MainActor in
             do {
                 try await deleteUserUseCase.execute()
+                // 탈퇴 성공 시 콜백 호출
+                onLogout?()
             } catch {
                 toastMessage = "회원탈퇴에 실패했습니다."
                 showToast = true

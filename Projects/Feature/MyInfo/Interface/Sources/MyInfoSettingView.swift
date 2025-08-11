@@ -12,8 +12,11 @@ import SharedDesignSystem
 public struct MyInfoSettingView: View {
 
     @Environment(MyInfoSettingViewModel.self) private var myInfoSettingViewModel
+    @Binding private var isTabBarHidden: Bool
 
-    public init() { }
+    public init(isTabBarHidden: Binding<Bool>) {
+        self._isTabBarHidden = isTabBarHidden
+    }
 
     public var body: some View {
         @Bindable var viewModel = myInfoSettingViewModel
@@ -39,15 +42,13 @@ public struct MyInfoSettingView: View {
                 myInfoSettingViewModel.showEditProfile
             }, set: { isPresented in
                 myInfoSettingViewModel.showEditProfile = isPresented
+                isTabBarHidden = isPresented
             })) {
                 EditProfileView(
                     nickname: .init(
-                        get: {
-                            myInfoSettingViewModel.nickname
-                        },
-                        set: { nickname in
-                            myInfoSettingViewModel.nickname = nickname
-                        })
+                        get: { myInfoSettingViewModel.nickname },
+                        set: { myInfoSettingViewModel.nickname = $0 }
+                    )
                 )
                 .environment(myInfoSettingViewModel)
             }

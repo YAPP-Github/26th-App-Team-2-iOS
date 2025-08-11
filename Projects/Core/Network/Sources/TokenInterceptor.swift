@@ -63,8 +63,7 @@ extension TokenInterceptor: @retroactive URLRequestInterceptor {
             
             let accessToken: AccessToken = try jwtDecoder.decode(serverResponseDTO.data.accessToken, as: AccessToken.self)
             let refreshToken: RefreshToken = try jwtDecoder.decode(serverResponseDTO.data.refreshToken, as: RefreshToken.self)
-            
-            
+
             let accessTokenKey = try tokenKeyHolder.fetchAccessTokenKey()
             let refreshTokenKey = try tokenKeyHolder.fetchRefreshTokenKey()
             

@@ -11,16 +11,19 @@ import ManagedSettingsUI
 import UIKit
 import CoreLocalStorageInterface
 import CoreLocalStorage
+import CoreLocalStorageInterface
+import CoreLocalStorage
 import SharedDesignSystem
+import SwiftUICore
 import SwiftUICore
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-    
+
     public override func configuration(shielding application: Application) -> ShieldConfiguration {
         let displayName = application.localizedDisplayName ?? "앱"
-        
+
         return setShieldConfig(displayName)
     }
     
@@ -46,18 +49,18 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         }
         return setShieldConfig(displayName)
     }
-    
+
     // MARK: - App Name Management
-    
+
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        
+
         let status = getBlockingStatus(tokenName)
         let customIcon = getIconImage(by: status)
         let titleLabel = ShieldConfiguration.Label(
             text: status.title,
             color: SharedDesignSystemAsset.Colors.grey100.color
         )
-        
+
         let subtitleLabel = ShieldConfiguration.Label(
             text: status.subtitle,
             color: SharedDesignSystemAsset.Colors.grey300.color
@@ -92,11 +95,11 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         )
         return shieldConfiguration
     }
-    
+
     private func getBlockingStatus(_ tokenName: String) -> BlockingStatus {
         let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
         let validatedStatus: BlockingStatus = validateAndFixStatus(status, tokenName: tokenName)
-        
+
         switch validatedStatus {
         case .blocking:
             return .blocking(tokenName: tokenName)
@@ -109,7 +112,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName, startDate: startDate, endDate: endDate)
         }
     }
-    
+
     /// 상태 검증 및 수정
     private func validateAndFixStatus(_ status: BlockingStatus, tokenName: String) -> BlockingStatus {
         switch status {
@@ -122,10 +125,10 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         default:
             break
         }
-        
+
         return status
     }
-    
+
     private func getIconImage(by status: BlockingStatus) -> UIImage {
         switch status {
         case .blocking:
@@ -144,7 +147,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return UIImage(resource: .illustrationBlock)
         }
     }
-    
+
     /// 세션 종료 후 쿨다운 시작
     private func startCooldownFromSessionEnd() {
         let cooldownMinutes = appScheduleStorage.getExtensionTime()
@@ -152,7 +155,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         let endDate = startDate.addingTimeInterval(TimeInterval(60 * 15))
         cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
-        
+
         // 쿨다운 상태로 변경
         // TODO: GroupName 받는 스토리지 필요
         appScheduleStorage.saveBlockingStatus(
@@ -165,6 +168,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             )
         )
     }
-    
+
 }
 

@@ -23,9 +23,9 @@ public enum ExternalLink: Identifiable {
         case .termsOfService:
             return "https://ahnsh.notion.site/service"
         case .feedback:
-            return "" //TODO: 추후 추가 예정
+            return "https://ahnsh.notion.site/245b76e304028092925dd625cd38ceeb"
         case .contactUs:
-            return "" //TODO: 추후 추가 예정
+            return "https://ahnsh.notion.site/245b76e304028000ade7ec331648fecc"
         case .appVersion:
             return ""
         }

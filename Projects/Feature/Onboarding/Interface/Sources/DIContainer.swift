@@ -40,7 +40,7 @@ public protocol DIContainerProtocol {
 }
 
 // MARK: - Production DI Container
-public final class ProductionDIContainer: DIContainerProtocol {
+public final class OnboardingDIContainer: DIContainerProtocol {
 
     // MARK: -- Core Layer
     // Lazy 프로퍼티로 필요할 때만 생성
@@ -126,7 +126,7 @@ public final class ProductionDIContainer: DIContainerProtocol {
 
 // MARK: - DI Container Environment Key
 private struct DIContainerKey: EnvironmentKey {
-    static let defaultValue: DIContainerProtocol = ProductionDIContainer()
+    static let defaultValue: DIContainerProtocol = OnboardingDIContainer()
 }
 
 extension EnvironmentValues {

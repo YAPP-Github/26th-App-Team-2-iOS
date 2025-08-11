@@ -83,7 +83,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     
     private func secondaryButtonPressedAction(completionHandler: @escaping (ShieldActionResponse) -> Void) {
         let status = appScheduleStorage.getBlockingStatus()
-        
+
         switch status {
         case .blocking:
             completionHandler(.close)
@@ -98,16 +98,16 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     appScheduleStorage.saveExtensionCount(newCount)
                     // 15분 연장 시간 설정 및 저장
                     appScheduleStorage.saveExtensionTime(time)
-                    
+
                     // DeviceActivity로 15분 휴식 시간 설정
                     startExtensionBreakTime(minutes: time)
-                    
+
                     let newStartDate: Date = .now.addingTimeInterval(15 * 60)
                     let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
-                    
+
                     // 연장 프롬프트 상태 업데이트
                     appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount, startDate: newStartDate, endDate: newEndDate))
-                    
+
                     // 차단창 닫기 (15분 동안 앱 사용 가능)
                     completionHandler(.defer)
                 }
@@ -133,23 +133,23 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             completionHandler(.close)
         }
     }
-    
+
     // MARK: - Extension Time Management
-    
+
     /// 15분 연장 시간 시작
     private func startExtensionBreakTime(minutes: Int) {
         do {
             // BreakTimeManager를 통해 15분 휴식 시간 생성
             let breakTimeManager = BreakTimeManager()
             try breakTimeManager.createBreakTime(minutes: minutes)
-            
+
             // 알림 트리거 설정
             appScheduleStorage.saveSelectNotificationTrigger(false)
         } catch {
             // 연장 시간 설정 실패
         }
     }
-    
+
     /// 연장 시간이 모두 사용된 경우 호출
     private func handleExtensionTimeExhausted(groupName: String, cooldownMinutes: Int) {
         let startDate = Date.now
@@ -162,7 +162,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
             endDate: endDate
         )
         appScheduleStorage.saveBlockingStatus(status)
-        
+
         // 쿨다운 시작
         cooldownStorage.saveCooldownGroup(groupName: groupName)
         cooldownStorage.startCooldown(minutes: cooldownMinutes)
