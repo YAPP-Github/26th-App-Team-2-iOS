@@ -62,7 +62,7 @@ public final class UserNotificationAuthViewModel {
             }
         }
     }
-    
+//    
     public func userDeniedCancelTapped() {
         self.notoficationAuthFailedResult = .userRestricted
         self.notificationAuthFiledPresent = true

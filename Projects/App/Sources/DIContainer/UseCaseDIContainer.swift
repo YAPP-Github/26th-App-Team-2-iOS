@@ -15,8 +15,12 @@ public protocol UseCaseDIContainerProtocol {
     var kakaoLogInUseCase: KakaoLogInUseCase { get }
     var logInCancelUseCase: LogInCancelUseCase { get }
     var userSetNicknameUseCase: UserSetNicknameUseCase { get }
+    
     var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase { get }
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
+    var fetchUserNotificationAuthUseCase: FetchUserNotificationAuthUseCase { get }
+    var fetchScreenTimeAuthUseCase: FetchScreenTimeAuthUseCase { get }
+    
     var fetchAppGroupUseCase: FetchAppGroupUseCase { get }
     var upsertAppGroupUseCase: UpsertAppGroupUseCase { get }
     var deleteAppGroupUseCase: DeleteAppGroupUseCase { get }
@@ -38,6 +42,8 @@ public protocol UseCaseDIContainerProtocol {
 }
 
 public final class UseCaseDIContainer: UseCaseDIContainerProtocol {
+    
+    
     
     private let serviceContainer: ServiceDIContainerProtocol
     private let coreContainer: CoreDIContainerProtocol
@@ -74,9 +80,12 @@ public final class UseCaseDIContainer: UseCaseDIContainerProtocol {
         oAuthService: serviceContainer.oAuthLogInService
     )
     
-    @MainActor public lazy var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase = RequestUserNotificationAuthUseCase()
+    @MainActor public private(set) lazy var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase = RequestUserNotificationAuthUseCase()
     
-    @MainActor public lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
+    @MainActor public private(set) lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
+    public private(set) lazy var fetchUserNotificationAuthUseCase: FetchUserNotificationAuthUseCase = .init()
+    
+    public private(set) lazy var fetchScreenTimeAuthUseCase: FetchScreenTimeAuthUseCase = .init()
     
     @MainActor public lazy var fetchAppGroupUseCase: FetchAppGroupUseCase = FetchAppGroupUseCase(
         appGroupService: serviceContainer.appGroupService

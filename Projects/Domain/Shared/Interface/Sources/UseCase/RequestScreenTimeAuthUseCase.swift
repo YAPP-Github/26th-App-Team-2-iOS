@@ -8,7 +8,6 @@
 import Foundation
 import FamilyControls
 
-// MARK: -- Domain 레이어로 내려줘야 함...
 public struct RequestScreenTimeAuthUseCase {
     private let center: AuthorizationCenter = AuthorizationCenter.shared
     
@@ -39,3 +38,5 @@ public struct RequestScreenTimeAuthUseCase {
         return .unknownError
     }
 }
+
+
