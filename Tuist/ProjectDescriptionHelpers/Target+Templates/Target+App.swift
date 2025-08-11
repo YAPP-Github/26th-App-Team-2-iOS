@@ -23,7 +23,7 @@ public extension Target {
             newFactory.product = .app
             newFactory.name = Project.Environment.targetName(deploymentTarget: deploymentTarget)
             newFactory.bundleId = Project.Environment.bundleId(deploymentTarget: deploymentTarget)
-            newFactory.resources = ["Resources/**"]
+            newFactory.resources = ["Resources/**", "Resources/PrivacyInfo.xcprivacy"]
             newFactory.productName = Project.Environment.targetName(deploymentTarget: deploymentTarget)
             newFactory.sources = .sources
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
