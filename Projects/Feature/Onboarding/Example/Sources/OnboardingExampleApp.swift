@@ -19,6 +19,7 @@ struct OnboardingExampleApp: App {
     init() { }
     var body: some Scene {
         WindowGroup {
+            
             StartUpView()
                 .environment(
                     StartUpViewModel(
@@ -29,6 +30,40 @@ struct OnboardingExampleApp: App {
         }
     }
     
+    @ViewBuilder
+    var screenTimeAuth: some View {
+        ScreenTimeAuthView()
+            .environment(
+                StartUpViewModel(
+                    autoLogInUseCase: diContainer.autoLogInUseCase,
+                    onboardingStateUseCase: diContainer.onboardingStateUseCase
+                )
+            )
+            .environment(
+                ScreenTimeAuthViewModel(requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase, screenTimeApproved: {
+                    print("안전하게 처리!!")
+                })
+            )
+    }
+    
+    @ViewBuilder
+    var userNotificationAuth: some View {
+        UserNotificationAuthView()
+            .environment(
+                StartUpViewModel(
+                    autoLogInUseCase: diContainer.autoLogInUseCase,
+                    onboardingStateUseCase: diContainer.onboardingStateUseCase
+                )
+            )
+            .environment(
+                UserNotificationAuthViewModel(
+                    requestUserNotificationAuthUseCase: diContainer.requestUserNotificationAuthUseCase,
+                    notificationApproved: {
+                        print("스크린타임 허용함")
+                    }
+                )
+            )
+    }
 }
 
 struct StartUpView: View {

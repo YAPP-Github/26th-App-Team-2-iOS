@@ -16,6 +16,7 @@ public struct UserNotificationAuthView: View {
     public init() { }
     
     public var body: some View {
+        @Bindable var viewModel = userNotificationAuthViewModel
         ZStack(alignment: .bottom) {
             Color.grey900.ignoresSafeArea()
             VStack(spacing: 0) {
@@ -51,8 +52,6 @@ public struct UserNotificationAuthView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            
-            
             LargeButtonView(
                 buttonType: .confirm,
                 title: "허용하기",
@@ -63,32 +62,32 @@ public struct UserNotificationAuthView: View {
             .padding(.bottom, 16)
         }
         .toolbar(.hidden, for: .navigationBar)
-        .alert(
-            userNotificationAuthViewModel.notoficationAuthFailedResult?.alertTitle ?? "",
-            isPresented: .init(get: {
-                userNotificationAuthViewModel.notificationAuthFiledPresent
-            }, set: {
-                userNotificationAuthViewModel.notificationAuthFiledPresent = $0
-            }),
-            presenting: userNotificationAuthViewModel.notoficationAuthFailedResult,
-            actions: { result in
-                switch result {
-                case .denied:
-                    Button("설정으로 이동") {
-                        if let url = URL(string: UIApplication.openSettingsURLString),
-                           UIApplication.shared.canOpenURL(url) {
-                            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                        }
-                    }
-                    Button("취소", role: .cancel) {
-                    }
-                case .unknownError, .userRestricted, .approved:
-                    Button("확인", role: .cancel) {
-                    }
+        .brakePopUp(
+            isPresented: $viewModel.notificationAuthDeniedPresent,
+            title: userNotificationAuthViewModel.notoficationAuthFailedResult?.alertTitle ?? "",
+            message: "설정에서 알람을 [ 즉시 전달 ]으로 설정해주세요.",
+            icon: .iconConfetti,
+            alertType: .confirmDoubleButton,
+            primaryButtonTitle: "설정으로 이동",
+            secondaryButtonTitle: "취소",
+            primaryAction: {
+                viewModel.notificationAuthDeniedPresent = false
+                if let url = URL(string: UIApplication.openSettingsURLString),
+                   UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
                 }
             },
-            message: { result in
-                Text(result.alertDescription)
+            secondaryAction: {
+                viewModel.notificationAuthDeniedPresent = false
+            }
+        )
+        .brakePopUp(
+            isPresented: $viewModel.notificationAuthFiledPresent,
+            title: viewModel.notoficationAuthFailedResult?.alertTitle ?? "",
+            message: viewModel.notoficationAuthFailedResult?.alertDescription ?? "",
+            primaryButtonTitle: "확인",
+            primaryAction: {
+                viewModel.notificationAuthFiledPresent = false
             }
         )
     }
