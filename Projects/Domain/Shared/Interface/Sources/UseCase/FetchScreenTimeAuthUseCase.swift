@@ -13,7 +13,9 @@ public struct FetchScreenTimeAuthUseCase {
     
     public init() { }
     
-    public func execute() -> ScreenTimeAuthorizationResult {
+    public func execute() async -> ScreenTimeAuthorizationResult {
+        /// 동기 로직 처리시 notDetermined로 바로 떨어지는 엣지케이스 대응
+        try? await Task.sleep(for: .seconds(0.1))
         let status = center.authorizationStatus
         switch status {
         case .notDetermined: return .unknownError
