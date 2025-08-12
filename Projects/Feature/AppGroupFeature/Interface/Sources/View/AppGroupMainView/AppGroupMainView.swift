@@ -96,7 +96,6 @@ public struct AppGroupMainView: View {
 }
 
 
-
 fileprivate extension AppGroupMainView {
     func createUpsertAppGroupViewModel() -> UpsertAppGroupViewModel {
         UpsertAppGroupViewModel(

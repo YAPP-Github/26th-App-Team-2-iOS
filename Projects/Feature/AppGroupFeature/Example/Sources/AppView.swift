@@ -19,15 +19,9 @@ struct FeatureAppGroupFeatureApp: App {
 
     var body: some Scene {
         WindowGroup {
-            BrakeTabView(selectedTab: $selectedTab, isTabBarHidden: $isTabBarHidden) { selectedTab in
+            BrakeTabView(selectedTab: $selectedTab) { selectedTab in
                 ZStack {
                     switch selectedTab {
-                    case .report:
-                        VStack {
-                            Spacer()
-                            Text("Report")
-                            Spacer()
-                        }
                     case .dashboard:
                         AppGroupMainView()
                     case .myInfo:
@@ -43,7 +37,6 @@ struct FeatureAppGroupFeatureApp: App {
             .environment(
                 AppGroupMainViewModel(
                     fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
-                    requestScreenTimeAuthUseCase: diContainer.requestScreenTimeAuthUseCase,
                     fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
                     createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
                     deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
