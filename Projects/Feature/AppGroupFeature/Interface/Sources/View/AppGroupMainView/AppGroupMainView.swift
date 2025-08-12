@@ -16,6 +16,7 @@ public struct AppGroupMainView: View {
     @Environment(\.appGroupDIContainer) private var diContainer
     @Environment(AppGroupMainViewModel.self) private var appGroupMainViewModel
     @Environment(\.scenePhase) var scenePhase
+    
     public init() { }
     public var body: some View {
         NavigationStack {
@@ -94,36 +95,6 @@ public struct AppGroupMainView: View {
     }
 }
 
-fileprivate extension ScreenTimeAuthorizationResult {
-    var title: String {
-        switch self {
-        case .denied: "스크린타임 권한이 거부되었습니다"
-        case .restricted: "스크린타임 기능이 제한되었습니다"
-        case .unavailableDevice: "지원하지 않는 기기입니다"
-        case .userCancel: "스크린타임 권한이 필요합니다"
-        case .approved: ""
-        case .unknownError, .authenticationMethodUnavailable: "인증 중 오류가 발생했습니다"
-        case .networkError: "네트워크 연결을 확인해주세요"
-        }
-    }
-    var desc: String {
-        switch self {
-        case .denied: "설정에서 스크린타임 권한을 허용해주세요"
-        case .restricted: "부모님의 허가가 필요합니다"
-        case .unavailableDevice: "이 기기에서는 스크린타임 기능을 사용할 수 없습니다"
-        case .userCancel: "앱 사용 제한 기능을 사용하려면 권한이 필요합니다"
-        case .approved: ""
-        case .unknownError, .authenticationMethodUnavailable, .networkError: "잠시 후 다시 시도해주세요"
-        }
-    }
-    
-    var primaryButtonTitle: String {
-        switch self {
-        case .denied, .unknownError, .userCancel, .approved, .authenticationMethodUnavailable, .networkError: "다시 시도하기"
-        case .restricted, .unavailableDevice: "확인"
-        }
-    }
-}
 
 
 fileprivate extension AppGroupMainView {

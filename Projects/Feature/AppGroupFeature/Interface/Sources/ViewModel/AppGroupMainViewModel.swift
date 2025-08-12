@@ -17,6 +17,7 @@ extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
         lhs.id == rhs.id
     }
 }
+
 public enum AppScene {
     case active
     case inActive
