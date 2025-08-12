@@ -46,7 +46,7 @@ final class MainAppViewModel {
             case .approved: true
             default: false
         }
-        print("screenTime: \(isApprovedScreenTime), notification: \(isApprovedNotification)")
+        
         await MainActor.run { [weak self] in
             guard let self else { return }
             if !isApprovedNotification && !isApprovedScreenTime {

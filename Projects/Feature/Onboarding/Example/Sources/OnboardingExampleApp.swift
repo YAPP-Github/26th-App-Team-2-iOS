@@ -19,7 +19,6 @@ struct OnboardingExampleApp: App {
     init() { }
     var body: some Scene {
         WindowGroup {
-//            userNotificationAuth
             StartUpView()
                 .environment(
                     StartUpViewModel(
