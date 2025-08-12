@@ -132,7 +132,7 @@ final class AppBrakeTimeSettingViewModel {
             } catch {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-//                    self.toast(message: "휴게시간 설정에 실패했습니다.")
+                    print("휴게시간 설정에 실패했습니다")
                 }
             }
         }

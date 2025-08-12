@@ -20,10 +20,12 @@ extension AppGroupMainView {
                     ScrollView {
                         VStack(spacing: 0) {
                             switch appGroupMainViewModel.brakeStatus {
-                            case .none: groupHeaderView(size: proxy.size)
+                            case .none:
+                                groupHeaderView(proxy: proxy)
                             case .locked, .session:
                                 Rectangle().fill(Color.clear).frame(height: 58)
                             }
+                            
                             VStack(spacing: 16) {
                                 groupSectionView
                                 groupListView
@@ -37,13 +39,13 @@ extension AppGroupMainView {
             }
         }
         
-        @ViewBuilder func groupHeaderView(size: CGSize) -> some View {
+        @ViewBuilder func groupHeaderView(proxy: GeometryProxy) -> some View {
             VStack(spacing: 24) {
                 Image.appGroup.mainFull
                     .resizable()
                     .scaledToFill()
                     .clipShape(Rectangle())
-                    .frame(width: size.width)
+                    .frame(width: proxy.size.width)
                     .overlay(alignment: .bottom) {
                         LinearGradient(
                             stops: [
@@ -55,7 +57,7 @@ extension AppGroupMainView {
                             startPoint: .bottom,
                             endPoint: .top
                         )
-                        .frame(height: size.height * 0.25)
+                        .frame(height: proxy.size.height * 0.25)
                     }
                 VStack(spacing: 6) {
                     Text("등록한 앱을 사용할 때")
@@ -66,7 +68,7 @@ extension AppGroupMainView {
                 .font(.pretendard(size: 20, type: .semiBold))
                 .padding(.bottom, 24)
             }
-            .frame(height: size.height / 2)
+            .frame(height: proxy.size.height / 2)
         }
         
         @ViewBuilder

@@ -42,14 +42,19 @@ public final class AppGroupMainViewModel {
     private(set) var brakeStatus: BrakeStatus = .none // 앱 차단 상태
     private(set) var currentActiveAppGroup: AppGroup? = nil
     
-    private(set) var sessionRestRatio: Double = 0.0 // 타이머 지난 흐름 표시
+    private(set) var sessionRestRatio: Double = 0.0 {
+        didSet {
+            print("타이머가 바뀜!! \(sessionRestRatio)")
+        }
+    } // 타이머 지난 흐름 표시
     private(set) var sessionRestTime: Int = 0 // 타이머 시간 표시
     
     // MARK: -- 내부 상태 관리
     private var appScene: AppScene = .background
-    private var currentSchedule: BlockScheduleEntity?
+    
     private var timerTask: Task<(), Never>?
     private var toastTask: Task<(), any Error>?
+    private var statusTask: Task<(), any Error>?
     
     private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
     private let breakTimeManager: BreakTimeManager = BreakTimeManager()
@@ -92,15 +97,15 @@ public final class AppGroupMainViewModel {
     public func onAppear() {
         print("OnAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
         self.brakeStatus = self.brakeStatusStorage
-        Task(priority: .high) {
-            await refreshAppGroups()
-            loadAppBrakeTimeNotificationSetting()
-        }
+        setBrakeStatus()
     }
     
     public func onDisAppear() {
         print("OnDisAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
         self.brakeStatusStorage = brakeStatus
+        Task {
+            await timerActor.stop()
+        }
     }
     
     public func setScene(_ scene: AppScene) {
@@ -113,20 +118,26 @@ public final class AppGroupMainViewModel {
         case .inActive:
             print("inActive - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
             self.brakeStatusStorage = brakeStatus // 현재 상태를 스토리지에 넣음
+            Task {
+                await timerActor.stop()
+            }
         case .background: break
         }
     }
     
     private func sceneActive() {
-        Task(priority: .high) {
-            if let appGroup = try await fetchAppGroupUseCase.execute(),
-               let schedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
+        loadAppBrakeTimeNotificationSetting()
+        setBrakeStatus()
+    }
+    
+    private func setBrakeStatus() {
+        self.statusTask?.cancel()
+        self.statusTask = Task(priority: .high) {
+            if let appGroup = try await fetchAppGroupUseCase.execute() {
                 let status: BlockingStatusEntity = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
                 print("현재 상태: \(status) | 지금 시간: \(Date.now)")
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-                    self.currentSchedule = schedule
-                    
                     switch status {
                     case .blocking, .unlockedTemporarily: self.brakeStatus = .none
                     case .extensionPrompt(_, _, let startDate, let endDate):
@@ -188,6 +199,7 @@ public final class AppGroupMainViewModel {
     }
     
     public func upsertCompleted(appGroup: AppGroup) {
+        
         let message = appGroups.isEmpty ? "그룹이 추가되었습니다." : "그룹이 수정되었습니다."
         cleanupExistingSchedule()
         Task {
@@ -202,13 +214,24 @@ public final class AppGroupMainViewModel {
                     endTime: .init(hour: 23, minute: 59)
                 )
                 try createBlockScheduleUseCase.execute(schedule: blockScheduleEntity)
-                self.currentSchedule = blockScheduleEntity
+                // 여기에서 앱 그룹을 할당하고 나서 present를 내림
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    self.appGroups = [appGroup]
+                    self.editAppGroup = nil
+                    self.addGroupPresent = false
+                }
+                try? await Task.sleep(for: .seconds(0.2))
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    toast(message: message)
+                }
             } catch {
                 assertionFailure("앱 스케쥴 설정 실패: \(error)")
             }
         }
-        self.appGroups = [appGroup]
-        toast(message: message)
+        
+        
     }
 }
 
@@ -216,17 +239,19 @@ fileprivate extension AppGroupMainViewModel {
     // MARK: - 세션 관련 메서드
     private func sessionEnd() {
         do {
-            guard let currentSchedule else {
-                assertionFailure("현재 스케쥴이 없는데 부름!!")
-                return
-            }
             let currentAppGroupName = self.currentActiveAppGroup?.name ?? ""
             try self.endBreakTimeUseCase.execute()
             appScheduleStorage.saveSelectNotificationTrigger(false)
             self.brakeStatus = .locked
-            refreshSessionTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
+            self.sessionRestRatio = 0
+            self.sessionRestTime = 0
             self.sessionExitAlertPresent = false
             self.toast(message: "\(currentAppGroupName) 사용 종료!\n이제 \(currentAppGroupName) 앱을 사용할 수 없어요.")
+            Task {
+                await self.timerActor.stop()
+                try? await Task.sleep(for: .seconds(1))
+                refreshSessionTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
+            }
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
         }
@@ -318,6 +343,7 @@ fileprivate extension AppGroupMainViewModel {
     }
     
     func refreshAppGroups() async {
+        
         do {
             let appGroup = try await fetchAppGroupUseCase.execute()
             await MainActor.run { [weak self] in
@@ -339,11 +365,11 @@ fileprivate extension AppGroupMainViewModel {
     
     func cleanupExistingSchedule() {
         // 스토리지에서 기존 스케줄 삭제
-        if let currentSchedule {
+        
+        if let appGroup = self.currentActiveAppGroup,
+           let currentSchedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
             deleteBlockScheduleUseCase.execute(schedule: currentSchedule)
         }
-        // 현재 스케줄 참조 초기화
-        self.currentSchedule = nil
     }
     
 }

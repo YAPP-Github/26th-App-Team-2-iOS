@@ -49,7 +49,7 @@ public struct AppGroupMainView: View {
                 )
                 .toast(
                     message: appGroupMainViewModel.toastMessage,
-                    bottomPadding: 60
+                    bottomPadding: 0
                 )
                 .fullScreenCover(
                     isPresented: $viewModel.appBrakeTimeSettingPresent,
