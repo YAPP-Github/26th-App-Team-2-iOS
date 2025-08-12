@@ -94,7 +94,7 @@ struct MainAuthModifier: ViewModifier {
                 },
                 notoficationAuthFailedResult: userNotificationAuthViewModel.notoficationAuthFailedResult,
                 notificationAuthDeniedPresent: $viewModel.notificationAuthDeniedPresent,
-                notificationAuthFailedPresent: $viewModel.notificationAuthFiledPresent
+                notificationAuthFailedPresent: $viewModel.notificationAuthFailedPresent
             )
         }
     }

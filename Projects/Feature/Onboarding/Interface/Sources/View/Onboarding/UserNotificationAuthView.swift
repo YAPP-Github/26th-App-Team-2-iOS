@@ -24,7 +24,7 @@ public struct UserNotificationAuthView: View {
             },
             notoficationAuthFailedResult: viewModel.notoficationAuthFailedResult,
             notificationAuthDeniedPresent: $viewModel.notificationAuthDeniedPresent,
-            notificationAuthFailedPresent: $viewModel.notificationAuthFiledPresent
+            notificationAuthFailedPresent: $viewModel.notificationAuthFailedPresent
         )
     }
 }
