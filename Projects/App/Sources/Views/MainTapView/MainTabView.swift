@@ -19,7 +19,9 @@ struct MainTabView: View {
     @Environment(\.scenePhase) var scenePhase
     
     @State private var selectedTab: TabItemType = .dashboard
-
+    @State var appGroupMainViewModel: AppGroupMainViewModel?
+    @State var myInfoSettingViewModel: MyInfoSettingViewModel?
+    
     var body: some View {
         BrakeTabView(
             selectedTab: $selectedTab
@@ -27,20 +29,39 @@ struct MainTabView: View {
             ZStack {
                 Color.grey900.ignoresSafeArea()
                 switch selectedTab {
-                case .dashboard: AppGroupMainView()
-                case .myInfo: MyInfoSettingView()
+                case .dashboard:
+                    if let appGroupMainViewModel {
+                        AppGroupMainView()
+                            .environment(appGroupMainViewModel)
+                    } else {
+                        Text("hello dashboard")
+                    }
+                    
+                case .myInfo:
+                    if let myInfoSettingViewModel {
+                        MyInfoSettingView()
+                            .environment(myInfoSettingViewModel)
+                    } else {
+                        Text("Hello My Info Setting")
+                    }
                 }
             }
             
         }
-        .onAppear() { mainAppViewModel.onAppear() }
-        .onChange(of: scenePhase, { oldValue, newValue in
-            if newValue == .active {
-                mainAppViewModel.sceneActive()
-            }
-        })
-        .environment(
-            AppGroupMainViewModel(
+        .environment(appGroupMainViewModel)
+        .environment(myInfoSettingViewModel)
+        .onAppear() {
+            mainAppViewModel.onAppear()
+            self.myInfoSettingViewModel = MyInfoSettingViewModel(
+                fetchUserNicknameUseCase: appDIContainer.useCaseContainer.fetchUserNicknameUseCase,
+                userSetNicknameUseCase: appDIContainer.useCaseContainer.userSetNicknameUseCase,
+                deleteUserUseCase: appDIContainer.useCaseContainer.deleteUserUseCase,
+                oAuthLogoutUseCase: appDIContainer.useCaseContainer.oAuthLogoutUseCase,
+                onLogout: {
+                    startUpViewModel.logout()
+                }
+            )
+            self.appGroupMainViewModel = AppGroupMainViewModel(
                 fetchAppGroupUseCase: appDIContainer.useCaseContainer.fetchAppGroupUseCase,
                 fetchSelectedNotificationUseCase: appDIContainer.useCaseContainer.fetchSelectedNotificationUseCase,
                 createBlockScheduleUseCase: appDIContainer.useCaseContainer.createBlockScheduleUseCase,
@@ -50,20 +71,15 @@ struct MainTabView: View {
                 getBlockingStatusUseCase: appDIContainer.useCaseContainer.getBlockingStatusUseCase,
                 endBreakTimeUseCase: appDIContainer.useCaseContainer.endBreakTimeUseCase
             )
-        )
-        .environment(
-            MyInfoSettingViewModel(
-                fetchUserNicknameUseCase: appDIContainer.useCaseContainer.fetchUserNicknameUseCase,
-                userSetNicknameUseCase: appDIContainer.useCaseContainer.userSetNicknameUseCase,
-                deleteUserUseCase: appDIContainer.useCaseContainer.deleteUserUseCase,
-                oAuthLogoutUseCase: appDIContainer.useCaseContainer.oAuthLogoutUseCase,
-                onLogout: {
-                    startUpViewModel.logout()
-                }
-            )
-        )
+        }
+        .onChange(of: scenePhase, { oldValue, newValue in
+            if newValue == .active {
+                mainAppViewModel.sceneActive()
+            }
+        })
         .environment(mainAppViewModel)
         .mainAuthModifier()
+        
     }
 }
 

@@ -30,56 +30,42 @@ public final class AppGroupMainViewModel {
         get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
     }
+    // MARK: -- Present, ScreenCover, Toast Message
+    var addGroupPresent: Bool = false // 처음 생성할 앱 그룹 관리
+    var editAppGroup: AppGroup? = nil // 수정할 앱 그룹 관리
+    var appBrakeTimeSettingPresent: Bool = false // 외부에서 앱 허용하기 시간 설정 팝업 Sheet
+    var toastMessage: String? = nil // 토스트 메시지 팝업
+    var sessionExitAlertPresent: Bool = false // 차단앱 허용 상태 종료하기 팝업 Sheet
     
-    var brakeStatus: BrakeStatus = .none
+    // MARK: -- View Status
+    private(set) var appGroups: [AppGroup] = [] // 앱의 그룹들을 나타냄
+    private(set) var brakeStatus: BrakeStatus = .none // 앱 차단 상태
+    private(set) var currentActiveAppGroup: AppGroup? = nil
     
-    private let scheduleKey: String = "BlockScheduleCurrent"
+    private(set) var sessionRestRatio: Double = 0.0 // 타이머 지난 흐름 표시
+    private(set) var sessionRestTime: Int = 0 // 타이머 시간 표시
+    
+    // MARK: -- 내부 상태 관리
+    private var appScene: AppScene = .background
     private var currentSchedule: BlockScheduleEntity?
-    var currentActiveAppGroup: AppGroup? = nil
-    var sessionExitAlertPresent: Bool = false
-    var sessionRestRatio: Double = 0.0
-    var sessionRestTime: Int = 0
-    
-    var editAppGroup: AppGroup? = nil
-    var addGroupPresent: Bool = false
-    var appBrakeTimeSettingPresent: Bool = false
-    var toastMessage: String? = nil
-    
-    
-    var brakeTimeSettingCompletePresent: Bool = false
-    var screenTimeAuthErrorResult: ScreenTimeAuthorizationResult? = nil
-    
-    // 앱 정보 저장
-    var selectedAppName: String = ""
-    
-
+    private var timerTask: Task<(), Never>?
     private var toastTask: Task<(), any Error>?
     
-    private var appScene: AppScene = .active
-
-    private(set) var appGroups: [AppGroup] = []
-
     private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
     private let breakTimeManager: BreakTimeManager = BreakTimeManager()
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
-    
     private let timerActor: TimerActor = TimerActor()
-    private var timerTask: Task<(), Never>?
     
+    
+    // MARK: -- 외부에서 전달 받은 UseCase
     private let fetchAppGroupUseCase: FetchAppGroupUseCase
     private let fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol
-    
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
     private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
-    
     private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
     private let endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol
-    
     private let getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol
-    
     private let endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
-    
-    
     
     public init(
         fetchAppGroupUseCase: FetchAppGroupUseCase,
@@ -98,16 +84,14 @@ public final class AppGroupMainViewModel {
         self.fetchBlockScheduleUseCase = fetchBlockScheduleUseCase
         self.endBlockScheduleUseCase = endBlockScheduleUseCase
         self.getBlockingStatusUseCase = getBlockingStatusUseCase
-        
         self.endBreakTimeUseCase = endBreakTimeUseCase
     }
     
     // MARK: - 생명주기 메서드
-
+    
     public func onAppear() {
         print("OnAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
         self.brakeStatus = self.brakeStatusStorage
-        self.appScene = .inActive
         Task(priority: .high) {
             await refreshAppGroups()
             loadAppBrakeTimeNotificationSetting()
@@ -124,19 +108,16 @@ public final class AppGroupMainViewModel {
         switch scene {
         case .active:
             print("Active - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
-            self.brakeStatusStorage = brakeStatus
+            self.brakeStatus = self.brakeStatusStorage // 스토리지에 있는 값을 가져옴
             sceneActive()
         case .inActive:
             print("inActive - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
-            self.brakeStatusStorage = brakeStatus
+            self.brakeStatusStorage = brakeStatus // 현재 상태를 스토리지에 넣음
         case .background: break
         }
     }
     
-    
-
     private func sceneActive() {
-        self.brakeStatus = self.brakeStatusStorage
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
                let schedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
@@ -176,45 +157,38 @@ public final class AppGroupMainViewModel {
     
     // MARK: - UI 이벤트 핸들러
     public func addButtonTapped() {
-        addGroupPresent.toggle()
+        addGroupPresent = true
     }
-
+    
     public func editButtonTapped(appGroup: AppGroup) {
         self.editAppGroup = appGroup
     }
-
-    private func loadAppBrakeTimeNotificationSetting() {
-        Task {
-            do {
-                appBrakeTimeSettingPresent = try await fetchSelectedNotificationUseCase.execute()
-            } catch {
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-                    self.toast(message: "알림 설정을 불러오는데 실패했습니다.")
-                }
-            }
-        }
-    }
-
     
     public func sessionExitButtonTapped() {
         self.sessionExitAlertPresent = true
     }
+    public func sessionExitConfirmBtnTapped() {
+        self.sessionEnd()
+    }
+    
+    public func sessionTimerSettingCompletion(selectedTime: Int) {
+        self.brakeStatus = .session
+        self.currentActiveAppGroup = appGroups.first
+        self.sessionStart(seconds: selectedTime * 60)
+        self.appBrakeTimeSettingPresent = false
+    }
     
     // MARK: - 비즈니스 로직 메서드
-
     public func deleteCompleted(appGroup: AppGroup) {
         // 기존 스케줄 완전 정리
         cleanupExistingSchedule()
-        
         self.currentActiveAppGroup = nil
         self.appGroups = []
         toast(message: "그룹이 삭제되었습니다.")
     }
-
+    
     public func upsertCompleted(appGroup: AppGroup) {
         let message = appGroups.isEmpty ? "그룹이 추가되었습니다." : "그룹이 수정되었습니다."
-        // 기존 스케줄 완전 정리
         cleanupExistingSchedule()
         Task {
             do {
@@ -233,31 +207,13 @@ public final class AppGroupMainViewModel {
                 assertionFailure("앱 스케쥴 설정 실패: \(error)")
             }
         }
-        
         self.appGroups = [appGroup]
         toast(message: message)
     }
-    
+}
+
+fileprivate extension AppGroupMainViewModel {
     // MARK: - 세션 관련 메서드
-    
-    /// 세션 종료하기 알림 버튼을 누름
-    public func sessionExitConfirmBtnTapped() {
-        self.sessionEnd()
-    }
-    
-    public func sessionTimerSettingCompletion(selectedTime: Int) {
-        do {
-            self.brakeStatus = .session
-            self.currentActiveAppGroup = appGroups.first
-            self.sessionStart(seconds: selectedTime * 60)
-            self.appBrakeTimeSettingPresent = false
-        } catch DeviceActivityCenterError.intervalTooShort {
-            print("휴식 시간이 너무 짧습니다. 최소 15분 이상 설정해주세요.")
-        } catch {
-            print("휴식 시간 설정 실패: \(error)")
-        }
-    }
-    
     private func sessionEnd() {
         do {
             guard let currentSchedule else {
@@ -331,7 +287,20 @@ public final class AppGroupMainViewModel {
 
 // MARK: - Private Helper Methods
 fileprivate extension AppGroupMainViewModel {
-
+    
+    private func loadAppBrakeTimeNotificationSetting() {
+        Task {
+            do {
+                appBrakeTimeSettingPresent = try await fetchSelectedNotificationUseCase.execute()
+            } catch {
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    self.toast(message: "알림 설정을 불러오는데 실패했습니다.")
+                }
+            }
+        }
+    }
+    
     func toast(message: String) {
         self.toastTask?.cancel()
         self.toastMessage = nil
@@ -347,14 +316,12 @@ fileprivate extension AppGroupMainViewModel {
             }
         }
     }
-
+    
     func refreshAppGroups() async {
         do {
             let appGroup = try await fetchAppGroupUseCase.execute()
             await MainActor.run { [weak self] in
-                guard let self else {
-                    return
-                }
+                guard let self else { return }
                 if let appGroup {
                     self.appGroups = [appGroup]
                     self.currentActiveAppGroup = appGroup
@@ -372,14 +339,9 @@ fileprivate extension AppGroupMainViewModel {
     
     func cleanupExistingSchedule() {
         // 스토리지에서 기존 스케줄 삭제
-//        appScheduleStorage.deleteBlockSchedule(id: scheduleKey)
         if let currentSchedule {
             deleteBlockScheduleUseCase.execute(schedule: currentSchedule)
         }
-        
-        // 모든 블록 스케줄 정리 (추가 안전장치)
-//        appScheduleStorage.clearAllBlockSchedules()
-        
         // 현재 스케줄 참조 초기화
         self.currentSchedule = nil
     }

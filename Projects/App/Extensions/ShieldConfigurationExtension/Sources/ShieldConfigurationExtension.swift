@@ -128,18 +128,18 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private func getIconImage(by status: BlockingStatus) -> UIImage {
         switch status {
         case .blocking:
-            return UIImage(resource: .iconArrow)
-        case .unlockedTemporarily:
             return UIImage(resource: .iconWarning)
+        case .unlockedTemporarily:
+            return UIImage(resource: .iconArrow)
         case .extensionPrompt(_, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) { // "15분 더" 디자인
                 return UIImage(resource: .illustrationTimer)
             } else if endDate < .now { // 쿨다운 시간을 넘음... blocking 화면을 보여줌...
-                return UIImage(resource: .iconArrow)
+                return UIImage(resource: .iconWarning)
             } else { // "쿨다운 시간"... 쿨다운 화면을 보여줌...
                 return UIImage(resource: .illustrationBlock)
             }
-        case  .cooldownActive:
+        case .cooldownActive:
             return UIImage(resource: .illustrationBlock)
         }
     }
