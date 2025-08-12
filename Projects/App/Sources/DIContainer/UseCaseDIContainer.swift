@@ -83,9 +83,9 @@ public final class UseCaseDIContainer: UseCaseDIContainerProtocol {
     @MainActor public private(set) lazy var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase = RequestUserNotificationAuthUseCase()
     
     @MainActor public private(set) lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
-    public private(set) lazy var fetchUserNotificationAuthUseCase: FetchUserNotificationAuthUseCase = .init()
+    public private(set) lazy var fetchUserNotificationAuthUseCase: FetchUserNotificationAuthUseCase = FetchUserNotificationAuthUseCase()
     
-    public private(set) lazy var fetchScreenTimeAuthUseCase: FetchScreenTimeAuthUseCase = .init()
+    public private(set) lazy var fetchScreenTimeAuthUseCase: FetchScreenTimeAuthUseCase = FetchScreenTimeAuthUseCase()
     
     @MainActor public lazy var fetchAppGroupUseCase: FetchAppGroupUseCase = FetchAppGroupUseCase(
         appGroupService: serviceContainer.appGroupService
