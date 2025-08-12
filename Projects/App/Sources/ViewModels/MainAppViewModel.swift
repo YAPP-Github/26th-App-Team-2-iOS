@@ -36,7 +36,7 @@ final class MainAppViewModel {
     }
     
     private func setAuthorizationStatus() async {
-        let screenTimeAuthorizationResult = fetchScreenTimeAuthUseCase.execute()
+        let screenTimeAuthorizationResult = await fetchScreenTimeAuthUseCase.execute()
         let notificationAuthorizationResult = await fetchNotificationAuthUseCase.execute()
         let isApprovedScreenTime =  switch screenTimeAuthorizationResult {
             case .approved: true
