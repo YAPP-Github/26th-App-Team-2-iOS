@@ -23,7 +23,7 @@ public extension Target {
             newFactory.product = .app
             newFactory.name = Project.Environment.targetName(deploymentTarget: deploymentTarget)
             newFactory.bundleId = Project.Environment.bundleId(deploymentTarget: deploymentTarget)
-            newFactory.resources = ["Resources/**"]
+            newFactory.resources = ["Resources/**", "Resources/PrivacyInfo.xcprivacy"]
             newFactory.productName = Project.Environment.targetName(deploymentTarget: deploymentTarget)
             newFactory.sources = .sources
             newFactory.entitlements = "\(Project.Environment.appName).entitlements"
@@ -33,6 +33,7 @@ public extension Target {
             newFactory.name = "\(Project.Environment.appName)DeviceActivityMonitorExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).DeviceActivityMonitorExtension"
             newFactory.sources = .mainAppDeviceActivityMonitorExtensionSources
+            newFactory.resources = ["Extensions/DeviceActivityMonitorExtension/PrivacyInfo.xcprivacy"]
             newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements"
             newFactory.infoPlist = .extendingDefault(with: [
                 "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
@@ -54,7 +55,7 @@ public extension Target {
             newFactory.name = "\(Project.Environment.appName)ShieldConfigurationExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldConfigurationExtension"
             newFactory.sources = .mainAppShieldConfigurationExtensionSources
-            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
+            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**", "Extensions/ShieldConfigurationExtension/PrivacyInfo.xcprivacy"]
             newFactory.infoPlist = .extendingDefault(with: [
                 "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
                 "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
@@ -70,6 +71,7 @@ public extension Target {
             newFactory.name = "\(Project.Environment.appName)ShieldActionConfigurationExtension-\(deploymentTarget.rawValue.capitalized)"
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldActionConfigurationExtension"
             newFactory.sources = .mainAppShieldActionConfigurationExtensionSources
+            newFactory.resources = ["Extensions/ShieldActionConfigurationExtension/PrivacyInfo.xcprivacy"]
             newFactory.infoPlist = .extendingDefault(with: [
                 "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
                 "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
@@ -100,23 +102,25 @@ public extension Target {
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)NotificationExtension" : factory.name
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).notification"
             newFactory.sources = .notificationExtensionSources
-            newFactory.resources = ["Resources/**"]
+            newFactory.resources = ["Resources/**", "Extensions/NotificationExtension/PrivacyInfo.xcprivacy"]
         case .ShieldConfigurationExtension:
             newFactory.product = .appExtension
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)ShieldConfigurationExtension" : factory.name
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).ShieldConfigurationExtension"
             newFactory.sources = .shieldConfigurationExtensionSources
-            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**"]
+            newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**", "Extensions/ShieldConfigurationExtension/PrivacyInfo.xcprivacy"]
         case .ShieldActionConfigurationExtension:
             newFactory.product = .appExtension
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)ShieldActionConfigurationExtension" : factory.name
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).ShieldActionConfigurationExtension"
             newFactory.sources = .shieldActionConfigurationExtensionSources
+            newFactory.resources = ["Extensions/ShieldActionConfigurationExtension/PrivacyInfo.xcprivacy"]
         case .DeviceActivityMonitorExtension:
             newFactory.product = .appExtension
             newFactory.name = factory.name.isEmpty ? "\(Project.Environment.appName)DeviceActivityMonitorExtension" : factory.name
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: .debug)).DeviceActivityMonitorExtension"
             newFactory.sources = .mainAppDeviceActivityMonitorExtensionSources
+            newFactory.resources = ["Extensions/DeviceActivityMonitorExtension/PrivacyInfo.xcprivacy"]
             newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements"
             newFactory.infoPlist = "Extensions/DeviceActivityMonitorExtension/Info.plist"
         }
