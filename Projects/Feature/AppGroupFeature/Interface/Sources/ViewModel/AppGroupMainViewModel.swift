@@ -17,6 +17,7 @@ extension AppGroup: @retroactive Identifiable, @retroactive Equatable {
         lhs.id == rhs.id
     }
 }
+
 public enum AppScene {
     case active
     case inActive
@@ -45,7 +46,6 @@ public final class AppGroupMainViewModel {
     var toastMessage: String? = nil
     
     
-    var screenTimeAuthAlertPresent: Bool = false
     var brakeTimeSettingCompletePresent: Bool = false
     var screenTimeAuthErrorResult: ScreenTimeAuthorizationResult? = nil
     
@@ -67,7 +67,6 @@ public final class AppGroupMainViewModel {
     private var timerTask: Task<(), Never>?
     
     private let fetchAppGroupUseCase: FetchAppGroupUseCase
-    private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
     private let fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol
     
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
@@ -84,7 +83,6 @@ public final class AppGroupMainViewModel {
     
     public init(
         fetchAppGroupUseCase: FetchAppGroupUseCase,
-        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
         fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol,
         createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol,
         deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
@@ -94,10 +92,7 @@ public final class AppGroupMainViewModel {
         endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
     ) {
         self.fetchAppGroupUseCase = fetchAppGroupUseCase
-        self.requestScreenTimeAuthUseCase = requestScreenTimeAuthUseCase
         self.fetchSelectedNotificationUseCase = fetchSelectedNotificationUseCase
-        
-        
         self.createBlockScheduleUseCase = createBlockScheduleUseCase
         self.deleteBlockScheduleUseCase = deleteBlockScheduleUseCase
         self.fetchBlockScheduleUseCase = fetchBlockScheduleUseCase
@@ -142,7 +137,6 @@ public final class AppGroupMainViewModel {
 
     private func sceneActive() {
         self.brakeStatus = self.brakeStatusStorage
-        Task(priority: .background) { await screenTimeAuthRequest() }
         Task(priority: .high) {
             if let appGroup = try await fetchAppGroupUseCase.execute(),
                let schedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
@@ -202,11 +196,6 @@ public final class AppGroupMainViewModel {
         }
     }
 
-    public func reAuthButtonTapped() {
-        Task {
-            await screenTimeAuthRequest()
-        }
-    }
     
     public func sessionExitButtonTapped() {
         self.sessionExitAlertPresent = true
@@ -342,17 +331,6 @@ public final class AppGroupMainViewModel {
 
 // MARK: - Private Helper Methods
 fileprivate extension AppGroupMainViewModel {
-    func screenTimeAuthRequest() async {
-        let result: ScreenTimeAuthorizationResult = await requestScreenTimeAuthUseCase.execute()
-        await MainActor.run { [weak self] in
-            guard let self else { return }
-            self.screenTimeAuthErrorResult = result
-            switch result {
-            case .approved: screenTimeAuthAlertPresent = false
-            default: screenTimeAuthAlertPresent = true
-            }
-        }
-    }
 
     func toast(message: String) {
         self.toastTask?.cancel()
