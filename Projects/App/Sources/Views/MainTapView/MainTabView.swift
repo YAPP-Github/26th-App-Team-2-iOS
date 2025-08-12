@@ -62,14 +62,13 @@ struct MainTabView: View {
                 }
             )
         )
-        .mainAuthModifier()
         .environment(mainAppViewModel)
+        .mainAuthModifier()
     }
 }
 
 fileprivate extension View {
     func mainAuthModifier() -> some View {
-        @Environment(MainAppViewModel.self) var mainAppViewModel
         return self.modifier(MainAuthModifier())
     }
 }
