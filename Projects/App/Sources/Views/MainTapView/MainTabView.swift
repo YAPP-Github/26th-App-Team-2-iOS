@@ -42,7 +42,6 @@ struct MainTabView: View {
         .environment(
             AppGroupMainViewModel(
                 fetchAppGroupUseCase: appDIContainer.useCaseContainer.fetchAppGroupUseCase,
-                requestScreenTimeAuthUseCase: appDIContainer.useCaseContainer.requestScreenTimeAuthUseCase,
                 fetchSelectedNotificationUseCase: appDIContainer.useCaseContainer.fetchSelectedNotificationUseCase,
                 createBlockScheduleUseCase: appDIContainer.useCaseContainer.createBlockScheduleUseCase,
                 deleteBlockScheduleUseCase: appDIContainer.useCaseContainer.deleteBlockScheduleUseCase,

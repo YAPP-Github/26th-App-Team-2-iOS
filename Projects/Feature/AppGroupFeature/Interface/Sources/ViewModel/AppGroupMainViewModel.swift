@@ -67,7 +67,6 @@ public final class AppGroupMainViewModel {
     private var timerTask: Task<(), Never>?
     
     private let fetchAppGroupUseCase: FetchAppGroupUseCase
-    private let requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase
     private let fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol
     
     private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
@@ -84,7 +83,6 @@ public final class AppGroupMainViewModel {
     
     public init(
         fetchAppGroupUseCase: FetchAppGroupUseCase,
-        requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase,
         fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol,
         createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol,
         deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
@@ -94,10 +92,7 @@ public final class AppGroupMainViewModel {
         endBreakTimeUseCase: EndBreakTimeUseCaseProtocol
     ) {
         self.fetchAppGroupUseCase = fetchAppGroupUseCase
-        self.requestScreenTimeAuthUseCase = requestScreenTimeAuthUseCase
         self.fetchSelectedNotificationUseCase = fetchSelectedNotificationUseCase
-        
-        
         self.createBlockScheduleUseCase = createBlockScheduleUseCase
         self.deleteBlockScheduleUseCase = deleteBlockScheduleUseCase
         self.fetchBlockScheduleUseCase = fetchBlockScheduleUseCase
