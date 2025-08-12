@@ -17,7 +17,6 @@ struct MainTabView: View {
     @Environment(StartUpViewModel.self) var startUpViewModel
     @Environment(MainAppViewModel.self) var mainAppViewModel
     @Environment(\.scenePhase) var scenePhase
-    @Environment(\.dismiss) var dismiss
     
     @State private var selectedTab: TabItemType = .dashboard
 
@@ -64,7 +63,8 @@ struct MainTabView: View {
                 }
             )
         )
-        .mainAuthModifier().environment(mainAppViewModel)
+        .mainAuthModifier()
+        .environment(mainAppViewModel)
     }
 }
 
