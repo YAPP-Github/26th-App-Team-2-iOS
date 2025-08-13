@@ -37,10 +37,8 @@ extension AppGroupMainView {
                             if appGroupViewModel.currentActiveAppGroup?.groupID == appGroup.groupID {
                                 switch appGroupViewModel.brakeStatus {
                                 case .none: Image.iconGroupSetting
-                                case .session:
-                                    Image.iconGroupTimer
-                                case .locked:
-                                    Image.iconGroupCoolDown
+                                case .session: Image.iconGroupTimer
+                                case .locked: Image.iconGroupCoolDown
                                 }
                             } else {
                                 Image.iconGroupSetting
@@ -57,9 +55,7 @@ extension AppGroupMainView {
                         }.disabled(
                             appGroupViewModel.brakeStatus != .none
                         )
-                        .opacity(
-                            appGroupViewModel.brakeStatus != .none ? 0.5 : 1
-                        )
+                        .opacity(appGroupViewModel.brakeStatus != .none ? 0.5 : 1)
                     }
                     
                     HStack(spacing: 0) {

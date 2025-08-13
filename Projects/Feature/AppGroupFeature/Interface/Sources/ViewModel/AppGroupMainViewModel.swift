@@ -168,12 +168,14 @@ public final class AppGroupMainViewModel {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.appGroups = [appGroup]
+                    self.brakeStatus = .none
                     self.editAppGroup = nil
                     self.addGroupPresent = false
                 }
-                try? await Task.sleep(for: .seconds(0.2))
+                try await Task.sleep(for: .seconds(0.2))
                 await MainActor.run { [weak self] in
                     guard let self else { return }
+                    
                     toast(message: message)
                 }
             } catch {
