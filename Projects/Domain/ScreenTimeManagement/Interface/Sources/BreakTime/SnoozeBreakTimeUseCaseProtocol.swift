@@ -1,5 +1,5 @@
 //
-//  EndBreakTimeUseCaseProtocol.swift
+//  SnoozeBreakTimeUseCaseProtocol.swift
 //  DomainScreenTimeManagementInterface
 //
 //  Created by Derrick kim on 7/31/25.
@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol EndBreakTimeUseCaseProtocol {
+public protocol SnoozeBreakTimeUseCaseProtocol {
     func execute() throws
 } 
