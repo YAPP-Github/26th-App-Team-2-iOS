@@ -26,10 +26,7 @@ public enum AppScene {
 
 @Observable
 public final class AppGroupMainViewModel {
-    private var brakeStatusStorage: BrakeStatus {
-        get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
-        set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
-    }
+    
     // MARK: -- Present, ScreenCover, Toast Message
     var addGroupPresent: Bool = false // 처음 생성할 앱 그룹 관리
     var editAppGroup: AppGroup? = nil // 수정할 앱 그룹 관리
@@ -42,25 +39,24 @@ public final class AppGroupMainViewModel {
     private(set) var brakeStatus: BrakeStatus = .none // 앱 차단 상태
     private(set) var currentActiveAppGroup: AppGroup? = nil
     
-    private(set) var sessionRestRatio: Double = 0.0 {
-        didSet {
-            print("타이머가 바뀜!! \(sessionRestRatio)")
-        }
-    } // 타이머 지난 흐름 표시
+    private(set) var sessionRestRatio: Double = 0.0 // 타이머 지난 흐름 표시
     private(set) var sessionRestTime: Int = 0 // 타이머 시간 표시
     
     // MARK: -- 내부 상태 관리
     private var appScene: AppScene = .background
-    
     private var timerTask: Task<(), Never>?
     private var toastTask: Task<(), any Error>?
     private var statusTask: Task<(), any Error>?
     
+    // MARK: -- 내부에서 갖는 객체 - TimerActor를 제외하고 모두 리팩토링 대상
     private let blockScheduleManager: BlockScheduleProtocol = BlockScheduleManager()
     private let breakTimeManager: BreakTimeManager = BreakTimeManager()
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let timerActor: TimerActor = TimerActor()
-    
+    private var brakeStatusStorage: BrakeStatus {
+        get { BrakeStatus(rawValue: UserDefaults.standard.integer(forKey: "brakeStatus")) ?? .none }
+        set { UserDefaults.standard.set(newValue.rawValue, forKey: "brakeStatus") }
+    }
     
     // MARK: -- 외부에서 전달 받은 UseCase
     private let fetchAppGroupUseCase: FetchAppGroupUseCase
@@ -95,13 +91,11 @@ public final class AppGroupMainViewModel {
     // MARK: - 생명주기 메서드
     
     public func onAppear() {
-        print("OnAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
         self.brakeStatus = self.brakeStatusStorage
         setBrakeStatus()
     }
     
     public func onDisAppear() {
-        print("OnDisAppear - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
         self.brakeStatusStorage = brakeStatus
         Task {
             await timerActor.stop()
@@ -112,11 +106,10 @@ public final class AppGroupMainViewModel {
         self.appScene = scene
         switch scene {
         case .active:
-            print("Active - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
             self.brakeStatus = self.brakeStatusStorage // 스토리지에 있는 값을 가져옴
-            sceneActive()
+            loadAppBrakeTimeNotificationSetting()
+            setBrakeStatus()
         case .inActive:
-            print("inActive - storage: \(self.brakeStatusStorage) | status: \(self.brakeStatus)")
             self.brakeStatusStorage = brakeStatus // 현재 상태를 스토리지에 넣음
             Task {
                 await timerActor.stop()
@@ -125,46 +118,6 @@ public final class AppGroupMainViewModel {
         }
     }
     
-    private func sceneActive() {
-        loadAppBrakeTimeNotificationSetting()
-        setBrakeStatus()
-    }
-    
-    private func setBrakeStatus() {
-        self.statusTask?.cancel()
-        self.statusTask = Task(priority: .high) {
-            if let appGroup = try await fetchAppGroupUseCase.execute() {
-                let status: BlockingStatusEntity = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
-                print("현재 상태: \(status) | 지금 시간: \(Date.now)")
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-                    switch status {
-                    case .blocking, .unlockedTemporarily: self.brakeStatus = .none
-                    case .extensionPrompt(_, _, let startDate, let endDate):
-                        if .now < startDate {
-                            print("시작시간이 현재보다 짧다")
-                            self.brakeStatus = .session
-                            let endDate = self.breakTimeManager.getEndDate()
-                            let startDate = self.breakTimeManager.getStartDate()
-                            refreshSessionTimer(start: startDate, end: endDate)
-                        } else if startDate < .now && .now < endDate {
-                            print("시작시간과 끝 시간 사이이다.")
-                            self.brakeStatus = .locked
-                            refreshSessionTimer(start: startDate, end: endDate)
-                        } else {
-                            self.brakeStatus = .none
-                        }
-                    case .cooldownActive(_, _, _, let startDate, let endDate):
-                        self.brakeStatus = .locked
-                        refreshSessionTimer(start: startDate, end: endDate)
-                    }
-                }
-            } else {
-                print("스케쥴 fetch 실패")
-            }
-            await refreshAppGroups()
-        }
-    }
     
     // MARK: - UI 이벤트 핸들러
     public func addButtonTapped() {
@@ -199,12 +152,10 @@ public final class AppGroupMainViewModel {
     }
     
     public func upsertCompleted(appGroup: AppGroup) {
-        
         let message = appGroups.isEmpty ? "그룹이 추가되었습니다." : "그룹이 수정되었습니다."
         cleanupExistingSchedule()
         Task {
             do {
-                try await Task.sleep(for: .seconds(0.2))
                 /// BlockScheduleEntity에 시간의 제한이 있는게 맞는 것인가?
                 let blockScheduleEntity = BlockScheduleEntity(
                     id: "\(appGroup.groupID)",
@@ -214,7 +165,6 @@ public final class AppGroupMainViewModel {
                     endTime: .init(hour: 23, minute: 59)
                 )
                 try createBlockScheduleUseCase.execute(schedule: blockScheduleEntity)
-                // 여기에서 앱 그룹을 할당하고 나서 present를 내림
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.appGroups = [appGroup]
@@ -230,13 +180,17 @@ public final class AppGroupMainViewModel {
                 assertionFailure("앱 스케쥴 설정 실패: \(error)")
             }
         }
-        
-        
     }
 }
 
+// MARK: - 세션 관련 메서드
 fileprivate extension AppGroupMainViewModel {
-    // MARK: - 세션 관련 메서드
+    private func sessionStart(seconds: Int) {
+        let start = Date.now
+        let end = start.addingTimeInterval(TimeInterval(seconds))
+        refreshSessionTimer(start: start, end: end)
+    }
+    
     private func sessionEnd() {
         do {
             let currentAppGroupName = self.currentActiveAppGroup?.name ?? ""
@@ -254,24 +208,6 @@ fileprivate extension AppGroupMainViewModel {
             }
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
-        }
-    }
-    
-    private func sessionStart(seconds: Int) {
-        timerTask = Task {
-            let start = self.breakTimeManager.getStartDate()
-            let end = self.breakTimeManager.getEndDate()
-            await timerActor.startTimer(
-                until: end
-            ) { [weak self] interval in
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-                    self.sessionRestTime = Int(interval)
-                    self.sessionRestRatio = 1 - (interval / (end.timeIntervalSince1970 - start.timeIntervalSince1970))
-                }
-            } onEnd: {
-                self.sessionEnd()
-            }
         }
     }
     
@@ -299,9 +235,7 @@ fileprivate extension AppGroupMainViewModel {
                     switch breakStatus {
                     case .locked:
                         self.brakeStatus = .none
-                    case .session:
-                        brakeStatus = .locked
-                        refreshSessionTimer(start: .now, end: .now.addingTimeInterval(60 * 15))
+                    case .session: sessionEnd()
                     case .none: break
                     }
                 }
@@ -312,6 +246,38 @@ fileprivate extension AppGroupMainViewModel {
 
 // MARK: - Private Helper Methods
 fileprivate extension AppGroupMainViewModel {
+    
+    private func setBrakeStatus() {
+        self.statusTask?.cancel()
+        self.statusTask = Task(priority: .high) {
+            if let appGroup = try await fetchAppGroupUseCase.execute() {
+                let status: BlockingStatusEntity = getBlockingStatusUseCase.execute(tokenName: "\(appGroup.groupID)")
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+                    switch status {
+                    case .blocking, .unlockedTemporarily:
+                        self.brakeStatus = .none
+                    case .extensionPrompt(_, _, let startDate, let endDate):
+                        if .now < startDate {
+                            self.brakeStatus = .session
+                            let endDate = self.breakTimeManager.getEndDate()
+                            let startDate = self.breakTimeManager.getStartDate()
+                            refreshSessionTimer(start: startDate, end: endDate)
+                        } else if startDate < .now && .now < endDate {
+                            self.brakeStatus = .locked
+                            refreshSessionTimer(start: startDate, end: endDate)
+                        } else {
+                            self.brakeStatus = .none
+                        }
+                    case .cooldownActive(_, _, _, let startDate, let endDate):
+                        self.brakeStatus = .locked
+                        refreshSessionTimer(start: startDate, end: endDate)
+                    }
+                }
+            }
+            await refreshAppGroups()
+        }
+    }
     
     private func loadAppBrakeTimeNotificationSetting() {
         Task {
@@ -343,7 +309,6 @@ fileprivate extension AppGroupMainViewModel {
     }
     
     func refreshAppGroups() async {
-        
         do {
             let appGroup = try await fetchAppGroupUseCase.execute()
             await MainActor.run { [weak self] in

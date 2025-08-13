@@ -34,7 +34,7 @@ struct MainTabView: View {
                         AppGroupMainView()
                             .environment(appGroupMainViewModel)
                     } else {
-                        Text("hello dashboard")
+                        nilViewModelErrorView
                     }
                     
                 case .myInfo:
@@ -42,11 +42,11 @@ struct MainTabView: View {
                         MyInfoSettingView()
                             .environment(myInfoSettingViewModel)
                     } else {
-                        Text("Hello My Info Setting")
+                        nilViewModelErrorView
                     }
                 }
             }
-            
+            .animation(.default, value: selectedTab)
         }
         .environment(appGroupMainViewModel)
         .environment(myInfoSettingViewModel)
@@ -80,6 +80,20 @@ struct MainTabView: View {
         .environment(mainAppViewModel)
         .mainAuthModifier()
         
+    }
+    @ViewBuilder var nilViewModelErrorView: some View {
+        ZStack {
+            Color.grey900.ignoresSafeArea()
+                .brakePopUp(
+                    isPresented: .constant(true),
+                    title: "일시적인 오류가 발생했어요.",
+                    message: "나중에 다시 시도해주세요.",
+                    primaryButtonTitle: "확인",
+                    primaryAction: {
+                        
+                    }
+                )
+        }
     }
 }
 
