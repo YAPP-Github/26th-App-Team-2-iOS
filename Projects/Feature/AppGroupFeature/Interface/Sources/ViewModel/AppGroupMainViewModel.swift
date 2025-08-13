@@ -175,7 +175,6 @@ public final class AppGroupMainViewModel {
                 try await Task.sleep(for: .seconds(0.2))
                 await MainActor.run { [weak self] in
                     guard let self else { return }
-                    
                     toast(message: message)
                 }
             } catch {
@@ -190,7 +189,7 @@ fileprivate extension AppGroupMainViewModel {
     private func sessionStart(seconds: Int) {
         let start = Date.now
         let end = start.addingTimeInterval(TimeInterval(seconds))
-        refreshSessionTimer(start: start, end: end)
+        refreshTimer(start: start, end: end)
     }
     
     private func sessionEnd() {
@@ -206,14 +205,14 @@ fileprivate extension AppGroupMainViewModel {
             Task {
                 await self.timerActor.stop()
                 try? await Task.sleep(for: .seconds(1))
-                refreshSessionTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
+                refreshTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
             }
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
         }
     }
     
-    private func refreshSessionTimer(start: Date, end: Date) {
+    private func refreshTimer(start: Date, end: Date) {
         self.timerTask?.cancel()
         self.timerTask = Task {
             if Task.isCancelled {
@@ -260,20 +259,20 @@ fileprivate extension AppGroupMainViewModel {
                     case .blocking, .unlockedTemporarily:
                         self.brakeStatus = .none
                     case .extensionPrompt(_, _, let startDate, let endDate):
-                        if .now < startDate {
+                        if .now < startDate { /// 휴식 시간 중이다...
                             self.brakeStatus = .session
-                            let endDate = self.breakTimeManager.getEndDate()
-                            let startDate = self.breakTimeManager.getStartDate()
-                            refreshSessionTimer(start: startDate, end: endDate)
-                        } else if startDate < .now && .now < endDate {
+                            let breakEndDate = self.breakTimeManager.getEndDate()
+                            let breakStartDate = self.breakTimeManager.getStartDate()
+                            refreshTimer(start: breakStartDate, end: breakEndDate)
+                        } else if startDate < .now && .now < endDate { /// 쿨다운이 되어야하는 시간이다...
                             self.brakeStatus = .locked
-                            refreshSessionTimer(start: startDate, end: endDate)
+                            refreshTimer(start: startDate, end: endDate)
                         } else {
                             self.brakeStatus = .none
                         }
                     case .cooldownActive(_, _, _, let startDate, let endDate):
                         self.brakeStatus = .locked
-                        refreshSessionTimer(start: startDate, end: endDate)
+                        refreshTimer(start: startDate, end: endDate)
                     }
                 }
             }
@@ -282,14 +281,11 @@ fileprivate extension AppGroupMainViewModel {
     }
     
     private func loadAppBrakeTimeNotificationSetting() {
-        Task {
+        Task { @MainActor in
             do {
                 appBrakeTimeSettingPresent = try await fetchSelectedNotificationUseCase.execute()
             } catch {
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-                    self.toast(message: "알림 설정을 불러오는데 실패했습니다.")
-                }
+                self.toast(message: "알림 설정을 불러오는데 실패했습니다.")
             }
         }
     }
