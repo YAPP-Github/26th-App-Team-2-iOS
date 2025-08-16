@@ -37,7 +37,7 @@ public struct AppGroupMainView: View {
                     isPresented: $viewModel.sessionExitAlertPresent,
                     title: "앱 사용을 종료할까요?",
                     message: "예정보다 일찍 마무리하셨네요. 멋진 선택이에요!",
-                    icon: Image.iconConfetti,
+                    icon: Image.iconConfetti2,
                     primaryButtonTitle: "종료하기",
                     primaryBackgroundColor: Color.buttonYellow,
                     showCloseButton: true,
@@ -49,7 +49,7 @@ public struct AppGroupMainView: View {
                 )
                 .toast(
                     message: appGroupMainViewModel.toastMessage,
-                    bottomPadding: 60
+                    bottomPadding: 0
                 )
                 .fullScreenCover(
                     isPresented: $viewModel.appBrakeTimeSettingPresent,

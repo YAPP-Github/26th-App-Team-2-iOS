@@ -136,7 +136,7 @@ struct BrakePopUpView_ex: View {
             isPresented: $showAppUsageAlert,
             title: "앱 사용을 종료할까요?",
             message: "예정보다 일찍 마무리하셨네요. 멋진 선택이에요!",
-            icon: Image.iconConfetti,
+            icon: Image.iconConfetti2,
             primaryButtonTitle: "종료하기",
             primaryAction: {
                 showAppUsageAlert = false

@@ -35,15 +35,7 @@ public extension Target {
             newFactory.sources = .mainAppDeviceActivityMonitorExtensionSources
             newFactory.resources = ["Extensions/DeviceActivityMonitorExtension/PrivacyInfo.xcprivacy"]
             newFactory.entitlements = "Extensions/DeviceActivityMonitorExtension/BrakeDeviceActivityMonitorExtension.entitlements"
-            newFactory.infoPlist = .extendingDefault(with: [
-                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
-                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
-                "CFBundleName": "\(Project.Environment.appName)DeviceActivityMonitorExtension-\(deploymentTarget.rawValue.capitalized)",
-                "NSExtension": [
-                    "NSExtensionPointIdentifier": "com.apple.deviceactivity.monitor-extension",
-                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).DeviceActivityMonitorExtension"
-                ]
-            ])
+            newFactory.infoPlist = .file(path: "Extensions/DeviceActivityMonitorExtension/Info.plist")
         case .NotificationExtension:
             newFactory.product = .appExtension
             newFactory.name = "\(Project.Environment.appName)NotificationExtension-\(deploymentTarget.rawValue.capitalized)"
@@ -56,15 +48,7 @@ public extension Target {
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldConfigurationExtension"
             newFactory.sources = .mainAppShieldConfigurationExtensionSources
             newFactory.resources = ["Extensions/ShieldConfigurationExtension/Resources/Images.xcassets/**", "Extensions/ShieldConfigurationExtension/PrivacyInfo.xcprivacy"]
-            newFactory.infoPlist = .extendingDefault(with: [
-                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
-                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
-                "CFBundleName": "\(Project.Environment.appName)ShieldConfigurationExtension-\(deploymentTarget.rawValue.capitalized)",
-                "NSExtension": [
-                    "NSExtensionPointIdentifier": "com.apple.ManagedSettingsUI.shield-configuration-service",
-                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShieldConfigurationExtension"
-                ]
-            ])
+            newFactory.infoPlist = .file(path: "Extensions/ShieldConfigurationExtension/Info.plist")
             newFactory.entitlements = "Extensions/ShieldConfigurationExtension/BrakeShieldConfigurationExtension.entitlements"
         case .ShieldActionConfigurationExtension:
             newFactory.product = .appExtension
@@ -72,15 +56,7 @@ public extension Target {
             newFactory.bundleId = "\(Project.Environment.bundleId(deploymentTarget: deploymentTarget)).ShieldActionConfigurationExtension"
             newFactory.sources = .mainAppShieldActionConfigurationExtensionSources
             newFactory.resources = ["Extensions/ShieldActionConfigurationExtension/PrivacyInfo.xcprivacy"]
-            newFactory.infoPlist = .extendingDefault(with: [
-                "CFBundleShortVersionString": deploymentTarget == .debug ? "1" : "1.0",
-                "CFBundleVersion": deploymentTarget == .debug ? "1" : "1",
-                "CFBundleName": "\(Project.Environment.appName)ShieldActionConfigurationExtension-\(deploymentTarget.rawValue.capitalized)",
-                "NSExtension": [
-                    "NSExtensionPointIdentifier": "com.apple.ManagedSettings.shield-action-service",
-                    "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).ShieldActionConfigurationExtension"
-                ]
-            ])
+            newFactory.infoPlist = .file(path: "Extensions/ShieldActionConfigurationExtension/Info.plist")
             newFactory.entitlements = "Extensions/ShieldActionConfigurationExtension/BrakeShieldActionConfigurationExtension.entitlements"
         }
 

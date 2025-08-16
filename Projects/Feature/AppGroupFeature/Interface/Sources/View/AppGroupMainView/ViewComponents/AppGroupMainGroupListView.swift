@@ -20,10 +20,12 @@ extension AppGroupMainView {
                     ScrollView {
                         VStack(spacing: 0) {
                             switch appGroupMainViewModel.brakeStatus {
-                            case .none: groupHeaderView(size: proxy.size)
+                            case .none:
+                                groupHeaderView(size: proxy.size)
                             case .locked, .session:
-                                Rectangle().fill(Color.clear).frame(height: 58)
+                                Rectangle().fill(Color.clear).frame(height: 32)
                             }
+                            
                             VStack(spacing: 16) {
                                 groupSectionView
                                 groupListView
@@ -32,7 +34,7 @@ extension AppGroupMainView {
                             
                             Rectangle().fill(Color.clear).frame(height: tabBarInsetHeight)
                         }
-                    }
+                    }.scrollIndicators(.hidden)
                 }
             }
         }

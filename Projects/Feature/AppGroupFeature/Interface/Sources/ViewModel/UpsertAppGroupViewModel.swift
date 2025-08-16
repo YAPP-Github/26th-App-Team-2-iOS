@@ -88,7 +88,6 @@ public final class UpsertAppGroupViewModel {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     upsertCompletion(newAppGroup)
-                    self.dismiss = true
                 }
             } catch {
                 
