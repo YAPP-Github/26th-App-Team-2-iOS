@@ -50,7 +50,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     // MARK: - App Name Management
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-
+        appScheduleStorage.saveAppName(tokenName)
         let status = getBlockingStatus(tokenName)
         let customIcon = getIconImage(by: status)
         let titleLabel = ShieldConfiguration.Label(
