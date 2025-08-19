@@ -24,10 +24,6 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     private let blockScheduleManager = BlockScheduleManager()
     private let managedSettingsManager = ManagedSettingsStoreManager()
-    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
-    private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-    private let blockScheduleManager = BlockScheduleManager()
-    private let managedSettingsManager = ManagedSettingsStoreManager()
 
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
