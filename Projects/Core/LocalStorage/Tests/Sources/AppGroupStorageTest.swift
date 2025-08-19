@@ -16,6 +16,7 @@ import CoreLocalStorageTesting
 @Suite(.serialized)
 struct AppGroupStorageTest {
     
+    @MainActor
     let storage = MockAppGroupStorage()
     
     @Test("앱 그룹 생성 테스트")
