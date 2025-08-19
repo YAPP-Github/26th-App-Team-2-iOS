@@ -1,9 +1,10 @@
 //
 //  DeviceActivityMonitorExtension.swift
-//  CoreAppScreenTime
+//  Brake
 //
 //  Created by Derrick kim on 7/11/25.
 //
+
 
 import DeviceActivity
 import Foundation

@@ -13,9 +13,17 @@ import CoreAppScreenTimeInterface
 import CoreAppScreenTime
 import CoreLocalStorageInterface
 import CoreLocalStorage
+import CoreAppScreenTimeInterface
+import CoreAppScreenTime
+import CoreLocalStorageInterface
+import CoreLocalStorage
 
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
+    private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
+    private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
+    private let blockScheduleManager = BlockScheduleManager()
+    private let managedSettingsManager = ManagedSettingsStoreManager()
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     private let blockScheduleManager = BlockScheduleManager()

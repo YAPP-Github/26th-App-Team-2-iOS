@@ -5,12 +5,16 @@
 //  Created by Derrick kim on 7/11/25.
 //
 
+
 import ManagedSettings
 import ManagedSettingsUI
 import UIKit
 import CoreLocalStorageInterface
 import CoreLocalStorage
+import CoreLocalStorageInterface
+import CoreLocalStorage
 import SharedDesignSystem
+import SwiftUICore
 import SwiftUICore
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
@@ -22,7 +26,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
         return setShieldConfig(displayName)
     }
-
+    
     public override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
         guard let displayName = application.localizedDisplayName,
               let _ = category.localizedDisplayName else {
@@ -30,14 +34,14 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         }
         return setShieldConfig(displayName)
     }
-
+    
     public override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
         guard let displayName = webDomain.domain else {
             return setShieldConfig("알 수 없는 웹사이트")
         }
         return setShieldConfig(displayName)
     }
-
+    
     public override func configuration(shielding webDomain: WebDomain, in category: ActivityCategory) -> ShieldConfiguration {
         guard let displayName = webDomain.domain,
               let _ = category.localizedDisplayName else {
@@ -61,7 +65,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             text: status.subtitle,
             color: SharedDesignSystemAsset.Colors.grey300.color
         )
-
+        
         let customPrimaryButtonLabel: ShieldConfiguration.Label?
         let primaryButton = ShieldConfiguration.Label(
             text: status.primaryButtonTitle,
@@ -73,12 +77,12 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         default:
             customPrimaryButtonLabel = primaryButton
         }
-
+        
         let customSecondaryButtonLabel = ShieldConfiguration.Label(
             text: status.secondaryButtonTitle,
             color: SharedDesignSystemAsset.Colors.grey200.color
         )
-
+        
         let shieldConfiguration = ShieldConfiguration(
             backgroundBlurStyle: .dark,
             backgroundColor: UIColor(red: 0.13, green: 0.14, blue: 0.16, alpha: 1.0),
