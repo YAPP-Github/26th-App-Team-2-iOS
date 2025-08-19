@@ -30,13 +30,11 @@ cat <<EOF > ./Projects/App/xcconfigs/Debug.xcconfig
 #include "./Shared.xcconfig"
 
 DEVELOPMENT_TEAM_ID = $DEVELOPMENT_TEAM_ID
-
-KAKAO_REST_API_KEY_DEBUG = $KAKAO_REST_API_KEY_DEBUG
-KAKAO_REST_API_KEY_RELEASE = $KAKAO_REST_API_KEY_RELEASE
-
-KAKAO_JS_KEY_DEBUG = $KAKAO_JS_KEY_DEBUG
-KAKAO_JS_KEY_RELEASE = $KAKAO_JS_KEY_RELEASE
 APP_GROUP_NAME = $APP_GROUP_NAME
+
+KAKAO_REDIRECT_URL_DEBUG = $KAKAO_REDIRECT_URL_DEBUG
+KAKAO_JS_KEY_DEBUG = $KAKAO_JS_KEY_DEBUG
+KAKAO_REST_API_KEY_DEBUG = $KAKAO_REST_API_KEY_DEBUG
 
 EOF
 
@@ -45,14 +43,16 @@ touch ./Projects/App/xcconfigs/Release.xcconfig
 chmod 644 ./Projects/App/xcconfigs/Release.xcconfig
 cat <<EOF > ./Projects/App/xcconfigs/Release.xcconfig
 #include "./Shared.xcconfig"
+
 DEVELOPMENT_TEAM_ID = $DEVELOPMENT_TEAM_ID
 
-KAKAO_REST_API_KEY_RELEASE = $KAKAO_REST_API_KEY_RELEASE
+APP_GROUP_NAME = $APP_GROUP_NAME 
 
+KAKAO_REDIRECT_URL_RELEASE = $KAKAO_REDIRECT_URL_RELEASE
+KAKAO_REST_API_KEY_RELEASE = $KAKAO_REST_API_KEY_RELEASE
 KAKAO_JS_KEY_RELEASE = $KAKAO_JS_KEY_RELEASE
 
 
-APP_GROUP_NAME = $APP_GROUP_NAME 
 EOF
 
 echo "❗️ Make Shared.xcconfig"
@@ -69,15 +69,18 @@ BASE_SERVER_URL_DEBUG = $BASE_SERVER_URL_DEBUG
 OTHER_SWIFT_FLAGS[config=Release][sdk=*] = $(inherited) -DRELEASE
 BASE_SERVER_URL_RELEASE = $BASE_SERVER_URL_RELEASE
 
-KAKAO_REDIRECT_URL = $KAKAO_REDIRECT_URL
-
-
 EOF
 
 
 echo "❗️ Make TokenKeys.xcconfig"
 touch ./Projects/App/xcconfigs/TokenKeys.xcconfig
 chmod 644 ./Projects/App/xcconfigs/TokenKeys.xcconfig
+
+cat <<EOF > ./Projects/App/xcconfigs/TokenKeys.xcconfig
+ACCESS_TOKEN_KEY = $ACCESS_TOKEN_KEY
+REFRESH_TOKEN_KEY = $REFRESH_TOKEN_KEY
+
+EOF
 
 echo "❗️ Set execute permission for App Target Scripts"
 chmod +x ./Projects/App/Scripts/run_crashlytics.sh
