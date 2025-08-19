@@ -31,7 +31,6 @@ extension NetworkProvider: @retroactive NetworkProviderProtocol {
         do {
             let urlRequest: URLRequest = try endpoint.makeURLRequest(config: self.urlComponentConfig)
             let (data, response) = try await self.networkSession.dataTask(for: urlRequest)
-            
             try response.validateResponse()
             
             // EmptyData 타입인 경우 특별 처리

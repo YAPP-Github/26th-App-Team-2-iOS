@@ -58,6 +58,7 @@ let appTargets: [Target] = [
                 "CFBundleShortVersionString": "1",
                 "CFBundleVersion": "1",
                 "CFBundleName": "\(Project.Environment.appName)NotificationExtension-Debug",
+                "CFBundleDisplayName": "\(Project.Environment.appName)Notification",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
@@ -78,6 +79,7 @@ let appTargets: [Target] = [
                 "CFBundleShortVersionString": "1.0",
                 "CFBundleVersion": "1",
                 "CFBundleName": "\(Project.Environment.appName)NotificationExtension-Release",
+                "CFBundleDisplayName": "\(Project.Environment.appName)Notification",
                 "NSExtension": [
                     "NSExtensionPointIdentifier": "com.apple.usernotifications.service",
                     "NSExtensionPrincipalClass": "$(PRODUCT_MODULE_NAME).NotificationService"
