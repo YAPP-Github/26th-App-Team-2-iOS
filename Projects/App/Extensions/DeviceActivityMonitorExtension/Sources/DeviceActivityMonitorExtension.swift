@@ -13,10 +13,6 @@ import CoreAppScreenTimeInterface
 import CoreAppScreenTime
 import CoreLocalStorageInterface
 import CoreLocalStorage
-import CoreAppScreenTimeInterface
-import CoreAppScreenTime
-import CoreLocalStorageInterface
-import CoreLocalStorage
 
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 

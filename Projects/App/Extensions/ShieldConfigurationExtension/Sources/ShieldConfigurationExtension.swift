@@ -11,10 +11,7 @@ import ManagedSettingsUI
 import UIKit
 import CoreLocalStorageInterface
 import CoreLocalStorage
-import CoreLocalStorageInterface
-import CoreLocalStorage
 import SharedDesignSystem
-import SwiftUICore
 import SwiftUICore
 
 public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
