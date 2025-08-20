@@ -58,7 +58,6 @@ public struct AppGroupMainView: View {
                             .environment(
                                 AppBrakeTimeSettingViewModel(
                                     createBreakTimeUseCase: diContainer.createBreakTimeUseCase,
-                                    fetchAppNameUseCase: diContainer.fetchAppNameUseCase,
                                     createBreakTimeCompletion: { selectedTime in
                                         viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
                                     }

@@ -50,7 +50,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     // MARK: - App Name Management
 
     private func setShieldConfig(_ tokenName: String) -> ShieldConfiguration {
-        appScheduleStorage.saveAppName(tokenName)
         let status = getBlockingStatus(tokenName)
         let customIcon = getIconImage(by: status)
         let titleLabel = ShieldConfiguration.Label(
@@ -143,27 +142,6 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         case .cooldownActive:
             return UIImage(resource: .illustrationBlock)
         }
-    }
-
-    /// 세션 종료 후 쿨다운 시작
-    private func startCooldownFromSessionEnd() {
-        let cooldownMinutes = appScheduleStorage.getExtensionTime()
-        let startDate = Date()
-        let endDate = startDate.addingTimeInterval(TimeInterval(60 * 15))
-        cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
-        cooldownStorage.startCooldown(minutes: cooldownMinutes)
-
-        // 쿨다운 상태로 변경
-        // TODO: GroupName 받는 스토리지 필요
-        appScheduleStorage.saveBlockingStatus(
-            .cooldownActive(
-                tokenName: "앱 그룹",
-                time: cooldownMinutes,
-                groupName: "",
-                startDate: startDate,
-                endDate: endDate
-            )
-        )
     }
 
 }

@@ -10,8 +10,6 @@ import ManagedSettings
 import FamilyControls
 
 public protocol AppScheduleStorageProtocol {
-    func saveAppName(_ name: String)
-    func getAppName() -> String?
     func saveSelectNotificationTrigger(_ isSelected: Bool)
     func getSelectedNotification() -> Bool
     func saveBlockingStatus(_ status: BlockingStatus)

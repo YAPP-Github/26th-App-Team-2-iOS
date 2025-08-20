@@ -22,17 +22,11 @@ public struct AppBrakeTimeSettingView: View {
 
             VStack(spacing: 16) {
                 // 제목
-                VStack(spacing: 8) {
-                    Text("\(viewModel.selectedAppName)을")
-                        .font(.pretendard(size: 24, type: .semiBold))
-                        .foregroundColor(.grey100)
+                Text("얼마나 사용할까요?")
+                    .font(.pretendard(size: 24, type: .bold))
+                    .foregroundColor(.brakeWhite)
+                    .padding(.top, 78)
 
-                    Text("얼마나 사용할까요?")
-                        .font(.pretendard(size: 24, type: .bold))
-                        .foregroundColor(.brakeWhite)
-                }
-                .padding(.top, 78)
-                
                 Spacer()
 
                 VStack(alignment: .center, spacing: 8) {
@@ -87,7 +81,6 @@ public struct AppBrakeTimeSettingView: View {
             .padding(.bottom, 10)
             .padding(.horizontal, 16)
         }
-
         .overlay {
             if viewModel.brakeTimeSettingCompletePresent {
                 CompleteTimeSettingView(selectedMinutes: viewModel.selectedMinutes, endTime: viewModel.endTime)

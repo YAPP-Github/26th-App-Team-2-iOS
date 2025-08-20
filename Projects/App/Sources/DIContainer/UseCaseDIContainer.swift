@@ -26,7 +26,6 @@ public protocol UseCaseDIContainerProtocol {
     var deleteAppGroupUseCase: DeleteAppGroupUseCase { get }
     var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol { get }
     var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol { get }
-    var fetchAppNameUseCase: FetchAppNameUseCaseProtocol { get }
     var fetchUserNicknameUseCase: FetchUserNicknameUseCaseProtocol { get }
     var deleteUserUseCase: DeleteUserUseCaseProtocol { get }
     var oAuthLogoutUseCase: OAuthLogoutUseCaseProtocol { get }
@@ -105,10 +104,6 @@ public final class UseCaseDIContainer: UseCaseDIContainerProtocol {
     )
     
     @MainActor public lazy var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol = FetchSelectedNotificationUseCase(
-        appScheduleStorage: coreContainer.appScheduleStorage
-    )
-    
-    @MainActor public lazy var fetchAppNameUseCase: FetchAppNameUseCaseProtocol = FetchAppNameUseCase(
         appScheduleStorage: coreContainer.appScheduleStorage
     )
     

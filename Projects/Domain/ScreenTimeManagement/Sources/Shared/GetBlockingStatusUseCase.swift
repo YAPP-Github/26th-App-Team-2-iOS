@@ -28,7 +28,7 @@ public struct GetBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol {
     public func execute(tokenName: String) -> BlockingStatusEntity {
         let status = appScheduleStorage.getBlockingStatus() ?? .blocking(tokenName: tokenName)
         let validatedStatus = validateAndFixStatus(status, tokenName: tokenName)
-        appScheduleStorage.saveAppName(tokenName)
+
         return validatedStatus.toEntity()
     }
     
@@ -59,45 +59,7 @@ public struct GetBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol {
         }
         print("validateCooldownStatus - startTime: \(startTime) / endTime: \(endTime)")
         
-        return .cooldownActive(tokenName: "앱 그룹", time: Int(cooldownStorage.getRemainingCooldownTime()), groupName: "", startDate: startTime, endDate: endTime)
+        return .cooldownActive(tokenName: tokenName, time: Int(cooldownStorage.getRemainingCooldownTime()), groupName: "", startDate: startTime, endDate: endTime)
     }
-    
-    private func handleSessionEndedStatus() -> BlockingStatus {
-        startCooldownFromSessionEnd()
-        
-        guard let endTime = cooldownStorage.getCooldownEndTime(),
-              let startTime = cooldownStorage.getCooldownStartTime() else {
-            assertionFailure("시작 시간과 끝 시간을 가져오지 못 함")
-            return .blocking(tokenName: "")
-        }
-        print("handleSessionEndedStatus - startTime: \(startTime) / endTime: \(endTime)")
-        print("appScheduleStorage.getExtensionTime() \(appScheduleStorage.getExtensionTime())")
-        return .cooldownActive(
-            tokenName: "앱 그룹",
-            time: appScheduleStorage.getExtensionTime(),
-            groupName: "",
-            startDate: startTime,
-            endDate: endTime
-        )
-    }
-    
-    private func startCooldownFromSessionEnd() {
-        let cooldownMinutes = appScheduleStorage.getExtensionTime()
-        let startDate = Date.now
-        let endDate = startDate.addingTimeInterval(TimeInterval(cooldownMinutes * 60))
-        
-        cooldownStorage.saveCooldownGroup(groupName: "앱 그룹")
-        cooldownStorage.startCooldown(minutes: cooldownMinutes)
-        
-        // 쿨다운 상태로 변경
-        appScheduleStorage.saveBlockingStatus(
-            .cooldownActive(
-                tokenName: "앱 그룹",
-                time: cooldownMinutes,
-                groupName: "",
-                startDate: startDate,
-                endDate: endDate
-            )
-        )
-    }
-} 
+
+}

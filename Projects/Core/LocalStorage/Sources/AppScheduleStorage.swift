@@ -11,6 +11,7 @@ import FamilyControls
 import CoreLocalStorageInterface
 
 public struct AppScheduleStorage: AppScheduleStorageProtocol {
+
     private let userDefaults: UserDefaults?
     
     public init() {
@@ -19,7 +20,6 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
     }
     
     private enum Keys {
-        static let appName = "appName"
         static let isSelectedNotification = "isSelectedNotification"
         static let blockingStatus = "blockingStatus"
         static let allBlockScheduleIds = "allBlockScheduleIds"
@@ -33,14 +33,6 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
         static func blockSchedule(id: String) -> String {
             return "blockSchedule_\(id)"
         }
-    }
-
-    public func saveAppName(_ name: String) {
-        userDefaults?.set(name, forKey: Keys.appName)
-    }
-
-    public func getAppName() -> String? {
-        return userDefaults?.string(forKey: Keys.appName)
     }
 
     public func saveSelectNotificationTrigger(_ isSelected: Bool) {
@@ -122,8 +114,7 @@ public struct AppScheduleStorage: AppScheduleStorageProtocol {
     
     public func getExtensionTime() -> Int {
         return userDefaults?.integer(forKey: Keys.extensionTime) ?? 15 // 기본값 15분
-    }
-    
+    }    
     // MARK: -- 타이머 시간 관련 메서드들
     
     public func getBreakStartDate() -> Date {

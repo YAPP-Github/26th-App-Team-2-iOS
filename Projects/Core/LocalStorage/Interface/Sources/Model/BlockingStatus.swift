@@ -44,10 +44,6 @@ public enum BlockingStatus: Codable, Equatable {
             let startDate = try container.decode(Date.self, forKey: .startDate)
             let endDate = try container.decode(Date.self, forKey: .endDate)
             self = .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
-//        case "sessionEnded":
-//            let time = try container.decode(Int.self, forKey: .time)
-//            let groupName = try container.decode(String.self, forKey: .groupName)
-//            self = .sessionEnded(time: time, groupName: groupName)
         case "cooldownActive":
             let tokenName = try container.decode(String.self, forKey: .tokenName)
             let time = try container.decode(Int.self, forKey: .time)
@@ -75,10 +71,6 @@ public enum BlockingStatus: Codable, Equatable {
             try container.encode(count, forKey: .count)
             try container.encode(startDate, forKey: .startDate)
             try container.encode(endDate, forKey: .endDate)
-//        case .sessionEnded(let time, let groupName):
-//            try container.encode("sessionEnded", forKey: .type)
-//            try container.encode(time, forKey: .time)
-//            try container.encode(groupName, forKey: .groupName)
         case .cooldownActive(let tokenName, let time, let groupName, let startDate, let endDate):
             try container.encode("cooldownActive", forKey: .type)
             try container.encode(tokenName, forKey: .tokenName)
