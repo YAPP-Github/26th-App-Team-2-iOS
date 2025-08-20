@@ -15,8 +15,8 @@ import SharedDesignSystem
 struct MyInfoExampleApp: App {
     
     @Environment(\.diContainer) var diContainer
-    @State private var selectedTab: TabItemType = .myInfo
-    @State var isTabBarHidden: Bool = false
+    @State private var selectedTab: TabItemType = .dashboard
+    
 
     init() { }
     
@@ -25,9 +25,6 @@ struct MyInfoExampleApp: App {
             ZStack {
                 // 선택된 탭에 따라 다른 색상의 배경
                 switch selectedTab {
-                case .report:
-                    Color.brakeYellowDark
-                        .ignoresSafeArea()
                 case .dashboard:
                     Color.insightBlue
                         .ignoresSafeArea()
@@ -39,12 +36,11 @@ struct MyInfoExampleApp: App {
                 VStack(spacing: 0) {
                     // 탭별 컨텐츠
                     switch selectedTab {
-                    case .report:
-                        Color.clear // 리포트 탭 컨텐츠
+                    
                     case .dashboard:
                         Color.clear // 대시보드 탭 컨텐츠
                     case .myInfo:
-                        MyInfoSettingView(isTabBarHidden: $isTabBarHidden)
+                        MyInfoSettingView()
                             .environment(
                                 MyInfoSettingViewModel(
                                     fetchUserNicknameUseCase: diContainer.fetchUserNicknameUseCase,

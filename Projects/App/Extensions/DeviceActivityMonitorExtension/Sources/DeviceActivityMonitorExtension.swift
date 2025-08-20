@@ -5,6 +5,7 @@
 //  Created by Derrick kim on 7/11/25.
 //
 
+
 import DeviceActivity
 import Foundation
 import ManagedSettings
@@ -36,7 +37,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
             let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
             let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
-
+            
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
                     time: 15,
@@ -45,7 +46,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                     endDate: extensionEndDate
                 )
             )
-
+            
             appScheduleStorage.saveSelectNotificationTrigger(false)
 
             // 저장된 모든 스케줄을 가져와서 차단 해제
@@ -71,14 +72,14 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             allSchedules.forEach { schedule in
                 blockScheduleManager.startBlockSchedule(schedule)
             }
-
+            
             // extensionPrompt 상태로 설정
             let extensionCount = appScheduleStorage.getExtensionCount() // 현재 연장 횟수
             let maxExtensions = 1
 
             let extensionStartDate = Date.now
             let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
-
+            
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
             if extensionCount == 0 {
                 appScheduleStorage.saveBlockingStatus(

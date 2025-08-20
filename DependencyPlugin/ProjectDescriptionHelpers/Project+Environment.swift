@@ -105,16 +105,18 @@ public extension Project {
             let kakaoJSAppKey: String
             let kakaoRESTAPIKey: String
             let baseServerURL: String
-            
+            let redirectURL: String
             switch deploymentTarget {
             case .debug:
                 kakaoJSAppKey = "${KAKAO_JS_KEY_DEBUG}"
                 kakaoRESTAPIKey = "${KAKAO_REST_API_KEY_DEBUG}"
                 baseServerURL = "${BASE_SERVER_URL_DEBUG}"
+                redirectURL = "${KAKAO_REDIRECT_URL_DEBUG}"
             case .release:
                 kakaoJSAppKey = "${KAKAO_JS_KEY_RELEASE}"
                 kakaoRESTAPIKey = "${KAKAO_REST_API_KEY_RELEASE}"
                 baseServerURL = "${BASE_SERVER_URL_RELEASE}"
+                redirectURL = "${KAKAO_REDIRECT_URL_RELEASE}"
             }
             
             var plist: [String: Plist.Value] =  [
@@ -126,7 +128,7 @@ public extension Project {
                 "NSFamilyControlsUsageDescription": "스크린타임 데이터를 관리하기 위해 접근 권한이 필요합니다.",
                 "KAKAO_REST_API_KEY": "\(kakaoRESTAPIKey)",
                 "KAKAO_JS_KEY": "\(kakaoJSAppKey)",
-                "KAKAO_REDIRECT_URL": "${KAKAO_REDIRECT_URL}",
+                "KAKAO_REDIRECT_URL": "\(redirectURL)",
                 
                 "LSApplicationQueriesSchemes": [
                     "kakaokompassauth",

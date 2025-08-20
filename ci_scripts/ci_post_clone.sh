@@ -11,9 +11,11 @@ chmod +x ./ci_post_clone_sub_scripts/googleservice-info.sh
 
 # mise 설치 (한 번만)
 # curl https://mise.run | sh
-brew install mise
+curl https://mise.run | sh
 
-export PATH="$HOME/.local/share/mise/shims:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+
+echo 'eval "$($HOME/.local/bin/mise activate bash)"' >> ~/.bashrc
 
 echo "❗️Current PATH: $PATH"
 
@@ -37,8 +39,6 @@ cd "$CI_WORKSPACE_PATH/repository" || {
 
 echo "❗️tuist install"
 tuist install
-
-
 
 echo "❗️tuist generate"
 tuist generate

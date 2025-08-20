@@ -9,6 +9,8 @@ import Foundation
 import CoreLocalStorageInterface
 
 public class FakeTokenStorage: TokenStorageProtocol {
+    
+    
     public static let fakeAccessToken = "fakeAccessToken"
     public static let fakeRefreshToken = "fakeRefreshToken"
     private var storage: [String: Any] = [:]
@@ -26,5 +28,9 @@ public class FakeTokenStorage: TokenStorageProtocol {
     @discardableResult
     public func delete(for key: String) throws -> Bool {
         return storage.removeValue(forKey: key) != nil
+    }
+    
+    public func deleteAllTokens() async throws {
+        
     }
 }

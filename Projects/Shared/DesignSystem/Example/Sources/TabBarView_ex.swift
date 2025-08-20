@@ -9,7 +9,7 @@ import SwiftUI
 import SharedDesignSystem
 
 struct BrakeTabBarView_ex: View {
-    @State private var selectedTab: TabItemType = .report
+    @State private var selectedTab: TabItemType = .dashboard
     
     var body: some View {
         VStack(spacing: 0) {
@@ -17,9 +17,6 @@ struct BrakeTabBarView_ex: View {
             // 선택된 탭에 따라 다른 색상의 배경
             ZStack {
                 switch selectedTab {
-                case .report:
-                    Color.brakeYellowDark
-                        .ignoresSafeArea()
                 case .dashboard:
                     Color.insightBlue
                         .ignoresSafeArea()

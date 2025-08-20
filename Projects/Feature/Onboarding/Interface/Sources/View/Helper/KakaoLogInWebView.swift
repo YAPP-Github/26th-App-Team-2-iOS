@@ -151,7 +151,6 @@ struct KakaoWebView: UIViewRepresentable {
             }
             
             let queryItems = urlComponents.queryItems ?? []
-            
             if let errorParam = queryItems.first(where: { $0.name == "error" })?.value {
                 parent.onAuthError(KakaoAuthError.authFailed(errorParam))
             } else if let code = queryItems.first(where: { $0.name == "code" })?.value {
