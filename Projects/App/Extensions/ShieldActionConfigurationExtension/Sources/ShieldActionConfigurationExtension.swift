@@ -18,8 +18,7 @@ import Domain
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-    private let managedSettingsManager = ManagedSetting
-
+    
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
@@ -33,7 +32,6 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     }
 
     private func handleApplications(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
-    
         switch action {
         case .primaryButtonPressed:
             primaryButtonPressedAction(completionHandler: completionHandler)
