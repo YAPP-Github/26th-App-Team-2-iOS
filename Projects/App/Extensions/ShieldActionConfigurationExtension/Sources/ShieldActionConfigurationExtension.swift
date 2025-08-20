@@ -11,13 +11,14 @@ import CoreAppScreenTime
 import CoreAppScreenTimeInterface
 import CoreLocalStorageInterface
 import CoreLocalStorage
+import Domain
 
 // TODO: 설정된 앱 그룹 이름 받아야함
 
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-    private let managedSettingsManager = ManagedSettingsStoreManager()
+    private let managedSettingsManager = ManagedSetting
 
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
@@ -30,8 +31,9 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     public override func handle(action: ShieldAction, for category: ActivityCategoryToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
-    
+
     private func handleApplications(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
+    
         switch action {
         case .primaryButtonPressed:
             primaryButtonPressedAction(completionHandler: completionHandler)
@@ -54,7 +56,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         case .unlockedTemporarily:
             // 버튼 없음
             break
-        case .extensionPrompt(_, _, let startDate, let endDate):
+        case .extensionPrompt(_, _, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 // 그만하기
                 completionHandler(.close)
@@ -90,7 +92,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         case .unlockedTemporarily:
             appScheduleStorage.saveBlockingStatus(.blocking(tokenName: ""))
             completionHandler(.defer)
-        case .extensionPrompt(let time, let count, let startDate, let endDate):
+        case .extensionPrompt(let name, let time, let count, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 if count < 1 {
                     // 연장 횟수 증가
@@ -106,7 +108,15 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
 
                     // 연장 프롬프트 상태 업데이트
-                    appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount, startDate: newStartDate, endDate: newEndDate))
+                    appScheduleStorage.saveBlockingStatus(
+                        .extensionPrompt(
+                            tokenName: name,
+                            time: time,
+                            count: newCount,
+                            startDate: newStartDate,
+                            endDate: newEndDate
+                        )
+                    )
 
                     // 차단창 닫기 (15분 동안 앱 사용 가능)
                     completionHandler(.defer)

@@ -40,6 +40,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
+                    tokenName: "",
                     time: 15,
                     count: extensionCount,
                     startDate: extensionStartDate,
@@ -54,7 +55,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             managedSettingsManager.clearAllBlockListsForRest(schedules: allSchedules)
         } else if let schedule = BlockSchedule(from: activity) {
             // DeviceActivityName과 매칭되는 BlockSchedule의 블록리스트를 적용
-            appScheduleStorage.saveSelectNotificationTrigger(true)
+            appScheduleStorage.saveSelectNotificationTrigger(false)
             blockScheduleManager.startBlockSchedule(schedule)
         } else {
             // BlockSchedule을 찾을 수 없는 경우에도 차단 상태를 활성화
@@ -84,6 +85,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             if extensionCount == 0 {
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
+                        tokenName: "",
                         time: 15,
                         count: 0,
                         startDate: extensionStartDate,
@@ -94,6 +96,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 // 연장 가능: extensionPrompt 상태로 설정
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
+                        tokenName: "",
                         time: 15,
                         count: extensionCount,
                         startDate: extensionStartDate,
@@ -104,9 +107,9 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 // 연장 불가: sessionEnded 상태로 설정 (5번 화면)
                 appScheduleStorage.saveBlockingStatus(
                     .cooldownActive(
-                        tokenName: "앱 그룹",
+                        tokenName: "",
                         time: 15,
-                        groupName: "앱 그룹",
+                        groupName: "",
                         startDate: .now,
                         endDate: .now.addingTimeInterval(15 * 60)
                     )

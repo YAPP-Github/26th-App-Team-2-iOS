@@ -34,8 +34,8 @@ public struct SnoozeBreakTimeUseCase: SnoozeBreakTimeUseCaseProtocol {
         let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
         let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
         let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
-        appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: extensionCount, startDate: extensionStartDate, endDate: extensionEndDate))
-        
+        appScheduleStorage.saveBlockingStatus(.extensionPrompt(tokenName: "", time: 15, count: extensionCount, startDate: extensionStartDate, endDate: extensionEndDate))
+
         // 2. 알림 트리거 비활성화
         appScheduleStorage.saveSelectNotificationTrigger(false)
         
@@ -44,3 +44,4 @@ public struct SnoozeBreakTimeUseCase: SnoozeBreakTimeUseCaseProtocol {
         managedSettingsManager.clearAllBlockListsForRest(schedules: allSchedules)
     }
 } 
+
