@@ -18,7 +18,7 @@ import Domain
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-    
+
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
@@ -47,7 +47,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         switch status {
         case .blocking:
             // 노티피케이션 요청
-            scheduleNotification()
+            scheduleNotification(by: status?.notificationId ?? "")
             // AppScheduleStorage를 통해 차단 상태 저장
             appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
             completionHandler(.defer)
@@ -60,22 +60,22 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                 completionHandler(.close)
             } else if endDate < .now {
                 // 노티피케이션 요청
-                scheduleNotification()
+                scheduleNotification(by: status?.notificationId ?? "")
                 // AppScheduleStorage를 통해 차단 상태 저장
                 appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
                 completionHandler(.defer)
             } else {
-                scheduleNotification()
+                scheduleNotification(by: status?.notificationId ?? "")
                 completionHandler(.defer)
             }
         case .cooldownActive:
             // 남은 시간 확인 - 쿨다운 상태 유지
             // TODO: 남은 시간 확인하기 부분
-            scheduleNotification()
+            scheduleNotification(by: status?.notificationId ?? "")
             completionHandler(.defer)
         case .none:
             // 상태가 없으면 기본 차단 상태로 처리
-            scheduleNotification()
+            scheduleNotification(by: status?.notificationId ?? "")
             appScheduleStorage.saveBlockingStatus(.unlockedTemporarily)
             completionHandler(.defer)
         }
@@ -177,26 +177,26 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     }
     
     // 차단 화면에서 보여지는 거라 에러 핸들링 할 수 없음
-    private func scheduleNotification() {
+    private func scheduleNotification(by id: String) {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
-                center.add(self.makeNotification())
+                center.add(self.makeNotification(by: id))
             } else {
                 // Permission denied.
             }
         }
     }
     
-    private func makeNotification() -> UNNotificationRequest {
+    private func makeNotification(by id: String) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = "여기를 눌러 앱 사용 시작하기"
         content.body = "알림을 누르면 앱을 사용할 수 있어요!"
         content.sound = UNNotificationSound.default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let request = UNNotificationRequest(identifier: "BrakeNotification", content: content, trigger: trigger)
-        
+        let request = UNNotificationRequest(identifier: id, content: content, trigger: trigger)
+
         return request
     }
 }

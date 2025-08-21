@@ -82,8 +82,16 @@ public enum BlockingStatus: Codable, Equatable {
             try container.encode(endDate, forKey: .endDate)
         }
     }
+    
+    public var notificationId: String {
+        switch self {
+        case .blocking, .unlockedTemporarily, .extensionPrompt:
+            return "BrakeNotification"
 
-    // MARK: Example 용
+        case .cooldownActive:
+            return "BrakeCooldownNotification"
+        }
+    }
     public var title: String {
         switch self {
         case .blocking(let name):
