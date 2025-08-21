@@ -38,10 +38,11 @@ public struct ExtendBreakTimeUseCase: ExtendBreakTimeUseCaseProtocol {
             
             // DeviceActivity로 연장 시간 설정
             try startExtensionBreakTime(minutes: time)
-            
+
             // 연장 프롬프트 상태 업데이트
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
+                    tokenName: "",
                     time: time,
                     count: newCount,
                     startDate: .now,

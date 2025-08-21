@@ -140,6 +140,7 @@ public final class AppGroupMainViewModel {
         self.currentActiveAppGroup = appGroups.first
         self.sessionStart(seconds: selectedTime * 60)
         self.appBrakeTimeSettingPresent = false
+        appScheduleStorage.saveSelectNotificationTrigger(false)
     }
     
     // MARK: - 비즈니스 로직 메서드
@@ -258,7 +259,7 @@ fileprivate extension AppGroupMainViewModel {
                     switch status {
                     case .blocking, .unlockedTemporarily:
                         self.brakeStatus = .none
-                    case .extensionPrompt(_, _, let startDate, let endDate):
+                    case .extensionPrompt(_, _, _, let startDate, let endDate):
                         if .now < startDate { /// 휴식 시간 중이다...
                             self.brakeStatus = .session
                             let breakEndDate = self.breakTimeManager.getEndDate()

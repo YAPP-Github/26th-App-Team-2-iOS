@@ -13,7 +13,7 @@ public enum BlockingStatus: Codable, Equatable {
 
     case blocking(tokenName: String) // 1. 차단 UI 노출
     case unlockedTemporarily // 2. 임시 사용 허용 상태
-    case extensionPrompt(time: Int, count: Int, startDate: Date, endDate: Date) // 3. 휴게시간 연장 가능 상태 --> 쿨다운이 되어야함
+    case extensionPrompt(tokenName: String, time: Int, count: Int, startDate: Date, endDate: Date) // 3. 휴게시간 연장 가능 상태 --> 쿨다운이 되어야함
     case cooldownActive(tokenName: String, time: Int, groupName: String, startDate: Date, endDate: Date) // 5. 쿨다운 중 앱 진입 시도 - 앱이 쿨다운 상태일 때
 
     // MARK: - Codable Implementation
@@ -39,15 +39,12 @@ public enum BlockingStatus: Codable, Equatable {
         case "unlockedTemporarily":
             self = .unlockedTemporarily
         case "extensionPrompt":
+            let tokenName = try container.decode(String.self, forKey: .tokenName)
             let time = try container.decode(Int.self, forKey: .time)
             let count = try container.decode(Int.self, forKey: .count)
             let startDate = try container.decode(Date.self, forKey: .startDate)
             let endDate = try container.decode(Date.self, forKey: .endDate)
-            self = .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
-//        case "sessionEnded":
-//            let time = try container.decode(Int.self, forKey: .time)
-//            let groupName = try container.decode(String.self, forKey: .groupName)
-//            self = .sessionEnded(time: time, groupName: groupName)
+            self = .extensionPrompt(tokenName: tokenName, time: time, count: count, startDate: startDate, endDate: endDate)
         case "cooldownActive":
             let tokenName = try container.decode(String.self, forKey: .tokenName)
             let time = try container.decode(Int.self, forKey: .time)
@@ -69,16 +66,13 @@ public enum BlockingStatus: Codable, Equatable {
             try container.encode(tokenName, forKey: .tokenName)
         case .unlockedTemporarily:
             try container.encode("unlockedTemporarily", forKey: .type)
-        case .extensionPrompt(let time, let count, let startDate, let endDate):
+        case .extensionPrompt(let name, let time, let count, let startDate, let endDate):
             try container.encode("extensionPrompt", forKey: .type)
+            try container.encode(name, forKey: .tokenName)
             try container.encode(time, forKey: .time)
             try container.encode(count, forKey: .count)
             try container.encode(startDate, forKey: .startDate)
             try container.encode(endDate, forKey: .endDate)
-//        case .sessionEnded(let time, let groupName):
-//            try container.encode("sessionEnded", forKey: .type)
-//            try container.encode(time, forKey: .time)
-//            try container.encode(groupName, forKey: .groupName)
         case .cooldownActive(let tokenName, let time, let groupName, let startDate, let endDate):
             try container.encode("cooldownActive", forKey: .type)
             try container.encode(tokenName, forKey: .tokenName)
@@ -88,21 +82,29 @@ public enum BlockingStatus: Codable, Equatable {
             try container.encode(endDate, forKey: .endDate)
         }
     }
+    
+    public var notificationId: String {
+        switch self {
+        case .blocking, .unlockedTemporarily, .extensionPrompt:
+            return "BrakeNotification"
 
-    // MARK: Example 용
+        case .cooldownActive:
+            return "BrakeCooldownNotification"
+        }
+    }
     public var title: String {
         switch self {
         case .blocking(let name):
             return "\(name)을 꼭 사용하실건가요?"
         case .unlockedTemporarily:
             return "알림을 눌러 사용 시간을 설정해주세요"
-        case .extensionPrompt(_, _, let startDate, let endDate):
+        case .extensionPrompt(let name, _, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 return "약속한 시간이 지났어요"
             } else if endDate < .now {
-                return "name 꼭 사용하실건가요?"
+                return "\(name) 꼭 사용하실건가요?"
             } else {
-                return "지금은 을 사용할 수 없어요"
+                return "지금은 \(name)을 사용할 수 없어요"
             }
         case .cooldownActive(let name, _, _, _, _):
             return "지금은 \(name)을 사용할 수 없어요"
@@ -112,13 +114,13 @@ public enum BlockingStatus: Codable, Equatable {
     public var subtitle: String {
         switch self {
         case .blocking, .unlockedTemporarily: return ""
-        case .extensionPrompt(let time, _, let startDate, let endDate):
+        case .extensionPrompt(let name, let time, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 return ""
             }  else if endDate < .now {
                 return ""
             } else {
-                return "\(time)분간 을 사용할 수 없어요."
+                return "\(time)분간 \(name)을 사용할 수 없어요."
             }
         case .cooldownActive(_, let time, let groupName, _,_ ):
             return "\(time)분간 \(groupName)을 사용할 수 없어요."
@@ -131,7 +133,7 @@ public enum BlockingStatus: Codable, Equatable {
             return "사용하기"
         case .unlockedTemporarily:
             return ""
-        case .extensionPrompt(_, _, let startDate, let endDate):
+        case .extensionPrompt(_, _, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 return "그만하기"
             }  else if endDate < .now {
@@ -150,7 +152,7 @@ public enum BlockingStatus: Codable, Equatable {
             return "안하기"
         case .unlockedTemporarily:
             return "다시 알림 보내기"
-        case .extensionPrompt(let time, _, let startDate, let endDate): // TODO: 5분 간격이 가능해지면 1/2 카운트가 될 수 있음
+        case .extensionPrompt(_, let time, _, let startDate, let endDate): // TODO: 5분 간격이 가능해지면 1/2 카운트가 될 수 있음
             if .now < startDate.addingTimeInterval(60) {
                 return "\(time)분 더"
             } else if endDate < .now {

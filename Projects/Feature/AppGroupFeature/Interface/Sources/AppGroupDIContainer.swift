@@ -33,7 +33,7 @@ public protocol AppGroupDIContainerProtocol {
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
     var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol { get }
     var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol { get }
-    var fetchAppNameUseCase: FetchAppNameUseCaseProtocol { get }
+    
     var coolDownStorage: CooldownStorageProtocol { get }
     
     var createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol { get }
@@ -70,8 +70,7 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     @MainActor private(set) lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
     @MainActor lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(breakTimeManager: breakTimeManager, appScheduleStorage: appScheduleStorage)
     @MainActor lazy var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol = FetchSelectedNotificationUseCase(appScheduleStorage: appScheduleStorage)
-    @MainActor lazy var fetchAppNameUseCase: FetchAppNameUseCaseProtocol = FetchAppNameUseCase(appScheduleStorage: appScheduleStorage)
-    
+
     private(set) lazy var createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol = CreateBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     
     private(set) lazy var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol = DeleteBlockScheduleUseCase(blockScheduleManager: blockSchedule)
@@ -87,12 +86,6 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
         managedSettingsManager: managedSetting,
         cooldownStorage: coolDownStorage
     )
-//    EndBreakTimeUseCase(
-    //        appScheduleStorage: appScheduleStorage,
-    //        blockScheduleManager: blockSchedule,
-    //        managedSettingsManager: managedSetting,
-    //        cooldownStorage: coolDownStorage
-    //    )
     
     private(set) lazy var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol = GetBlockingStatusUseCase(
         appScheduleStorage: appScheduleStorage,

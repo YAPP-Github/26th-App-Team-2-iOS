@@ -11,7 +11,6 @@ import Domain
 @Observable
 final class AppBrakeTimeSettingViewModel {
     public let timeOptions = [15, 20, 25, 30, 45, 60, 90, 120]
-    var selectedAppName: String = ""
     var selectedMinutes: Int = 15
     var brakeTimeSettingCompletePresent: Bool = false
     var dismiss: Bool = false
@@ -19,21 +18,13 @@ final class AppBrakeTimeSettingViewModel {
     private let createBreakTimeCompletion: (Int) -> ()
     
     private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
-    private let fetchAppNameUseCase: FetchAppNameUseCaseProtocol
-    
+
     public init(
         createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol,
-        fetchAppNameUseCase: FetchAppNameUseCaseProtocol,
         createBreakTimeCompletion: @escaping (Int) -> ()
     ) {
         self.createBreakTimeUseCase = createBreakTimeUseCase
-        self.fetchAppNameUseCase = fetchAppNameUseCase
         self.createBreakTimeCompletion = createBreakTimeCompletion
-    }
-    
-    
-    public func onAppear() {
-        loadAppName()
     }
     
     // MARK: - AppBrakeTimeSetting Logic
@@ -133,21 +124,6 @@ final class AppBrakeTimeSettingViewModel {
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     print("휴게시간 설정에 실패했습니다")
-                }
-            }
-        }
-    }
-}
-
-extension AppBrakeTimeSettingViewModel {
-    private func loadAppName() {
-        Task {
-            do {
-                selectedAppName = try await fetchAppNameUseCase.execute() ?? ""
-            } catch {
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
-//                    self.toast(message: "앱 이름을 불러오는데 실패했습니다.")
                 }
             }
         }
