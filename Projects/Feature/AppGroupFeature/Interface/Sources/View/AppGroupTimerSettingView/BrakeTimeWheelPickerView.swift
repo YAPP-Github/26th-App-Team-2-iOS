@@ -56,8 +56,8 @@ public struct BrakeTimeWheelPickerView: View {
                         }
                     }
                     .scrollTargetLayout()
-                    .padding(.horizontal, 16)
                     .offset(y: -holeCenterOffset)
+                    .padding(.horizontal, 16)
                 }
                 .maskOverLay(endTime: viewModel.endTime)
                 .scrollIndicators(.hidden)

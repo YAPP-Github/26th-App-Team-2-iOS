@@ -54,7 +54,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         case .unlockedTemporarily:
             // 버튼 없음
             break
-        case .extensionPrompt(_, _, let startDate, let endDate):
+        case .extensionPrompt(_, _, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 // 그만하기
                 completionHandler(.close)
@@ -90,7 +90,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
         case .unlockedTemporarily:
             appScheduleStorage.saveBlockingStatus(.blocking(tokenName: ""))
             completionHandler(.defer)
-        case .extensionPrompt(let time, let count, let startDate, let endDate):
+        case .extensionPrompt(let tokenName, let time, let count, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) {
                 if count < 1 {
                     // 연장 횟수 증가
@@ -106,7 +106,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
 
                     // 연장 프롬프트 상태 업데이트
-                    appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: time, count: newCount, startDate: newStartDate, endDate: newEndDate))
+                    appScheduleStorage.saveBlockingStatus(.extensionPrompt(tokenName: tokenName, time: time, count: newCount, startDate: newStartDate, endDate: newEndDate))
 
                     // 차단창 닫기 (15분 동안 앱 사용 가능)
                     completionHandler(.defer)
