@@ -40,7 +40,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
-                    time: 15,
+                    tokenName: "", time: 15,
                     count: extensionCount,
                     startDate: extensionStartDate,
                     endDate: extensionEndDate
@@ -84,7 +84,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             if extensionCount == 0 {
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
-                        time: 15,
+                        tokenName: "", time: 15,
                         count: 0,
                         startDate: extensionStartDate,
                         endDate: extensionEndDate
@@ -94,7 +94,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 // 연장 가능: extensionPrompt 상태로 설정
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
-                        time: 15,
+                        tokenName: "", time: 15,
                         count: extensionCount,
                         startDate: extensionStartDate,
                         endDate: extensionEndDate

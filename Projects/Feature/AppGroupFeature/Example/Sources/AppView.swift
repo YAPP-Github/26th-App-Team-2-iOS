@@ -19,33 +19,41 @@ struct FeatureAppGroupFeatureApp: App {
 
     var body: some Scene {
         WindowGroup {
-            BrakeTabView(selectedTab: $selectedTab) { selectedTab in
-                ZStack {
-                    switch selectedTab {
-                    case .dashboard:
-                        AppGroupMainView()
-                    case .myInfo:
-                        VStack {
-                            Spacer()
-                            Text("My Info")
-                            Spacer()
-                        }
-                    }
-                }
-                
-            }
-            .environment(
-                AppGroupMainViewModel(
-                    fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
-                    fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
-                    createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
-                    deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
-                    fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
-                    endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
-                    getBlockingStatusUseCase: diContainer.getBlockingStatusUseCase,
-                    endBreakTimeUseCase: diContainer.endAppBrakeTimeUseCase
-                )
-            )
+            appGroupMainView
         }
     }
+    @ViewBuilder
+    var appGroupMainView: some View {
+        BrakeTabView(selectedTab: $selectedTab) { selectedTab in
+            ZStack {
+                switch selectedTab {
+                case .dashboard:
+                    AppGroupMainView()
+                case .myInfo:
+                    VStack {
+                        Spacer()
+                        Text("My Info")
+                        Spacer()
+                    }
+                }
+            }
+            
+        }
+        .environment(
+            AppGroupMainViewModel(
+                fetchAppGroupUseCase: diContainer.fetchAppGroupUseCase,
+                fetchSelectedNotificationUseCase: diContainer.fetchSelectedNotificationUseCase,
+                createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
+                deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
+                fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
+                endBlockScheduleUseCase: diContainer.endBlockScheduleUseCase,
+                getBlockingStatusUseCase: diContainer.getBlockingStatusUseCase,
+                endBreakTimeUseCase: diContainer.endAppBrakeTimeUseCase
+            )
+        )
+        
+    }
 }
+
+
+

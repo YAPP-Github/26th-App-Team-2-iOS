@@ -9,8 +9,8 @@ import Foundation
 import Domain
 
 @Observable
-final class AppBrakeTimeSettingViewModel {
-    public let timeOptions = [15, 20, 25, 30, 45, 60, 90, 120]
+public final class AppBrakeTimeSettingViewModel {
+    public let timeOptions: [Int] = [15, 20, 25, 30, 45, 60, 90]
     var selectedMinutes: Int = 15
     var brakeTimeSettingCompletePresent: Bool = false
     var dismiss: Bool = false
