@@ -213,7 +213,7 @@ struct ContentView: View {
     
     private func testExtensionPrompt() {
         // 연장 프롬프트 상태 설정
-        viewModel.appScheduleStorage.saveBlockingStatus(.extensionPrompt(time: 15, count: 1, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
+        viewModel.appScheduleStorage.saveBlockingStatus(.extensionPrompt(tokenName: "", time: 15, count: 1, startDate: .now, endDate: .now.addingTimeInterval(15 * 60)))
         print("✅ 연장 프롬프트 상태 설정 완료: extensionPrompt(time: 5, count: 1)")
     }
     

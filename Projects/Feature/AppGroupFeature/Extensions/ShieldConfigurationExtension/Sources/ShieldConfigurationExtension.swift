@@ -102,9 +102,9 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return .blocking(tokenName: tokenName)
         case .unlockedTemporarily:
             return .unlockedTemporarily
-        case .extensionPrompt(let time, let count, let startDate, let endDate):
+        case .extensionPrompt(let tokenName, let time, let count, let startDate, let endDate):
             // 저장된 시간과 횟수를 그대로 사용
-            return .extensionPrompt(time: time, count: count, startDate: startDate, endDate: endDate)
+            return .extensionPrompt(tokenName: tokenName, time: time, count: count, startDate: startDate, endDate: endDate)
         case .cooldownActive(_, let time, let groupName, let startDate, let endDate):
             return .cooldownActive(tokenName: tokenName, time: time, groupName: groupName, startDate: startDate, endDate: endDate)
         }
@@ -132,7 +132,7 @@ public class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return UIImage(resource: .iconArrow)
         case .unlockedTemporarily:
             return UIImage(resource: .iconWarning)
-        case .extensionPrompt(_, _, let startDate, let endDate):
+        case .extensionPrompt(_, _, _, let startDate, let endDate):
             if .now < startDate.addingTimeInterval(60) { // "15분 더" 디자인
                 return UIImage(resource: .illustrationTimer)
             } else if endDate < .now { // 쿨다운 시간을 넘음... blocking 화면을 보여줌...
