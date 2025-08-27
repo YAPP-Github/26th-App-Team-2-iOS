@@ -58,11 +58,9 @@ public struct LoginView: View {
             content: {
                 NavigationView {
                     KakaoWebView { onSuccess in
-                        print("onSuccess: \(onSuccess)")
                         self.logInViewModel.kakaoCodeFetchSuccess(authorizationCode: onSuccess)
                         kakaoLogInShow.toggle()
                     } onAuthError: { error in
-                        print("onError: \(error)")
                         self.loading = false
                         kakaoLogInShow.toggle()
                     }
