@@ -22,6 +22,9 @@ public struct UserNotificationAuthView: View {
             authorizationButtonAction: {
                 userNotificationAuthViewModel.authorizationButtonTapped()
             },
+            denyButtonAction: {
+                userNotificationAuthViewModel.authorizationDeniedButtonTapped()
+            },
             notoficationAuthFailedResult: viewModel.notoficationAuthFailedResult,
             notificationAuthDeniedPresent: $viewModel.notificationAuthDeniedPresent,
             notificationAuthFailedPresent: $viewModel.notificationAuthFailedPresent
@@ -33,6 +36,7 @@ public struct UserNoficationAuth: View {
     @Environment(\.dismiss) private var dismiss
     let showNaivgation: Bool
     let authorizationButtonAction: () -> Void
+    let denyButtonAction: () -> Void
     let notoficationAuthFailedResult: NotificationAuthorizationResult?
     @Binding var notificationAuthDeniedPresent: Bool
     @Binding var notificationAuthFailedPresent: Bool
@@ -40,12 +44,14 @@ public struct UserNoficationAuth: View {
     public init(
         showNaivgation: Bool,
         authorizationButtonAction: @escaping () -> Void,
+        denyButtonAction: @escaping () -> Void,
         notoficationAuthFailedResult: NotificationAuthorizationResult?,
         notificationAuthDeniedPresent: Binding<Bool>,
         notificationAuthFailedPresent: Binding<Bool>
     ) {
         self.showNaivgation = showNaivgation
         self.authorizationButtonAction = authorizationButtonAction
+        self.denyButtonAction = denyButtonAction
         self.notoficationAuthFailedResult = notoficationAuthFailedResult
         self._notificationAuthDeniedPresent = notificationAuthDeniedPresent
         self._notificationAuthFailedPresent = notificationAuthFailedPresent
@@ -108,7 +114,7 @@ public struct UserNoficationAuth: View {
             icon: .iconConfetti,
             alertType: .confirmDoubleButton,
             primaryButtonTitle: "설정으로 이동",
-            secondaryButtonTitle: "취소",
+            secondaryButtonTitle: "나중에 하기",
             primaryAction: {
                 notificationAuthDeniedPresent = false
                 if let url = URL(string: UIApplication.openSettingsURLString),
@@ -118,6 +124,7 @@ public struct UserNoficationAuth: View {
             },
             secondaryAction: {
                 notificationAuthDeniedPresent = false
+                self.denyButtonAction()
             }
         )
         .brakePopUp(

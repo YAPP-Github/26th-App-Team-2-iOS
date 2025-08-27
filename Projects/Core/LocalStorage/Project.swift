@@ -10,7 +10,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-    name: ModulePath.Core.name+ModulePath.Core.LocalStorage.rawValue,
+    name: ModulePath.Core.name + ModulePath.Core.LocalStorage.rawValue,
     targets: [
         .core(
             interface: .LocalStorage,

@@ -28,6 +28,7 @@ extension DeviceActivityCenter {
             repeats: true
         )
 
+
         try setMonitoring(scheduleName, during: schedule)
     }
 

@@ -63,6 +63,7 @@ struct FirebaseConfigureTest {
         #expect(crashlytics != nil, "Crashlytics 인스턴스에 접근할 수 있어야 합니다")
         
     }
+    
 }
 
 

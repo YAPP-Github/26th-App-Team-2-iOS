@@ -35,13 +35,16 @@ public final class UserNotificationAuthViewModel {
     
     private let requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase
     private let notificationApproved: () -> ()
+    private let notificationDenied: () -> ()
     
     public init(
         requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase,
-        notificationApproved: @escaping () -> ()
+        notificationApproved: @escaping () -> (),
+        notificationDenied:  @escaping () -> ()
     ) {
         self.requestUserNotificationAuthUseCase = requestUserNotificationAuthUseCase
         self.notificationApproved = notificationApproved
+        self.notificationDenied = notificationDenied
     }
     
     public func authorizationButtonTapped() {
@@ -62,7 +65,10 @@ public final class UserNotificationAuthViewModel {
             }
         }
     }
-//    
+    public func authorizationDeniedButtonTapped() {
+        notificationDenied()
+    }
+//
     public func userDeniedCancelTapped() {
         self.notoficationAuthFailedResult = .userRestricted
         self.notificationAuthFailedPresent = true

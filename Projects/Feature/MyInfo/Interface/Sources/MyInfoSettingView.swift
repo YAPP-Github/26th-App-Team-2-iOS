@@ -12,9 +12,9 @@ import SharedDesignSystem
 public struct MyInfoSettingView: View {
 
     @Environment(MyInfoSettingViewModel.self) private var myInfoSettingViewModel
-
-    public init() {
-    }
+    @Environment(\.tabBarInsetHeight) var height
+    
+    public init() { }
 
     public var body: some View {
         NavigationStack {
@@ -26,6 +26,7 @@ public struct MyInfoSettingView: View {
                     ScrollView {
                         // 메뉴 아이템들
                         menuItemsSection
+                        Rectangle().fill(.clear).frame(height: height)
                     }
                 }
                 .ignoresSafeArea()

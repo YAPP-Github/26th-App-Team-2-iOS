@@ -70,6 +70,9 @@ public struct OnboardingView: View {
                                     requestUserNotificationAuthUseCase: diContainer.requestUserNotificationAuthUseCase,
                                     notificationApproved: {
                                         onboardingManager.goToOnboardingCompleted()
+                                    },
+                                    notificationDenied: {
+                                        onboardingManager.goToOnboardingCompleted()
                                     }
                                 )
                         )
