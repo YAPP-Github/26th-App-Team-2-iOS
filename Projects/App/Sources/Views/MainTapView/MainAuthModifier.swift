@@ -27,6 +27,9 @@ struct MainAuthModifier: ViewModifier {
                             requestUserNotificationAuthUseCase: appDIContainer.useCaseContainer.requestUserNotificationAuthUseCase,
                             notificationApproved: {
                                 mainAppViewModel.authFailedPresented = nil
+                            },
+                            notificationDenied: {
+                                mainAppViewModel.authFailedPresented = nil
                             }
                         )
                     )
@@ -60,6 +63,8 @@ struct MainAuthModifier: ViewModifier {
                                     requestUserNotificationAuthUseCase: appDIContainer.useCaseContainer.requestUserNotificationAuthUseCase,
                                     notificationApproved: {
                                         mainAppViewModel.authFailedPresented = nil
+                                    }, notificationDenied: {
+                                        mainAppViewModel.authFailedPresented = nil
                                     }
                                 )
                             )
@@ -91,6 +96,8 @@ struct MainAuthModifier: ViewModifier {
                 showNaivgation: showNavigation,
                 authorizationButtonAction: {
                     viewModel.authorizationButtonTapped()
+                }, denyButtonAction: {
+                    viewModel.authorizationDeniedButtonTapped()
                 },
                 notoficationAuthFailedResult: userNotificationAuthViewModel.notoficationAuthFailedResult,
                 notificationAuthDeniedPresent: $viewModel.notificationAuthDeniedPresent,
