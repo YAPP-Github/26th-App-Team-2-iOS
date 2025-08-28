@@ -33,7 +33,10 @@ public protocol DIContainerProtocol {
     var onboardingStateUseCase: OnboardingStateUseCase { get }
     var appleLogInUseCase: AppleLogInUseCase { get }
     var kakaoLogInUseCase: KakaoLogInUseCase  { get }
+    var localLogInUseCase: LocalLogInUseCase { get }
     var logInCancelUseCase: LogInCancelUseCase { get }
+    var activeUserUseCase: ActiveUserUseCase { get }
+    
     var userSetNicknameUseCase: UserSetNicknameUseCase { get }
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
     var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase { get }
@@ -41,6 +44,10 @@ public protocol DIContainerProtocol {
 
 // MARK: - Production DI Container
 public final class OnboardingDIContainer: DIContainerProtocol {
+    
+    
+    
+    
 
     // MARK: -- Core Layer
     // Lazy 프로퍼티로 필요할 때만 생성
@@ -125,6 +132,10 @@ public final class OnboardingDIContainer: DIContainerProtocol {
     public lazy var kakaoLogInUseCase: KakaoLogInUseCase = KakaoLogInUseCase(
         oAuthService: oAuthLogInService
     )
+    public lazy var localLogInUseCase: LocalLogInUseCase = LocalLogInUseCase(
+        onboardingState: onboardingStateService
+    )
+    public lazy var activeUserUseCase: ActiveUserUseCase = ActiveUserUseCase(onboardingState: onboardingStateService)
     
     public lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
     public lazy var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase = RequestUserNotificationAuthUseCase()

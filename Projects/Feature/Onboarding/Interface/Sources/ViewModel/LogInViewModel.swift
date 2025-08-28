@@ -17,17 +17,25 @@ public final class LogInViewModel {
     
     private let appleLogInUseCase: AppleLogInUseCase
     private let kakaoLogInUseCase: KakaoLogInUseCase
+    private let localLogInUseCase: LocalLogInUseCase
     
     private let logInCompleted: () -> ()
     
     public init(
         appleLogInUseCase: AppleLogInUseCase,
         kakaoLogInUseCase: KakaoLogInUseCase,
+        localLogInUseCase: LocalLogInUseCase,
         logInCompleted: @escaping () -> ()
     ) {
         self.appleLogInUseCase = appleLogInUseCase
         self.kakaoLogInUseCase = kakaoLogInUseCase
+        self.localLogInUseCase = localLogInUseCase
         self.logInCompleted = logInCompleted
+    }
+    
+    @MainActor func onboardingStartButtonTapped() {
+        localLogInUseCase.execute()
+        logInCompleted()
     }
     
     @MainActor

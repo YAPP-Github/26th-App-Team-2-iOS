@@ -13,6 +13,7 @@ public protocol UseCaseDIContainerProtocol {
     var onboardingStateUseCase: OnboardingStateUseCase { get }
     var appleLogInUseCase: AppleLogInUseCase { get }
     var kakaoLogInUseCase: KakaoLogInUseCase { get }
+    var localLogInUseCase: LocalLogInUseCase { get }
     var logInCancelUseCase: LogInCancelUseCase { get }
     var userSetNicknameUseCase: UserSetNicknameUseCase { get }
     
@@ -41,8 +42,9 @@ public protocol UseCaseDIContainerProtocol {
 }
 
 public final class UseCaseDIContainer: UseCaseDIContainerProtocol {
-    
-    
+    @MainActor public lazy var localLogInUseCase: LocalLogInUseCase = LocalLogInUseCase(
+        onboardingState: serviceContainer.onboardingStateService
+    )
     
     private let serviceContainer: ServiceDIContainerProtocol
     private let coreContainer: CoreDIContainerProtocol

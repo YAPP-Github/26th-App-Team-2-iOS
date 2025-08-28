@@ -9,6 +9,52 @@ import SwiftUI
 import SharedDesignSystem
 
 extension LoginView {
+    
+    struct LoginFooterNoSignInView: View {
+        let startButtonTapped: () -> ()
+        let privacyInfoButtonTapped: () -> ()
+        let termsOfServiceButtonTapped: () -> ()
+        var body: some View {
+            VStack(spacing: 25) {
+                VStack(spacing: 0) {
+                    Text("아래 버튼으로 입장 시,")
+                    BrakeTappableText(
+                        text: "개인정보처리방침 및 이용약관에 동의하는 것으로 간주합니다.",
+                        tappableWords: [
+                            "개인정보처리방침": {
+                                privacyInfoButtonTapped()
+                            },
+                            "이용약관" : {
+                                termsOfServiceButtonTapped()
+                            }
+                        ])
+                }
+                .font(.pretendard(size: 12, type: .medium))
+                .foregroundStyle(Color.grey400)
+                VStack(spacing: 12) {
+                    Button  {
+                        startButtonTapped()
+                    } label: {
+                        HStack {
+                            Image.iconBack
+                            HStack {
+                                Spacer()
+                                Text("시작하기")
+                                    .font(.pretendard(size: 16, type: .bold))
+                                    .foregroundStyle(Color.grey00)
+                                Spacer()
+                            }
+                        }
+                        .padding(.vertical, 16)
+                        .padding(.horizontal, 16)
+                        .background(Color(hex: "#111111"))
+                        .cornerRadius(16)
+                    }
+                }
+            }
+        }
+    }
+    
     struct LoginFooterView: View {
         let kakaoLogInButtonTapped: () -> ()
         let appleLogInButtonTapped: () -> ()

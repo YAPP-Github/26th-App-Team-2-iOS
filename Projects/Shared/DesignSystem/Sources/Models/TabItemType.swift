@@ -18,7 +18,7 @@ public enum TabItemType: String, CaseIterable, Identifiable {
         switch self {
 //        case .report:       return "리포트"
         case .dashboard:    return "관리"
-        case .myInfo:       return "내 정보"
+        case .myInfo:       return "설정"
         }
     }
 

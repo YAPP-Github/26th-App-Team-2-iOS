@@ -20,19 +20,22 @@ public struct OnboardingView: View {
     
     public var body: some View {
         NavigationStack(path: $onboardingManager.path) {
-            SetNicknameView()
-                .environment(
-                    SetNicknameViewModel(
-                        logInCancelUseCase: self.diContainer.logInCancelUseCase,
-                        logInCancelCompleted: {
-                            startUpViewModel.logInCancelCompleted()
-                        },
-                        userNicknameCreated: { nickname in
-                            onboardingManager.nickname = nickname
-                            onboardingManager.goToOnboardingInfo()
-                        }
-                    )
-                )
+//            SetNicknameView()
+//                .environment(
+//                    SetNicknameViewModel(
+//                        logInCancelUseCase: self.diContainer.logInCancelUseCase,
+//                        logInCancelCompleted: {
+//                            startUpViewModel.logInCancelCompleted()
+//                        },
+//                        userNicknameCreated: { nickname in
+//                            onboardingManager.nickname = nickname
+//                            onboardingManager.goToOnboardingInfo()
+//                        }
+//                    )
+//                )
+            OnboardingInfoView(infoCompleted: {
+                onboardingManager.goToScreenTimeAuth()
+            })
                 .navigationDestination(for: OnboardingViewType.self) { onboardingViewType in
                     switch onboardingViewType {
                     case .setNickname:
@@ -82,6 +85,7 @@ public struct OnboardingView: View {
                                 OnboardingCompletedViewModel(
                                     userName: nickname,
                                     userSetNicknameUseCase: diContainer.userSetNicknameUseCase,
+                                    activeUserUseCase: diContainer.activeUserUseCase,
                                     onboardingCompleted: {
                                         startUpViewModel.onboardingCompleted()
                                     }

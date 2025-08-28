@@ -26,6 +26,7 @@ struct MainAppView: View {
                        LogInViewModel(
                            appleLogInUseCase: appDIContainer.useCaseContainer.appleLogInUseCase,
                            kakaoLogInUseCase: appDIContainer.useCaseContainer.kakaoLogInUseCase,
+                           localLogInUseCase: appDIContainer.useCaseContainer.localLogInUseCase,
                            logInCompleted: startUpViewModel.logInCompleted
                        )
                    )

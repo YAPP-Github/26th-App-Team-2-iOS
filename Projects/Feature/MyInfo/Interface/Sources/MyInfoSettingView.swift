@@ -21,8 +21,16 @@ public struct MyInfoSettingView: View {
             @Bindable var viewModel = myInfoSettingViewModel
             VStack(spacing: 0) {
                 // 상단 컨텐츠 영역
+                Rectangle().fill(.clear).frame(height: 1)
                 VStack {
-                    userProfileSection.padding(.top, 87)
+//                    userProfileSection.padding(.top, 87)
+                    HStack {
+                        Text("설정").padding(.top, 26)
+                            .foregroundColor(.grey300)
+                            .font(.pretendard(size: 24, type: .semiBold))
+                            .padding(.horizontal, 16)
+                        Spacer()
+                    }
                     ScrollView {
                         // 메뉴 아이템들
                         menuItemsSection
@@ -109,7 +117,7 @@ public struct MyInfoSettingView: View {
                     }
                 }
             })
-            .toast(message: myInfoSettingViewModel.showToast ? myInfoSettingViewModel.toastMessage : nil)
+//            .toast(message: myInfoSettingViewModel.showToast ? myInfoSettingViewModel.toastMessage : nil)
         }
     }
 
@@ -158,9 +166,9 @@ public struct MyInfoSettingView: View {
                 legalSubject: myInfoSettingViewModel.legalSubject
             )
 
-            AccountSectionView(
-                accountSubject: myInfoSettingViewModel.accountSubject
-            )
+//            AccountSectionView(
+//                accountSubject: myInfoSettingViewModel.accountSubject
+//            )
         }
         .padding(.horizontal, 20)
         .onReceive(myInfoSettingViewModel.feedbackSubject) { action in

@@ -27,20 +27,30 @@ public struct LoginView: View {
                     .ignoresSafeArea()
                 Spacer()
             }
+            
             VStack(spacing: 16) {
                 Spacer()
-                LoginFooterView {
-                    logInViewModel.kakaoLogInBtnTapped()
-                    self.kakaoLogInShow.toggle()
-                } appleLogInButtonTapped: {
-                    logInViewModel.appleLogInBtnTapped()
-                } privacyInfoButtonTapped: {
-                    self.logInViewModel.privacyInfoButtonTapped()
-                } termsOfServiceButtonTapped: {
+//                LoginFooterView {
+//                    logInViewModel.kakaoLogInBtnTapped()
+//                    self.kakaoLogInShow.toggle()
+//                } appleLogInButtonTapped: {
+//                    logInViewModel.appleLogInBtnTapped()
+//                } privacyInfoButtonTapped: {
+//                    self.logInViewModel.privacyInfoButtonTapped()
+//                } termsOfServiceButtonTapped: {
+//                    logInViewModel.termsOfServiceButtonTapped()
+//                }
+                LoginFooterNoSignInView(startButtonTapped: {
+                    self.logInViewModel.onboardingStartButtonTapped()
+                }, privacyInfoButtonTapped: {
+                    logInViewModel.privacyInfoButtonTapped()
+                }, termsOfServiceButtonTapped: {
                     logInViewModel.termsOfServiceButtonTapped()
-                }
+                })
+                
                 .padding([.horizontal, .bottom], 16)
             }
+            
             VStack(alignment: .center, spacing: 0) {
                 Text("계획한 만큼만 앱을 사용하도록").frame(height: 33)
                 Text("도와드릴게요")

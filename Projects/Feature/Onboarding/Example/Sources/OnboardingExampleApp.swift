@@ -59,6 +59,8 @@ struct OnboardingExampleApp: App {
                     requestUserNotificationAuthUseCase: diContainer.requestUserNotificationAuthUseCase,
                     notificationApproved: {
                         print("스크린타임 허용함")
+                    }, notificationDenied: {
+                        print("노티 허용하지 않음!!")
                     }
                 )
             )
@@ -80,6 +82,7 @@ struct StartUpView: View {
                         LogInViewModel(
                             appleLogInUseCase: diContainer.appleLogInUseCase,
                             kakaoLogInUseCase: diContainer.kakaoLogInUseCase,
+                            localLogInUseCase: diContainer.localLogInUseCase,
                             logInCompleted: startUpViewModel.logInCompleted
                         )
                     )

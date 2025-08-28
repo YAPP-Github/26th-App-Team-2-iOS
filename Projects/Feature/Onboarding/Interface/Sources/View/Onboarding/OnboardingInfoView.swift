@@ -34,9 +34,10 @@ public struct OnboardingInfoView: View {
                 BrakeNavigationView(title: {
                     EmptyView()
                 }, leading: {
-                    BrakeNavigationButton(type: .back) {
-                        dismiss()
-                    }
+//                    BrakeNavigationButton(type: .back) {
+//                        dismiss()
+//                    }
+                    EmptyView()
                 })
                 TabView(selection: $selectedInfoType) {
                     ForEach(onboardinInfoTypes) { infoType in

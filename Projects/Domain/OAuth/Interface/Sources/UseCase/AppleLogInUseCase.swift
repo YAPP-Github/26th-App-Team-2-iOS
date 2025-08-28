@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainUserInterface
 
 public struct AppleLogInUseCase {
     private let oAuthService: OAuthServiceProtocol
@@ -24,3 +25,4 @@ public struct AppleLogInUseCase {
         try await oAuthService.login(oAuthType: .apple, authorizationCode: authorizationCode)
     }
 }
+
