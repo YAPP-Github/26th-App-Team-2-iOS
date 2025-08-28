@@ -10,8 +10,9 @@ import Domain
 
 @Observable
 public final class AppBrakeTimeSettingViewModel {
-    public let timeOptions: [Int] = [15, 20, 25, 30, 45, 60, 90]
-    var selectedMinutes: Int = 15
+    public let timeOptions: [Int] = [1, 2, 3, 4, 5]
+//    [15, 20, 25, 30, 45, 60, 90]
+    var selectedMinutes: Int = 1
     var brakeTimeSettingCompletePresent: Bool = false
     var dismiss: Bool = false
     
@@ -37,68 +38,6 @@ public final class AppBrakeTimeSettingViewModel {
         formatter.dateFormat = "a h시 m분"
 
         return formatter.string(from: endDate)
-    }
-
-    public func getUpperFarNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex - 2
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex < 0 {
-            return ""
-        }
-
-        let farNumber = timeOptions[targetIndex]
-        let nearNumber = getUpperNearNumber()
-
-        // near와 far 숫자가 같으면 빈 문자열 반환
-        if nearNumber == "\(farNumber)" {
-            return ""
-        }
-
-        return "\(farNumber)"
-    }
-
-    public func getUpperNearNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex - 1
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex < 0 {
-            return ""
-        }
-        return "\(timeOptions[targetIndex])"
-    }
-
-    public func getLowerNearNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex + 1
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex >= timeOptions.count {
-            return ""
-        }
-        return "\(timeOptions[targetIndex])"
-    }
-
-    public func getLowerFarNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex + 2
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex >= timeOptions.count {
-            return ""
-        }
-
-        let farNumber = timeOptions[targetIndex]
-        let nearNumber = getLowerNearNumber()
-
-        // near와 far 숫자가 같으면 빈 문자열 반환
-        if nearNumber == "\(farNumber)" {
-            return ""
-        }
-
-        return "\(farNumber)"
     }
 
     @MainActor

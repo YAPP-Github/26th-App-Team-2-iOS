@@ -20,7 +20,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     private let blockScheduleManager = BlockScheduleManager()
     private let managedSettingsManager = ManagedSettingsStoreManager()
-
+    private let coolDownTime: Int = 5
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
         setupStartAction(by: activity)
@@ -36,12 +36,12 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             let extensionCount = appScheduleStorage.getExtensionCount()
             let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
             let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
-            let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
+            let extensionEndDate = extensionStartDate.addingTimeInterval(TimeInterval(coolDownTime * 60))
             
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
                     tokenName: "",
-                    time: 15,
+                    time: coolDownTime,
                     count: extensionCount,
                     startDate: extensionStartDate,
                     endDate: extensionEndDate
@@ -79,14 +79,14 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             let maxExtensions = 1
 
             let extensionStartDate = Date.now
-            let extensionEndDate = extensionStartDate.addingTimeInterval(15 * 60)
+            let extensionEndDate = extensionStartDate.addingTimeInterval(TimeInterval(coolDownTime * 60))
             
             // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
             if extensionCount == 0 {
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
                         tokenName: "",
-                        time: 15,
+                        time: coolDownTime,
                         count: 0,
                         startDate: extensionStartDate,
                         endDate: extensionEndDate
@@ -97,7 +97,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
                         tokenName: "",
-                        time: 15,
+                        time: coolDownTime,
                         count: extensionCount,
                         startDate: extensionStartDate,
                         endDate: extensionEndDate
@@ -108,10 +108,10 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 appScheduleStorage.saveBlockingStatus(
                     .cooldownActive(
                         tokenName: "",
-                        time: 15,
+                        time: coolDownTime,
                         groupName: "",
                         startDate: .now,
-                        endDate: .now.addingTimeInterval(15 * 60)
+                        endDate: .now.addingTimeInterval(TimeInterval(coolDownTime * 60))
                     )
                 )
             }

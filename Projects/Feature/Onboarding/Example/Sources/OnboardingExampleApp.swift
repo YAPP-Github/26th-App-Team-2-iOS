@@ -59,6 +59,8 @@ struct OnboardingExampleApp: App {
                     requestUserNotificationAuthUseCase: diContainer.requestUserNotificationAuthUseCase,
                     notificationApproved: {
                         print("스크린타임 허용함")
+                    }, notificationDenied: {
+                        print("스크린타임 실패함")
                     }
                 )
             )

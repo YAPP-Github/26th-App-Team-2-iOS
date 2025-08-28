@@ -42,9 +42,14 @@ public protocol AppGroupDIContainerProtocol {
     var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol { get }
     var endAppBrakeTimeUseCase: EndBreakTimeUseCaseProtocol { get }
     var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol { get }
+    
+    var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase { get }
+//    var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
 }
 
 final class AppGroupDIManager: AppGroupDIContainerProtocol {
+    
+    
 
     
     private(set) lazy var blockSchedule: BlockScheduleProtocol = BlockScheduleManager()
@@ -68,6 +73,7 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
 
     @MainActor private(set) lazy var deleteAppGroupUseCase: DeleteAppGroupUseCase = DeleteAppGroupUseCase(appGroupService: appGroupService)
     @MainActor private(set) lazy var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase = RequestScreenTimeAuthUseCase()
+    lazy var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase = RequestUserNotificationAuthUseCase()
     @MainActor lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(breakTimeManager: breakTimeManager, appScheduleStorage: appScheduleStorage)
     @MainActor lazy var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol = FetchSelectedNotificationUseCase(appScheduleStorage: appScheduleStorage)
 

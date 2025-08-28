@@ -206,7 +206,7 @@ fileprivate extension AppGroupMainViewModel {
             Task {
                 await self.timerActor.stop()
                 try? await Task.sleep(for: .seconds(1))
-                refreshTimer(start: .now, end: .now.addingTimeInterval(15 * 60))
+                refreshTimer(start: .now, end: .now.addingTimeInterval(5 * 60))
             }
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")

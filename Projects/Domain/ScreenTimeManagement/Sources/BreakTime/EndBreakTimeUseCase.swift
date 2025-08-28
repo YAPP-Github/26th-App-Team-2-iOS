@@ -18,7 +18,7 @@ public struct EndBreakTimeUseCase: EndBreakTimeUseCaseProtocol {
     private let blockScheduleManager: BlockScheduleProtocol
     private let managedSettingsManager: ManagedSettingsStoreProtocol
     private let cooldownStorage: CooldownStorageProtocol
-
+    private let coolDownMinutes: Int = 5
     public init(
         appScheduleStorage: AppScheduleStorageProtocol,
         blockScheduleManager: BlockScheduleProtocol,
@@ -50,11 +50,11 @@ public struct EndBreakTimeUseCase: EndBreakTimeUseCaseProtocol {
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
                     tokenName: "",
-                    time: 15,
+                    time: coolDownMinutes,
                     count: 0,
                     startDate: .now,
                     endDate: .now.addingTimeInterval(
-                        15 * 60
+                        TimeInterval(coolDownMinutes * 60)
                     )
                 )
             )
@@ -63,11 +63,11 @@ public struct EndBreakTimeUseCase: EndBreakTimeUseCaseProtocol {
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
                     tokenName: "",
-                    time: 15,
+                    time: 5,
                     count: extensionCount,
                     startDate: .now,
                     endDate: .now.addingTimeInterval(
-                        15 * 60
+                        TimeInterval(coolDownMinutes * 60)
                     )
                 )
             )
