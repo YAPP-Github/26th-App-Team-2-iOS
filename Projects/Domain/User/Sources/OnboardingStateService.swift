@@ -12,7 +12,7 @@ import DomainUserInterface
 extension OnboardingStateService: @retroactive OnboardingStateProtocol {
     
     public func getMemberState() -> MemberStateType {
-        self.memberStateStorage.get() ?? .hold
+        self.memberStateStorage.get() ?? .none
     }
     
     public func setMemberState(_ memberState: MemberStateType) {

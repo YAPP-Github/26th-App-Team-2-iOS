@@ -24,7 +24,6 @@ public class StartUpViewModel {
     ) {
         self.autoLogInUseCase = autoLogInUseCase
         self.onboardingStateUseCase = onboardingStateUseCase
-
     }
     
     public func startUpOnAppear() {

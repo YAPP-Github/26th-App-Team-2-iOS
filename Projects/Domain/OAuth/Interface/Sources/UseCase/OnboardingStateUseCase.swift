@@ -21,6 +21,7 @@ public struct OnboardingStateUseCase {
         switch onboardingState.getMemberState() {
         case .active: return .brakeAvailable
         case .hold: return .onboardingRequired
+        case .none: return .logInRequired
         }
     }
 }

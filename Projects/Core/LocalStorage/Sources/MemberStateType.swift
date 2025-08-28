@@ -12,6 +12,7 @@ extension MemberStateType {
     
     private static let activeRawValue: String = "ACTIVE"
     private static let holdRawValue: String = "HOLD"
+    private static let noneRawValue: String = "NONE"
     
     public init?(rawValue: String) {
         switch rawValue {
@@ -25,6 +26,7 @@ extension MemberStateType {
         switch self {
         case .active: Self.activeRawValue
         case .hold: Self.holdRawValue
+        case .none: Self.noneRawValue
         }
     }
 }

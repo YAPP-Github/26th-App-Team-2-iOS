@@ -49,5 +49,7 @@ public extension Image {
     static let iconExit: Image = SharedDesignSystemAsset.Images.iconExit.swiftUIImage
     static let iconGroupTimer: Image = SharedDesignSystemAsset.Images.iconGroupTimer.swiftUIImage
     static let iconGroupCoolDown: Image = SharedDesignSystemAsset.Images.iconGroupCooldown.swiftUIImage
-    static let iconGroupSetting = SharedDesignSystemAsset.Images.iconGroupSetting.swiftUIImage
+    static let iconGroupSetting: Image = SharedDesignSystemAsset.Images.iconGroupSetting.swiftUIImage
+    static let iconBrake: Image = SharedDesignSystemAsset.Images.iconBrake.swiftUIImage
+    static let iconMySetting: Image = SharedDesignSystemAsset.Images.iconMySetting.swiftUIImage
 }

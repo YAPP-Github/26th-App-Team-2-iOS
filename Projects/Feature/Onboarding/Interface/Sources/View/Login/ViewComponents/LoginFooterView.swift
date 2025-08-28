@@ -36,7 +36,7 @@ extension LoginView {
                         startButtonTapped()
                     } label: {
                         HStack {
-                            Image.iconBack
+                            Image.iconBrake
                             HStack {
                                 Spacer()
                                 Text("시작하기")

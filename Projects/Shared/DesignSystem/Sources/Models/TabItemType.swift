@@ -26,7 +26,7 @@ public enum TabItemType: String, CaseIterable, Identifiable {
         switch self {
 //        case .report:       return Image.iconReport.renderingMode(.template)
         case .dashboard:    return Image.iconDashboard.renderingMode(.template)
-        case .myInfo:       return Image.iconMyInfo.renderingMode(.template)
+        case .myInfo:       return Image.iconMySetting.renderingMode(.template)
         }
     }
 }

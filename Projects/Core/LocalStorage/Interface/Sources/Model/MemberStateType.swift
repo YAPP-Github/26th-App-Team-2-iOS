@@ -10,4 +10,5 @@ import Foundation
 public enum MemberStateType {
     case active
     case hold
+    case none
 }
