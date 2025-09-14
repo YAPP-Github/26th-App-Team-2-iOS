@@ -24,7 +24,7 @@ public struct AppBrakeTimeSettingView: View {
                     EmptyView()
                 }, trailing: {
                     BrakeNavigationButton(type: .cancel) {
-                        dismiss()
+                        viewModel.brakeTimeSettingCancelButtonTapped()
                     }
                 })
                 // 제목

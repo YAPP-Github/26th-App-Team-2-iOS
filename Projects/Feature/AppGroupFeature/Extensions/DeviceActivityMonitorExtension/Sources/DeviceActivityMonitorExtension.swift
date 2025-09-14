@@ -15,6 +15,18 @@ import CoreLocalStorageInterface
 import CoreLocalStorage
 import OSLog
 
+/// DeviceMonitor Lifecycle
+/// > 1. intervalWillStartWarning - warningTime에서 걸리면 발동
+/// 1. intervalDidStart (Required) -> session 시작
+
+/// > 2. intervalWillEndWarning - warningTime에서 걸리면 발동 -> session 중단 (15분 이내이면)
+///   issue 1. 5분 session 일 때, iintervalDidStart 5분 뒤에 intervalWillEndWarning, intervalDidStart 불리고 바로 intervalWillEndWarning이 불림
+///   -> 뭔가 바로 불리는 트리거가 있는 것 같아...
+///.  issue 2.
+/// 2. intervalDidEnd (Required) -> session 중단 (15분 이상)
+
+/// 세션 이후에 쿨다운 기능에 사이드 이펙트는 없을 것
+/// long break & short break -> 각 오버라이드 되는 메서드가 따로 불려야하기 때문에 필요하다.
 class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
@@ -36,51 +48,14 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
-        logger.log("intervalDidEnd")
-        setupEndAction(by: activity)
-    }
-
-    private func setupStartAction(by activity: DeviceActivityName) {
-        if activity == .brake {
-            logger.log("setupStartAction activity")
-            let extensionCount: Int = appScheduleStorage.getExtensionCount()
-            let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
-            let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
-            let extensionEndDate = extensionStartDate.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
-            
-            appScheduleStorage.saveBlockingStatus(
-                .extensionPrompt(
-                    tokenName: "", time: 5,
-                    count: extensionCount,
-                    startDate: extensionStartDate,
-                    endDate: extensionEndDate
-                )
-            )
-            
-            appScheduleStorage.saveSelectNotificationTrigger(false)
-
-            // 저장된 모든 스케줄을 가져와서 차단 해제
-            let allSchedules = blockScheduleManager.readAll()
-            managedSettingsManager.clearAllBlockListsForRest(schedules: allSchedules)
-        } else if let schedule = BlockSchedule(from: activity) {
-            logger.log("setupStartAction schedule \(schedule.id) \(schedule.title)")
-            // DeviceActivityName과 매칭되는 BlockSchedule의 블록리스트를 적용
-            appScheduleStorage.saveSelectNotificationTrigger(true)
-            blockScheduleManager.startBlockSchedule(schedule)
-        } else {
-            // BlockSchedule을 찾을 수 없는 경우에도 차단 상태를 활성화
-            logger.log("other blocking")
-            appScheduleStorage.saveBlockingStatus(.blocking(tokenName: ""))
-        }
-    }
-
-    private func setupEndAction(by activity: DeviceActivityName) {
-        if activity == .brake {
-            logger.log("setupEndAction activity")
+        logger.log("intervalDidEnd \(activity.rawValue, privacy: .public)")
+        // 5분 이상인지 검증하기
+        if activity == .longBrake { //휴게 시간 끝났을 때
+            logger.log("intervalDidEnd longBrake")
             // 휴식 시간 종료 - 차단 재설정 및 extensionPrompt 상태로 설정
             appScheduleStorage.saveSelectNotificationTrigger(false)
 
-            // 저장된 모든 스케줄에 대해 차단 재설정
+            
             let allSchedules = blockScheduleManager.readAll()
             allSchedules.forEach { schedule in
                 blockScheduleManager.startBlockSchedule(schedule)
@@ -107,6 +82,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 )
             } else if extensionCount < maxExtensions {
                 // 연장 가능: extensionPrompt 상태로 설정
+                logger.log("extensionCount 초과 \(extensionCount)")
                 appScheduleStorage.saveBlockingStatus(
                     .extensionPrompt(
                         tokenName: "", time: coolDownMinutes,
@@ -138,21 +114,98 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             managedSettingsManager.clearAllBlockListsForRest(schedules: [])
         }
     }
+
+    
     // 5분 이내에 발생하는 Warning 값 대응... -> 타이머가 끝나기 전에 불리는 값이다!!
     override func intervalWillEndWarning(for activity: DeviceActivityName) {
         super.intervalWillEndWarning(for: activity)
+        // 15분 이하인지 검증하기
+        
         logger.log("intervalWillEndWarning \(activity.rawValue, privacy: .public)")
-        if activity == .brake {
-            let extensionCount = appScheduleStorage.getExtensionCount()
+        if activity == .shortBrake { //휴게 시간 끝났을 때
+            logger.log("setupEndAction activity")
+            // 휴식 시간 종료 - 차단 재설정 및 extensionPrompt 상태로 설정
+            appScheduleStorage.saveSelectNotificationTrigger(false)
+
+            // 저장된 모든 스케줄에 대해 차단 재설정
+            let allSchedules = blockScheduleManager.readAll()
+            logger.log("모든 스케쥴: \(allSchedules, privacy: .public)")
+            allSchedules.forEach { schedule in
+                blockScheduleManager.startBlockSchedule(schedule)
+            }
+            
+            // extensionPrompt 상태로 설정
+            let extensionCount = appScheduleStorage.getExtensionCount() // 현재 연장 횟수
+            let maxExtensions = 1
+
+            let extensionStartDate = Date.now
+            let extensionEndDate = extensionStartDate.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
+            
+            // 연장 횟수가 0이면 최초 휴식 종료이므로 extensionPrompt(0/2)로 설정
+            if extensionCount == 0 {
+                logger.log("setupEndAction activity - extensionCount 0")
+                appScheduleStorage.saveBlockingStatus(
+                    .extensionPrompt(
+                        tokenName: "",
+                        time: coolDownMinutes,
+                        count: 0,
+                        startDate: extensionStartDate,
+                        endDate: extensionEndDate
+                    )
+                )
+            } else if extensionCount < maxExtensions {
+                // 연장 가능: extensionPrompt 상태로 설정
+                logger.log("extensionCount 초과 \(extensionCount)")
+                appScheduleStorage.saveBlockingStatus(
+                    .extensionPrompt(
+                        tokenName: "",
+                        time: coolDownMinutes,
+                        count: extensionCount,
+                        startDate: extensionStartDate,
+                        endDate: extensionEndDate
+                    )
+                )
+            } else {
+                // 연장 불가: sessionEnded 상태로 설정 (5번 화면)
+                logger.log("setupEndAction activity - sessionEnded")
+                appScheduleStorage.saveBlockingStatus(
+                    .cooldownActive(
+                        tokenName: "앱 그룹",
+                        time: coolDownMinutes,
+                        groupName: "앱 그룹",
+                        startDate: .now,
+                        endDate: .now.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
+                    )
+                )
+            }
+        }
+        else if let schedule = BlockSchedule(from: activity)  {
+            // 스케줄 종료 시 차단 상태 설정
+            logger.log("setupEndAction scedule")
+            blockScheduleManager.endBlockSchedule(schedule)
+        } else {
+            // BlockSchedule을 찾을 수 없는 경우에도 차단 상태를 해제
+            logger.log("block not found")
+            managedSettingsManager.clearAllBlockListsForRest(schedules: [])
+        }
+    }
+    
+    private func setupEndAction(by activity: DeviceActivityName) {
+        
+    }
+    
+// 쿨다운에 대한 것을 스케줄러로
+    private func setupStartAction(by activity: DeviceActivityName) {
+        if activity == .shortBrake || activity == .longBrake {
+            logger.log("setupStartAction activity \(activity.rawValue, privacy: .public)")
+            let extensionCount: Int = appScheduleStorage.getExtensionCount()
             let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
-            logger.log("User Brake Time: \(userBrakeTime, privacy: .public)")
             let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
             let extensionEndDate = extensionStartDate.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
-            logger.log("유저 연장시간 설정, \(extensionStartDate, privacy: .public), \(extensionEndDate, privacy: .public)")
+            
             appScheduleStorage.saveBlockingStatus(
                 .extensionPrompt(
-                    tokenName: "",
-                    time: coolDownMinutes,
+                    tokenName: "", time: coolDownMinutes,
                     count: extensionCount,
                     startDate: extensionStartDate,
                     endDate: extensionEndDate
@@ -164,16 +217,17 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
             // 저장된 모든 스케줄을 가져와서 차단 해제
             let allSchedules = blockScheduleManager.readAll()
             managedSettingsManager.clearAllBlockListsForRest(schedules: allSchedules)
-        } else if let schedule = BlockSchedule(from: activity) {
-            logger.log("스케쥴 찾기 - Blocking 하기")
+        } else if let schedule = BlockSchedule(from: activity) { // 최초의 blocking, 차단 스케쥴을 설정하는 것
+            logger.log("setupStartAction schedule \(schedule.id, privacy: .public) \(schedule.title, privacy: .public)")
             // DeviceActivityName과 매칭되는 BlockSchedule의 블록리스트를 적용
             appScheduleStorage.saveSelectNotificationTrigger(true)
+            /// 5분에 맞게 수정할 필요
             blockScheduleManager.startBlockSchedule(schedule)
         } else {
             // BlockSchedule을 찾을 수 없는 경우에도 차단 상태를 활성화
+            logger.log("other blocking")
             appScheduleStorage.saveBlockingStatus(.blocking(tokenName: ""))
         }
-        
     }
 }
 

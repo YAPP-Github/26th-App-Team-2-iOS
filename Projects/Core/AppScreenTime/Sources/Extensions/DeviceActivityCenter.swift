@@ -30,13 +30,13 @@ extension DeviceActivityCenter {
     }
 
     // 휴식 스케줄 등록
-    func createBrakeTime(_ schedule: DeviceActivitySchedule) throws {
-        try setMonitoring(.brake, during: schedule)
+    func createBrakeTime(name: DeviceActivityName, _ schedule: DeviceActivitySchedule) throws {
+        try setMonitoring(name, during: schedule)
     }
 
     // 휴식 스케줄 종료
-    func stopBrakeTime() {
-        stopMonitoring([.brake])
+    func stopBrakeTime(name: DeviceActivityName) {
+        stopMonitoring([name])
     }
 
     // 휴식 스케줄 등록
@@ -71,7 +71,7 @@ extension DeviceActivitySchedule {
             let minimumEnd = intervalStart.addingTimeInterval(15 * 60)
             let endTime = Calendar.current.dateComponents(dateComponents, from: minimumEnd)
             let warning = minimumEnd.timeIntervalSince1970 - intervalEnd.timeIntervalSince1970
-            let warningTime = Calendar.current.dateComponents(dateComponents, from: minimumEnd.addingTimeInterval(-warning))
+            let warningTime = DateComponents(minute: Int(warning) / 60)
             print("startTime: \(startTime)")
             print("endTime: \(endTime)")
             print("warningTime: \(warningTime)")

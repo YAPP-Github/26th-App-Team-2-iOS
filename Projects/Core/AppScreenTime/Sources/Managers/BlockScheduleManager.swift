@@ -34,7 +34,7 @@ public struct BlockScheduleManager: BlockScheduleProtocol {
     
     // 차단 앱 스케줄 삭제
     public func delete(_ schedule: BlockSchedule) {
-        center.stopMonitoring([.brake])
+        center.stopMonitoring([.longBrake, .shortBrake])
         // 블록 리스트 삭제
         managedSettingsManager.clearBlockList(for: schedule)
     }

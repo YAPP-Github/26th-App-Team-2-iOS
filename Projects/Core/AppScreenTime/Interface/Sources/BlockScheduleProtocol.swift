@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import DeviceActivity
 
 public protocol BlockScheduleProtocol {
     func create(_ model: BlockSchedule) throws
-    func delete(_ model: BlockSchedule)
+    func delete(_ schedule: BlockSchedule)
     func startBlockSchedule(_ schedule: BlockSchedule)
     func endBlockSchedule(_ schedule: BlockSchedule)
     func readAll() -> [BlockSchedule]

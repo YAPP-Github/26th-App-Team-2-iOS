@@ -23,6 +23,7 @@ struct TimeSettingPreView: View {
                 .environment(
                     AppBrakeTimeSettingViewModel(
                         createBreakTimeUseCase: diContainer.createBreakTimeUseCase,
+                        setSelectedNotificationUseCase: diContainer.setSelectedNotificationUseCase,
                         createBreakTimeCompletion: { selectedTime in
                             viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
                         }

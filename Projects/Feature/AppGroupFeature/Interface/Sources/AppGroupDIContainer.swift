@@ -33,6 +33,7 @@ public protocol AppGroupDIContainerProtocol {
     var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
     var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol { get }
     var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol { get }
+    var setSelectedNotificationUseCase: SetSelectedNotificationUseCaseProtocol { get }
     
     var coolDownStorage: CooldownStorageProtocol { get }
     
@@ -44,13 +45,11 @@ public protocol AppGroupDIContainerProtocol {
     var getBlockingStatusUseCase: GetBlockingStatusUseCaseProtocol { get }
     
     var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase { get }
-//    var requestScreenTimeAuthUseCase: RequestScreenTimeAuthUseCase { get }
 }
 
 final class AppGroupDIManager: AppGroupDIContainerProtocol {
     
     
-
     
     private(set) lazy var blockSchedule: BlockScheduleProtocol = BlockScheduleManager()
     private(set) lazy var appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
@@ -76,12 +75,14 @@ final class AppGroupDIManager: AppGroupDIContainerProtocol {
     lazy var requestUserNotificationAuthUseCase: RequestUserNotificationAuthUseCase = RequestUserNotificationAuthUseCase()
     @MainActor lazy var createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol = CreateBreakTimeUseCase(breakTimeManager: breakTimeManager, appScheduleStorage: appScheduleStorage)
     @MainActor lazy var fetchSelectedNotificationUseCase: FetchSelectedNotificationUseCaseProtocol = FetchSelectedNotificationUseCase(appScheduleStorage: appScheduleStorage)
+    @MainActor private(set) lazy var setSelectedNotificationUseCase: SetSelectedNotificationUseCaseProtocol = SetSelectedNotificationUseCase(appScheduleStorage: appScheduleStorage)
 
     private(set) lazy var createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol = CreateBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     
     private(set) lazy var deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol = DeleteBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     
     private(set) lazy var fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol = FetchBlockScheduleUseCase(blockScheduleManager: blockSchedule)
+    
     
     private(set) lazy var endBlockScheduleUseCase: EndBlockScheduleUseCaseProtocol = EndBlockScheduleUseCase(blockScheduleManager: blockSchedule)
     

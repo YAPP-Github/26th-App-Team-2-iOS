@@ -26,7 +26,7 @@ public enum AppScene {
 
 @Observable
 public final class AppGroupMainViewModel {
-    
+    private let coolDownMinutes = 5
     // MARK: -- Present, ScreenCover, Toast Message
     var addGroupPresent: Bool = false // 처음 생성할 앱 그룹 관리
     var editAppGroup: AppGroup? = nil // 수정할 앱 그룹 관리
@@ -146,7 +146,6 @@ public final class AppGroupMainViewModel {
     // MARK: - 비즈니스 로직 메서드
     public func deleteCompleted(appGroup: AppGroup) {
         // 기존 스케줄 완전 정리
-        cleanupExistingSchedule()
         self.currentActiveAppGroup = nil
         self.appGroups = []
         toast(message: "그룹이 삭제되었습니다.")
@@ -154,18 +153,8 @@ public final class AppGroupMainViewModel {
     
     public func upsertCompleted(appGroup: AppGroup) {
         let message = appGroups.isEmpty ? "그룹이 추가되었습니다." : "그룹이 수정되었습니다."
-        cleanupExistingSchedule()
         Task {
             do {
-                /// BlockScheduleEntity에 시간의 제한이 있는게 맞는 것인가?
-                let blockScheduleEntity = BlockScheduleEntity(
-                    id: "\(appGroup.groupID)",
-                    title: appGroup.name,
-                    blockList: appGroup.selection,
-                    startTime: .init(hour: 00, minute: 00),
-                    endTime: .init(hour: 23, minute: 59)
-                )
-                try createBlockScheduleUseCase.execute(schedule: blockScheduleEntity)
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     self.appGroups = [appGroup]
@@ -206,7 +195,7 @@ fileprivate extension AppGroupMainViewModel {
             Task {
                 await self.timerActor.stop()
                 try? await Task.sleep(for: .seconds(1))
-                refreshTimer(start: .now, end: .now.addingTimeInterval(5 * 60))
+                refreshTimer(start: .now, end: .now.addingTimeInterval(TimeInterval(coolDownMinutes * 60)))
             }
         } catch {
             print("끝내는데 오류가 발생함: \(error.localizedDescription)")
@@ -327,13 +316,12 @@ fileprivate extension AppGroupMainViewModel {
         }
     }
     
-    func cleanupExistingSchedule() {
-        // 스토리지에서 기존 스케줄 삭제
-        
-        if let appGroup = self.currentActiveAppGroup,
-           let currentSchedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
-            deleteBlockScheduleUseCase.execute(schedule: currentSchedule)
-        }
-    }
+//    func cleanupExistingSchedule() {
+//        // 스토리지에서 기존 스케줄 삭제
+//        if let appGroup = self.currentActiveAppGroup,
+//           let currentSchedule: BlockScheduleEntity = fetchBlockScheduleUseCase.execute(activityName: "\(appGroup.groupID)") {
+//            deleteBlockScheduleUseCase.execute(schedule: currentSchedule)
+//        }
+//    }
     
 }

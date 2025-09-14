@@ -20,9 +20,10 @@ public struct FetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol {
         self.blockScheduleManager = blockScheduleManager
     }
     
-    public func execute(activityName: String) -> BlockScheduleEntity? {
+    public func execute(groupTitle: String) -> BlockScheduleEntity? {
         // Core의 BlockSchedule을 가져와서 Domain Entity로 변환
-        guard let blockSchedule = blockScheduleManager.read(activityName) else {
+        let blockSchedules = blockScheduleManager.readAll()
+        guard let blockSchedule = blockSchedules.first (where: { $0.title == groupTitle }) else {
             return nil
         }
         

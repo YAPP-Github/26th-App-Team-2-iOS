@@ -9,6 +9,7 @@ import Foundation
 import FamilyControls
 import ManagedSettings
 import Domain
+import Core
 
 @Observable
 public final class UpsertAppGroupViewModel {
@@ -17,7 +18,7 @@ public final class UpsertAppGroupViewModel {
     var selectionPresent: Bool = false
     var deleteConfirmPresent: Bool = false
     var dismiss: Bool = false
-    
+    let blockScheduleManager = BlockScheduleManager()
     var applicationTokens: [ApplicationToken] { newSelection.applicationTokens.map { $0 } }
     
     private(set) var newSelection = FamilyActivitySelection(includeEntireCategory: true)
@@ -26,13 +27,21 @@ public final class UpsertAppGroupViewModel {
     let isCreating: Bool
     
     // MARK: - Private Properties
+    private let fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol
+    private let createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol
+    private let deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol
     private let upsertAppGroupUseCase: UpsertAppGroupUseCase
     private let deleteAppGroupUseCase: DeleteAppGroupUseCase?
     private let appGroup: AppGroup?
     
+    
+    
     // MARK: - Initialization
     public init(
         appGroup: AppGroup? = nil,
+        fetchBlockScheduleUseCase: FetchBlockScheduleUseCaseProtocol,
+        createBlockScheduleUseCase: CreateBlockScheduleUseCaseProtocol,
+        deleteBlockScheduleUseCase: DeleteBlockScheduleUseCaseProtocol,
         upsertAppGroupUseCase: UpsertAppGroupUseCase,
         upsertCompletion: @escaping (AppGroup) -> (),
         deleteAppGroupUseCase: DeleteAppGroupUseCase? = nil,
@@ -44,14 +53,20 @@ public final class UpsertAppGroupViewModel {
         }
         self.isCreating = (appGroup == nil)
         self.appGroup = appGroup
+        self.fetchBlockScheduleUseCase = fetchBlockScheduleUseCase
+        self.createBlockScheduleUseCase = createBlockScheduleUseCase
+        self.deleteBlockScheduleUseCase = deleteBlockScheduleUseCase
         self.upsertAppGroupUseCase = upsertAppGroupUseCase
         self.upsertCompletion = upsertCompletion
         self.deleteAppGroupUseCase = deleteAppGroupUseCase
         self.deleteCompletion = deleteCompletion
+        let blocks = blockScheduleManager.readAll()
+        blocks.forEach { scheudle in
+            blockScheduleManager.delete(scheudle)
+        }
     }
     
     // MARK: - Public Methods
-    
     public func setAppGroupName(_ name: String) {
         self.appGroupName = String(name.prefix(10))
     }
@@ -73,6 +88,14 @@ public final class UpsertAppGroupViewModel {
     public func upsertCompleteBtnTapped() {
         Task {
             do {
+                // 기존에 존재하는 앱 그룹의 경우... Blocking하는 것을 명시적으로 제거
+                if let appGroup,
+                   let scheduleEntity = fetchBlockScheduleUseCase.execute(groupTitle: "\(appGroup.name)") {
+                    print("기존 앱 그룹 존재함... blockScheduleEntity 삭제")
+                    deleteBlockScheduleUseCase.execute(schedule: scheduleEntity)
+                }
+                
+                
                 let newAppGroup = if let appGroup {
                     try await upsertAppGroupUseCase.execute(
                         appGroupID: appGroup.groupID,
@@ -85,12 +108,22 @@ public final class UpsertAppGroupViewModel {
                         activitySelection: newSelection
                     )
                 }
+                
+                let blockScheduleEntity = BlockScheduleEntity(
+                    id: "\(newAppGroup.groupID)",
+                    title: newAppGroup.name,
+                    blockList: newAppGroup.selection,
+                    startTime: .init(hour: 00, minute: 00),
+                    endTime: .init(hour: 23, minute: 59)
+                )
+                try createBlockScheduleUseCase.execute(schedule: blockScheduleEntity)
+                
                 await MainActor.run { [weak self] in
                     guard let self else { return }
                     upsertCompletion(newAppGroup)
                 }
             } catch {
-                
+                assertionFailure("Upsert 실패: \(error)")
             }
         }
     }
@@ -103,6 +136,12 @@ public final class UpsertAppGroupViewModel {
     public func deleteConfirmBtnTapped() {
         Task {
             guard let appGroup, let deleteAppGroupUseCase, let deleteCompletion else { return }
+            guard let scheduleEntity = fetchBlockScheduleUseCase.execute(groupTitle: "\(appGroup.name)") else {
+                assertionFailure("현재 제거할 실드 대상이 없다.")
+                return
+            }
+            deleteBlockScheduleUseCase.execute(schedule: scheduleEntity)
+            
             do {
                 try await deleteAppGroupUseCase.execute(appGroupID: appGroup.groupID)
             } catch {
