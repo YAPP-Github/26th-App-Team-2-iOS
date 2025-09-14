@@ -21,6 +21,6 @@ public struct DeleteBlockAppUseCase: DeleteBlockAppUseCaseProtocol {
     }
 
     public func execute(schedule: BlockScheduleEntity) throws {
-        blockScheduleManager.delete(schedule.toRequest())
+//        blockScheduleManager.delete(name: <#DeviceActivityName#>, schedule.toRequest())
     }
 }

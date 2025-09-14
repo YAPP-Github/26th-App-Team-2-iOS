@@ -58,6 +58,7 @@ public struct AppGroupMainView: View {
                             .environment(
                                 AppBrakeTimeSettingViewModel(
                                     createBreakTimeUseCase: diContainer.createBreakTimeUseCase,
+                                    setSelectedNotificationUseCase: diContainer.setSelectedNotificationUseCase,
                                     createBreakTimeCompletion: { selectedTime in
                                         viewModel.sessionTimerSettingCompletion(selectedTime: selectedTime)
                                     }
@@ -98,6 +99,9 @@ public struct AppGroupMainView: View {
 fileprivate extension AppGroupMainView {
     func createUpsertAppGroupViewModel() -> UpsertAppGroupViewModel {
         UpsertAppGroupViewModel(
+            fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
+            createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
+            deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
             upsertAppGroupUseCase: diContainer.upsertAppGroupUseCase,
             upsertCompletion: { appGroup in
                 self.appGroupMainViewModel.upsertCompleted(appGroup: appGroup)
@@ -108,6 +112,9 @@ fileprivate extension AppGroupMainView {
     func updateUpsertAppGroupViewModel(appGroup: AppGroup) -> UpsertAppGroupViewModel {
         UpsertAppGroupViewModel(
             appGroup: appGroup,
+            fetchBlockScheduleUseCase: diContainer.fetchBlockScheduleUseCase,
+            createBlockScheduleUseCase: diContainer.createBlockScheduleUseCase,
+            deleteBlockScheduleUseCase: diContainer.deleteBlockScheduleUseCase,
             upsertAppGroupUseCase: diContainer.upsertAppGroupUseCase,
             upsertCompletion: { appGroup in
                 self.appGroupMainViewModel.upsertCompleted(appGroup: appGroup)

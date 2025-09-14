@@ -10,20 +10,23 @@ import Domain
 
 @Observable
 public final class AppBrakeTimeSettingViewModel {
-    public let timeOptions: [Int] = [15, 20, 25, 30, 45, 60, 90]
-    var selectedMinutes: Int = 15
+    public let timeOptions: [Int] = [5, 10, 15, 20, 25, 30, 45, 60, 90]
+    var selectedMinutes: Int = 1
     var brakeTimeSettingCompletePresent: Bool = false
     var dismiss: Bool = false
     
     private let createBreakTimeCompletion: (Int) -> ()
     
     private let createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol
+    private let setSelectedNotificationUseCase: SetSelectedNotificationUseCaseProtocol
 
     public init(
         createBreakTimeUseCase: CreateBreakTimeUseCaseProtocol,
+        setSelectedNotificationUseCase: SetSelectedNotificationUseCaseProtocol,
         createBreakTimeCompletion: @escaping (Int) -> ()
     ) {
         self.createBreakTimeUseCase = createBreakTimeUseCase
+        self.setSelectedNotificationUseCase = setSelectedNotificationUseCase
         self.createBreakTimeCompletion = createBreakTimeCompletion
     }
     
@@ -37,68 +40,6 @@ public final class AppBrakeTimeSettingViewModel {
         formatter.dateFormat = "a h시 m분"
 
         return formatter.string(from: endDate)
-    }
-
-    public func getUpperFarNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex - 2
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex < 0 {
-            return ""
-        }
-
-        let farNumber = timeOptions[targetIndex]
-        let nearNumber = getUpperNearNumber()
-
-        // near와 far 숫자가 같으면 빈 문자열 반환
-        if nearNumber == "\(farNumber)" {
-            return ""
-        }
-
-        return "\(farNumber)"
-    }
-
-    public func getUpperNearNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex - 1
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex < 0 {
-            return ""
-        }
-        return "\(timeOptions[targetIndex])"
-    }
-
-    public func getLowerNearNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex + 1
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex >= timeOptions.count {
-            return ""
-        }
-        return "\(timeOptions[targetIndex])"
-    }
-
-    public func getLowerFarNumber() -> String {
-        let currentIndex = timeOptions.firstIndex(of: selectedMinutes) ?? 0
-        let targetIndex = currentIndex + 2
-
-        // 범위를 벗어나면 빈 문자열 반환
-        if targetIndex >= timeOptions.count {
-            return ""
-        }
-
-        let farNumber = timeOptions[targetIndex]
-        let nearNumber = getLowerNearNumber()
-
-        // near와 far 숫자가 같으면 빈 문자열 반환
-        if nearNumber == "\(farNumber)" {
-            return ""
-        }
-
-        return "\(farNumber)"
     }
 
     @MainActor
@@ -121,11 +62,14 @@ public final class AppBrakeTimeSettingViewModel {
                     dismiss = true
                 }
             } catch {
-                await MainActor.run { [weak self] in
-                    guard let self else { return }
+                await MainActor.run {
                     print("휴게시간 설정에 실패했습니다")
                 }
             }
         }
+    }
+    public func brakeTimeSettingCancelButtonTapped() {
+        self.setSelectedNotificationUseCase.execute(false)
+        dismiss = true
     }
 }

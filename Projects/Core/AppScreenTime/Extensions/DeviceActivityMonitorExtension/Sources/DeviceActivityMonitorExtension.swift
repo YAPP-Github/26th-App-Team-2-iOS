@@ -32,7 +32,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     }
 
     private func setupStartAction(by activity: DeviceActivityName) {
-        if activity == .brake {
+        if activity == .longBrake {
             let extensionCount = appScheduleStorage.getExtensionCount()
             let userBrakeTime: Double = appScheduleStorage.getBreakEndDate().timeIntervalSince1970 - appScheduleStorage.getBreakStartDate().timeIntervalSince1970
             let extensionStartDate = Date.now.addingTimeInterval(userBrakeTime)
@@ -64,7 +64,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     }
 
     private func setupEndAction(by activity: DeviceActivityName) {
-        if activity == .brake {
+        if activity == .longBrake {
             // 휴식 시간 종료 - 차단 재설정 및 extensionPrompt 상태로 설정
             appScheduleStorage.saveSelectNotificationTrigger(false)
 

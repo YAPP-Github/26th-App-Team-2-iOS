@@ -18,7 +18,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
     private let managedSettingsManager = ManagedSettingsStoreManager()
-
+    private let coolDownMinutes: Int = 5
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
@@ -96,14 +96,14 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     // 연장 횟수 증가
                     let newCount = count + 1
                     appScheduleStorage.saveExtensionCount(newCount)
-                    // 15분 연장 시간 설정 및 저장
+                    // 5분 연장 시간 설정 및 저장
                     appScheduleStorage.saveExtensionTime(time)
 
                     // DeviceActivity로 15분 휴식 시간 설정
                     startExtensionBreakTime(minutes: time)
 
-                    let newStartDate: Date = .now.addingTimeInterval(15 * 60)
-                    let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
+                    let newStartDate: Date = .now.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
+                    let newEndDate: Date = newStartDate.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
 
                     // 연장 프롬프트 상태 업데이트
                     appScheduleStorage.saveBlockingStatus(

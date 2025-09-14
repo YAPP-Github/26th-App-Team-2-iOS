@@ -23,7 +23,8 @@ public struct BreakTimeManager: BreakTimeProtocol {
     // 휴식 스케줄 추가 (분 단위로 받음)
     public func createBreakTime(minutes: Int) throws {
         // 최소 15분 이상 필요
-        guard minutes >= 15 else {
+        print(minutes)
+        guard minutes >= 1 else {
             throw DeviceActivityCenterError.intervalTooShort
         }
         
@@ -40,27 +41,26 @@ public struct BreakTimeManager: BreakTimeProtocol {
         // 현재 시간부터 시작
         let startDate: Date = Date()
         appScheduleStorage.setBreakStartDate(date: startDate)
-        let startTime = Calendar.current.dateComponents(dateComponents, from: .now)
 
         // 종료 시간 계산 (크로스데이 허용)
-        let endDate: Date = Calendar.current.date(byAdding: .minute, value: minutes, to: .now) ?? .now
+        let endDate: Date = Calendar.current.date(byAdding: .minute, value: minutes, to: startDate) ?? .now
         appScheduleStorage.setBreakEndDate(date: endDate)
-        let endTime = Calendar.current.dateComponents(dateComponents, from: endDate)
-        let breakSchedule = DeviceActivitySchedule(
-            intervalStart: startTime,
-            intervalEnd: endTime,
-            repeats: false
-        )
-
-        try center.createBrakeTime(breakSchedule)
+        
+        let breakSchedule = DeviceActivitySchedule.makeSchedule(intervalStart: startDate, intervalEnd: endDate)
+        let interval = endDate.timeIntervalSince1970 - startDate.timeIntervalSince1970
+        
+        if interval < 15 * 60 {
+            print("인터벌 15분 이내")
+            center.stopBrakeTime(name: .shortBrake)
+            try center.createBrakeTime(name: .shortBrake, breakSchedule)
+        } else {
+            try center.createBrakeTime(name: .longBrake, breakSchedule)
+        }
+        
         print("startDate / endDate: \(startDate) \(endDate)")
         print("새로운 세션 저장 후 상태: ", appScheduleStorage.getBlockingStatus(), "현재 상태: ", Date.now)
     }
     
-    // 휴식 스케줄 삭제
-    public func deleteBreakTime() {
-        center.stopBrakeTime()
-    }
     
     public func getStartDate() -> Date {
         self.appScheduleStorage.getBreakStartDate()

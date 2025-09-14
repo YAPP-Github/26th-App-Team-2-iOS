@@ -29,6 +29,10 @@ struct FeatureAppGroupFeatureApp: App {
                 switch selectedTab {
                 case .dashboard:
                     AppGroupMainView()
+                        .task {
+                            let screenTimeAuthorizationResult = await diContainer.requestScreenTimeAuthUseCase.execute()
+                            let notificationAuthorizationResult = await diContainer.requestUserNotificationAuthUseCase.execute()
+                        }
                 case .myInfo:
                     VStack {
                         Spacer()

@@ -27,7 +27,7 @@ public struct CreateBreakTimeUseCase: CreateBreakTimeUseCaseProtocol {
 
     public func execute(by minutes: Int) async throws {
         // 입력 검증 - 최소 15분
-        guard minutes >= 15 else {
+        guard minutes >= 1 else {
             throw ScreenTimeError.invalidBreakTimeDuration(minutes: minutes)
         }
 

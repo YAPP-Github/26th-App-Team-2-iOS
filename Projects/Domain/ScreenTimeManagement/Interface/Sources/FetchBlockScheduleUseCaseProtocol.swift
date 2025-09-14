@@ -8,5 +8,5 @@
 import Foundation
 
 public protocol FetchBlockScheduleUseCaseProtocol {
-    func execute(activityName: String) -> BlockScheduleEntity?
+    func execute(groupTitle: String) -> BlockScheduleEntity?
 }

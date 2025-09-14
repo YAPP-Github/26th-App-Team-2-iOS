@@ -18,7 +18,7 @@ import Domain
 public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     private let appScheduleStorage: AppScheduleStorageProtocol = AppScheduleStorage()
     private let cooldownStorage: CooldownStorageProtocol = CooldownStorage()
-
+    private let coolDownTime: Int = 5
     public override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         handleApplications(action: action, completionHandler: completionHandler)
     }
@@ -96,14 +96,14 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     // 연장 횟수 증가
                     let newCount = count + 1
                     appScheduleStorage.saveExtensionCount(newCount)
-                    // 15분 연장 시간 설정 및 저장
+                    // 5분 연장 시간 설정 및 저장
                     appScheduleStorage.saveExtensionTime(time)
 
-                    // DeviceActivity로 15분 휴식 시간 설정
+                    // DeviceActivity로 5분 휴식 시간 설정
                     startExtensionBreakTime(minutes: time)
 
-                    let newStartDate: Date = .now.addingTimeInterval(15 * 60)
-                    let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
+                    let newStartDate: Date = .now.addingTimeInterval(TimeInterval(coolDownTime * 60))
+                    let newEndDate: Date = newStartDate.addingTimeInterval(TimeInterval(coolDownTime * 60))
 
                     // 연장 프롬프트 상태 업데이트
                     appScheduleStorage.saveBlockingStatus(
@@ -116,7 +116,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                         )
                     )
 
-                    // 차단창 닫기 (15분 동안 앱 사용 가능)
+                    // 차단창 닫기 (5분 동안 앱 사용 가능)
                     completionHandler(.defer)
                 }
                 else if endDate < .now {
@@ -144,10 +144,10 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
 
     // MARK: - Extension Time Management
 
-    /// 15분 연장 시간 시작
+    /// 5분 연장 시간 시작
     private func startExtensionBreakTime(minutes: Int) {
         do {
-            // BreakTimeManager를 통해 15분 휴식 시간 생성
+            // BreakTimeManager를 통해 5분 휴식 시간 생성
             let breakTimeManager = BreakTimeManager()
             try breakTimeManager.createBreakTime(minutes: minutes)
 
