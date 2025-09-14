@@ -147,7 +147,7 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
     /// 5분 연장 시간 시작
     private func startExtensionBreakTime(minutes: Int) {
         do {
-            // BreakTimeManager를 통해 15분 휴식 시간 생성
+            // BreakTimeManager를 통해 5분 휴식 시간 생성
             let breakTimeManager = BreakTimeManager()
             try breakTimeManager.createBreakTime(minutes: minutes)
 

@@ -102,8 +102,8 @@ public class ShieldActionConfigurationExtension: ShieldActionDelegate {
                     // DeviceActivity로 15분 휴식 시간 설정
                     startExtensionBreakTime(minutes: time)
 
-                    let newStartDate: Date = .now.addingTimeInterval(15 * 60)
-                    let newEndDate: Date = newStartDate.addingTimeInterval(15 * 60)
+                    let newStartDate: Date = .now.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
+                    let newEndDate: Date = newStartDate.addingTimeInterval(TimeInterval(coolDownMinutes * 60))
 
                     // 연장 프롬프트 상태 업데이트
                     appScheduleStorage.saveBlockingStatus(
